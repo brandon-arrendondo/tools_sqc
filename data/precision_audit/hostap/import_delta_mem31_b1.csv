@@ -1,0 +1,125 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,hostap,hostapd/config_file.c,593,FP,"Classic realloc idiom: nserv checked for NULL then immediately stored into *server on the only success path; no path retains an unreferenced new block.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/config_file.c,1329,FP,"str (aliased to pos) is unconditionally freed via `fail: os_free(str); return ret;` which every path (success and all goto fail) falls through to.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/config_file.c,1347,FP,"ls is checked then stored into *array before use; no path drops the new allocation.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/config_file.c,1364,FP,"os_free(str) runs on every path including the success path that falls through to this return; always freed before return.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/config_file.c,1849,FP,"tmp checked then assigned to bias; on any subsequent goto fail, fail: os_free(bias) frees the current bias (==tmp), and on realloc failure tmp is NULL so nothing new leaks.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,723,FP,"nnames checked then immediately assigned to *if_names; realloc failure leaves *if_names unchanged (NULL not stored), and the fail: block frees *if_names on any subsequent failure.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,920,FP,"tmp_bss checked (case 'b' handler) then immediately assigned to bss_config; NULL realloc result causes goto out without ever being stored.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,978,TP,"bare `return -1;` inside `#ifdef CONFIG_DEBUG_LINUX_TRACING` (trace-enable failure) occurs after the getopt loop where a `-b` option would have populated bss_config via os_realloc_array; this return bypasses the `out:` label (line ~1099) whose `os_free(bss_config)` is the only cleanup for that array, so bss_config leaks if `-b` was used and trace-enable then fails.",delta_mem31_task420,medium
+MEM31-C,hostap,hostapd/main.c,978,TP,"Same bare `return -1;` as above; bss_config itself is the leaked allocation, never freed since only the `out:` label frees it and this return skips that label.",delta_mem31_task420,medium
+MEM31-C,hostap,hostapd/main.c,989,TP,"bare `return -1;` after `os_calloc` failure for interfaces.iface likewise bypasses the `out:` cleanup label; bss_config populated by an earlier `-b` option is never freed on this path.",delta_mem31_task420,medium
+MEM31-C,hostap,hostapd/main.c,989,TP,"Same as above for bss_config: os_free(bss_config) only happens at `out:`, which this return skips.",delta_mem31_task420,medium
+MEM31-C,hostap,hostapd/main.c,995,TP,"bare `return -1;` after `hostapd_global_init` failure also bypasses `out:`; same leak mechanism as the two prior early returns.",delta_mem31_task420,medium
+MEM31-C,hostap,hostapd/main.c,995,TP,"Same as above for bss_config; not freed since out: cleanup is skipped by this early return.",delta_mem31_task420,medium
+MEM31-C,hostap,hostapd/main.c,1012,FP,"This `goto out` reaches the `out:` label, which unconditionally executes `os_free(bss_config)`; no leak.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1012,FP,"Same `out:` cleanup applies regardless of which goto out was taken.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1033,FP,"Same `out:` cleanup (os_free(bss_config)) applies to this goto out.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1033,FP,"Same `out:` cleanup applies.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1050,FP,"Same `out:` cleanup (os_free(bss_config)) applies to this goto out.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1050,FP,"Same `out:` cleanup applies.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1068,FP,"Same `out:` cleanup (os_free(bss_config)) applies; this goto also correctly frees `iface` via hostapd_interface_deinit_free first.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1068,FP,"Same `out:` cleanup applies.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1094,FP,"Same `out:` cleanup (os_free(bss_config)) applies to this goto out.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1094,FP,"Same `out:` cleanup applies.",delta_mem31_task420,high
+MEM31-C,hostap,hostapd/main.c,1146,FP,"Line 1146 is the final `return ret;` AFTER the `out:` label has already executed `os_free(bss_config)`; already freed by the time this return executes.",delta_mem31_task420,high
+MEM31-C,hostap,radius_example/radius_example.c,57,FP,"msg is checked for NULL then freed on every subsequent failure branch (add_attr User-Name/User-Password/NAS-IP-Address fail, send fail); only success path hands ownership to radius_client_send.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/acs.c,1377,FP,"acs_request_scan is declared `static int acs_request_scan(...)`; err is an int status/error code, not a heap pointer -- no allocation occurs.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/acs.c,1380,FP,"Same misattribution as above -- err is int; the goto fail is normal error-path control flow, nothing to free.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/acs.c,1383,FP,"acs_request_scan returns int; err is not a pointer, so there is no allocation to leak at this return.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/acs.c,1387,FP,"Same as above; int status var, no allocation.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ap_config.c,1781,FP,"Standard `tmp = os_realloc_array(orig,...); if (!tmp) return -1;` idiom in hostapd_add_acl_maclist; on failure nothing new was allocated, on success `*acl = newacl` transfers ownership to caller's output param.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ap_config.c,1794,FP,"`return 0` at this line occurs after `*acl = newacl` already stored the pointer into the caller's output parameter -- ownership transferred out, not leaked.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,864,FP,"addr (char*, hostapd_dpp_auth_init) is freed within its own guard block (from-uri or else-if branch) before any later return in the function.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,894,FP,"Return at 894 occurs after addr's free already completed earlier in the function; addr is not re-assigned or leaked here.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,901,FP,"Return at 901 occurs after addr already freed earlier in the function.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,916,FP,"goto fail at 916 is in the role= parsing block, well after addr was already freed earlier.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,948,FP,"goto fail at 948 occurs after dpp_auth_init/dpp_set_configurator, long after addr was already freed.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,968,FP,"Normal-path return of hostapd_dpp_auth_init_next(); addr already freed earlier in the function.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,970,FP,"fail: label return -1; addr already freed earlier in the function.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,1294,FP,"dpp_conf_resp_rx returns plain int; res is declared as a status/int local in hostapd_dpp_gas_resp_cb, not a pointer -- nothing to free.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,1300,FP,"Same function/variable; res is an int status code (checked via res==-3, res<0), no heap allocation involved.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,1305,FP,"goto fail here is a normal status-code control-flow jump; res is int, not a pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,1343,FP,"return here is unrelated to res (deep in the CONFIG_DPP2 block); res remains a non-pointer int.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,1606,FP,"dpp_conf_result_rx returns enum dpp_status_error; status in hostapd_dpp_rx_conf_result is declared as that enum type, purely a status code, not allocated memory.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,1622,FP,"Same enum status variable; compared via status==DPP_STATUS_OK, never a pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,1670,FP,"dpp_conn_status_result_rx also returns enum dpp_status_error; status in hostapd_dpp_rx_conn_status_result is the same enum type, used only in a %d format string.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2385,FP,"dpp_pkex_rx_commit_reveal_resp returns plain int; res declared int at top of enclosing function, checked via res<0.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2388,FP,"Same int status variable; return is unrelated control flow (failure path after res<0 check).",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2415,FP,"Later return in the same function (dpp_pkex_finish failure) has nothing to do with res, still an int.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2428,FP,"Final return at end of function; res remains an int, never a heap pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2689,FP,"dpp_bootstrap_gen returns int (a bootstrap-info ID), not a pointer; res is int used to look up dpp_bootstrap_get_id(ifaces->dpp, res).",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2701,FP,"return at res<0 check; res is the same int ID, no allocation.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2712,FP,"return after !ifaces->dpp_pb_bi check; unrelated to res, still int.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,2720,FP,"return after random_get_bytes failure; res remains an int, nothing allocated.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,3279,FP,"addr (char*, hostapd_dpp_pkex_add) is freed inside its own if(addr) block before any subsequent return.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,3299,FP,"Return in the own= lookup block occurs after addr already freed earlier.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,3304,FP,"Return in the bootstrap-type check occurs after addr already freed earlier.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,3344,FP,"Return in the ver= parsing block occurs long after addr already freed earlier.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/dpp_hostapd.c,3364,FP,"Final return 1; at end of function; addr already freed earlier, unrelated to this later success path.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/hostapd.c,3436,FP,"tmp_bss immediately stored into iface->bss (`if (tmp_bss) iface->bss = tmp_bss;`) -- persistent struct owns it before any later return.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/hostapd.c,3446,FP,"Return reached only after tmp_bss already assigned into iface->bss; ownership already transferred, standard realloc-in-place idiom.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/hostapd.c,3455,FP,"By this line tmp_bss lives on as iface->bss, a long-lived structure field, not a leaked local.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/hostapd.c,3490,FP,"tmp_bss/iface->bss persists as a field of the iface object; not an unreachable local allocation.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/hostapd.c,3493,FP,"Function returns iface itself at this line, and iface->bss==tmp_bss is a field of the returned/live object -- not a leak.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/hostapd.c,3775,FP,"In hostapd_config_alloc, every failure path after conf = hostapd_config_defaults() explicitly calls hostapd_config_free(conf) before returning; no goto in this function skips the free.",delta_mem31_task420,medium
+MEM31-C,hostap,src/ap/hostapd.c,4651,FP,"hostapd_build_beacon_data is declared `int hostapd_build_beacon_data(...)`; ret is an int status code, not a pointer/allocation.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/hostapd.c,4901,FP,"Same int-returning callee (hostapd_fill_cca_settings context); ret is int, no allocation exists to leak.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,861,FP,"sae_get_password() returns a pointer owned by a persistent config/session structure (pw->password / hapd->conf->ssid.wpa_passphrase / sta->psk->passphrase), never a fresh malloc/strdup; caller must not free.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,884,FP,"Same as above -- password is config/session-owned, not caller-owned memory.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,892,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,910,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,920,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,935,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,2291,FP,"wpa_validate_wpa_ie() returns enum wpa_validate_result, not a pointer; res is declared `enum wpa_validate_result res;` -- a status enum, not heap memory.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,2305,FP,"Same enum-not-pointer issue as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,2348,FP,"Same enum-not-pointer issue as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,2382,FP,"Same enum-not-pointer issue as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,2385,FP,"Same enum-not-pointer issue as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,2395,FP,"data (a real wpabuf* from wpabuf_alloc) is passed to cb(hapd, sta, resp, data, pub); the caller passes cb=handle_auth_fils_finish, which calls wpabuf_free(data) -- ownership transferred and freed interprocedurally via function pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,2665,FP,"Same pattern: data passed to sta->fils_pending_cb(hapd, sta, resp, data, pub); fils_pending_cb was set to cb (=handle_auth_fils_finish) which frees it.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4338,FP,"res is enum wpa_validate_result (owe_process_rsn_ie); the function returns an enum by value, not a pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4351,FP,"Same enum res, no allocation exists.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4351,FP,"owe_process_assoc_req returns u16; status is `u16 status;`, a status code assigned via goto end, not a pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4360,FP,"Same as above (res enum).",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4360,FP,"Same as above (status u16).",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4386,FP,"res (enum) goes out of scope harmlessly at function return; nothing allocated.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4500,FP,"check_ext_capab returns u16; resp is `int resp;` in __check_assoc_ies, a status code not a pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4521,FP,"Same int status var resp; goto out just propagates the status code.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4541,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4565,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4575,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4621,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4655,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4668,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4694,FP,"Same as above.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4721,FP,"res here is `enum wpa_validate_result res;` declared locally in a nested block of __check_assoc_ies -- again an enum, not a pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4754,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4754,FP,"Same enum res; also already out of scope by this line, compounding the FP.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4776,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4776,FP,"Same enum res, already out of use.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4790,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4790,FP,"Same enum res.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4806,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4806,FP,"Same enum res.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4818,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4818,FP,"Same enum res.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4853,FP,"resp = owe_process_assoc_req(...) here; owe_process_assoc_req returns u16 status, resp is int -- not a pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4853,FP,"Stale/unrelated res reference, same enum, long out of scope.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4861,FP,"Same int status var resp (this goto is inside a CONFIG_DPP2 block, unrelated to any allocation).",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4861,FP,"Same enum res.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4878,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4878,FP,"Same enum res.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4911,FP,"Same int status var resp (HS20 block).",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4911,FP,"By this line the original enum wpa_validate_result res is long out of scope; also mis-scoped, and still not a pointer regardless.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4943,FP,"Same int status var resp (MBO block).",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4943,FP,"A different res (enum oci_verify_result res) is declared later; still an enum, not a pointer, and not even in scope yet at this line.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4962,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4962,FP,"enum oci_verify_result res, enum not pointer.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4970,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4970,FP,"Same enum res.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4988,FP,"Same int status var resp.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,4988,FP,"res here is enum oci_verify_result (ocv_verify_tx_params return type), not an allocator.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,5055,FP,"Function returns resp (int) at this line; res isn't even the returned variable, and is an enum with no allocation regardless.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/ieee802_11.c,5594,FP,"p is a walking pointer into the fixed local buffer buf (heap-allocated via os_zalloc elsewhere and freed elsewhere); wpa_sm_write_assoc_resp_ies writes IEs into the caller-supplied buffer and returns the same/advanced pointer or NULL -- it performs no allocation of its own.",delta_mem31_task420,high
+MEM31-C,hostap,src/ap/wpa_auth_ft.c,4077,FP,"wpa_ft_rrb_build is declared `static int wpa_ft_rrb_build(...)`, returns 0/-1 status; the actual allocated buffer is the separate packet out-parameter (freed by caller / consumed via wpa_ft_rrb_oui_send). ret itself holds no allocation.",delta_mem31_task420,high
