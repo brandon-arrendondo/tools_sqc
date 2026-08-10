@@ -1,0 +1,16 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,raylib,src/platforms/rcore_desktop_glfw.c,1648,FP,"platform.handle is a field of the module-scope global 'platform' struct, used across the whole file and destroyed via glfwDestroyWindow(platform.handle) at shutdown (line 1871) -- not a local leak.",delta_mem31_task420,high
+MEM31-C,raylib,src/platforms/rcore_desktop_glfw.c,1683,FP,"Same global platform.handle field; freed at shutdown via glfwDestroyWindow, not owned by this function.",delta_mem31_task420,high
+MEM31-C,raylib,src/platforms/rcore_desktop_glfw.c,1790,FP,"Same global platform.handle field; freed at shutdown via glfwDestroyWindow, not owned by this function.",delta_mem31_task420,high
+MEM31-C,raylib,src/platforms/rcore_desktop_glfw.c,1865,FP,"Same global platform.handle field; freed at shutdown via glfwDestroyWindow (line 1871), a few lines after this flagged site.",delta_mem31_task420,high
+MEM31-C,raylib,src/platforms/rcore_web.c,1369,FP,"platform.handle is the same module-scope global struct field pattern as the desktop_glfw.c platform backend; not a local leak.",delta_mem31_task420,high
+MEM31-C,raylib,src/platforms/rcore_web.c,1435,FP,"Same global platform.handle field; not owned by this function.",delta_mem31_task420,high
+MEM31-C,raylib,src/platforms/rcore_web.c,1441,FP,"Same global platform.handle field; not owned by this function.",delta_mem31_task420,high
+MEM31-C,raylib,src/platforms/rcore_web.c,1492,FP,"Same global platform.handle field; not owned by this function.",delta_mem31_task420,high
+MEM31-C,raylib,src/raudio.c,491,FP,"result is 'ma_result', an enum status type from the miniaudio library, not a pointer -- the status-typed-local misfire class. The real resource is AUDIO.System.device, uninit'd via ma_device_uninit on the failure paths below.",delta_mem31_task420,high
+MEM31-C,raylib,src/raudio.c,496,FP,"Same ma_result status local; not a pointer, nothing to leak.",delta_mem31_task420,high
+MEM31-C,raylib,src/raudio.c,507,FP,"Same ma_result status local; not a pointer, nothing to leak.",delta_mem31_task420,high
+MEM31-C,raylib,src/raudio.c,518,FP,"Same ma_result status local; not a pointer, nothing to leak.",delta_mem31_task420,high
+MEM31-C,raylib,src/raudio.c,591,FP,"result is ma_result from ma_data_converter_init, not a pointer -- same status-typed-local misfire.",delta_mem31_task420,high
+MEM31-C,raylib,src/raudio.c,597,FP,"Same ma_result status local; not a pointer, nothing to leak.",delta_mem31_task420,high
+MEM31-C,raylib,src/raudio.c,634,FP,"Same ma_result status local; not a pointer, nothing to leak.",delta_mem31_task420,high
