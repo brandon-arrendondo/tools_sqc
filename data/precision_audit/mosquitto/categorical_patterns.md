@@ -114,3 +114,42 @@ Two genuine, if narrow, TPs confirmed:
   unreachable and the function returns `MOSQ_ERR_NOMEM` (line 608) without freeing it — the
   classic "realloc into the same variable" anti-pattern. Windows-only and OOM-triggered, so very
   narrow, but a genuine defect at the flagged site.
+
+Batch `delta_mem31_b3` (88 findings, task 420, `src/*` final delta batch: plugin_public.c,
+psk_file.c, read_handle.c, retain.c, security_default.c, send_auth.c, send_connack.c,
+service.c, signals.c, subs.c, websockets.c): 0 TP / 88 FP. All recur into existing classes
+(int-status misattribution: read_handle.c/signals.c `rc`; ownership-transfer-via-hash/list-append:
+plugin_public.c `msg`→`db.plugin_msgs`, psk_file.c `psk`→PSK hash, subs.c `leaf`→subhier subs
+list; persistent config-struct field: security_default.c `db.config->...pid`/`->plugin_name`
+freed in `mosquitto_security_cleanup_default()`, `context->username` freed in
+`context__cleanup()`; already-freed-before-flagged-return: plugin_public.c:252,
+psk_file.c:157, websockets.c:358/367). Two new classes:
+
+- **allocation owned by a hash-tree node from the moment of creation, not by the caller's
+  local.** `retain__add_hier_entry()` (retain.c:33-53) calls `HASH_ADD(hh, *sibling, ...,
+  child)` on the node *before returning it* to the caller — every caller-side "not freed"/"leak"
+  finding for `retainhier`/`branch` in `retain__init()` (retain.c:60/65/70) and `retain__store()`
+  (retain.c:165/167/186/214) is FP because the object is already hash-tree-owned before the
+  caller ever sees the pointer.
+
+- **false "double free" across separate call frames/recursive invocations that each free a
+  distinct object.** Same-named locals/params freed exactly once per call — `shared` in
+  `sub__remove_shared_leaf()` (subs.c:200) vs. the unrelated `shared` in `sub__add_shared()`'s
+  own rollback (subs.c:233); `branch` in the recursive `sub__remove_recurse()` (subs.c:463),
+  each recursion level operating on a fresh `HASH_FIND` result; `sub` in `tmp_remove_subs()`
+  (subs.c:731), called in a `do{hier=tmp_remove_subs(hier);}while(hier)` loop that walks up the
+  tree freeing a different parent node each iteration. sqc reports these as "X was already
+  freed" even though no single call frame frees the same pointer twice — likely the same class
+  of unscoped/cross-frame tracking bug already fixed per-function for CON30-C/POS53-C/STR32-C
+  (tasks 415-417); MEM31-C's double-free tracking may benefit from the same per-function/
+  per-recursion-frame scoping fix.
+
+- **switch(reason)-style multi-case callback: variable from one case flagged leaked at returns
+  in unrelated, mutually exclusive cases.** websockets.c's libwebsockets HTTP callback declares
+  `filename_canonical` once per function invocation, assigned only inside `case
+  LWS_CALLBACK_HTTP:` (websockets.c:477) and freed on every branch of that same case
+  (484/489/500/513/518); findings at the `return` statements of entirely different `case`
+  labels in the same `switch(reason)` (websockets.c:534/538/542/572/576/587/598/638/656/659,
+  e.g. `LWS_CALLBACK_HTTP_BODY`, `LWS_CALLBACK_CLOSED`) are FP because those cases run as
+  separate invocations where `filename_canonical` is never touched. Generalizes the existing
+  "wrong preprocessor branch" class to switch-case branches.
