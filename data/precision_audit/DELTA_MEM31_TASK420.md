@@ -28,33 +28,37 @@ This is larger than task 420's original ~2,244 estimate (written when only
 hostap's skew had been sampled); the full delta across all six oracle
 projects is now measured at 4,026.
 
-## Scope caveat (found during hostap b3/b4 regeneration)
+## Scope caveat (found during hostap b3/b4 regeneration; recurred on curl)
 
 The `realworld-unlabeled` source query pulls from the standing benchmark run,
-which scans hostap's **whole repo root** with no `--exclude` (paper
-\S\ref{sec:sloc-scope} / `tab:eval-scope` notes this same gap). The initial
-batch generation therefore included findings from `tests/`, `wlantest/`,
-`radius_example/`, and `wpaspy/` — directories the hostap oracle's own
-evaluated scope (`data/precision_audit/hostap/README.md`) explicitly
-excludes. `delta_mem31_b3.json`/`b4.json` were regenerated to drop these 42
-out-of-scope findings before adjudication; `delta_mem31_b1.json` (already
-adjudicated) slipped in exactly one (`radius_example/radius_example.c:...`,
-negligible, not worth unwinding). **Before adjudicating curl/sqlite/
-mosquitto/lua/raylib batches, check their batch file lists against each
-project's `tab:eval-scope` exclusion criteria in the paper and drop
-out-of-scope files first** — same class of contamination is possible there
-(curl's 14 Win/macOS files, mosquitto's deps/test/plugins, sqlite's
-test/tooling/WASM/JNI bindings, lua's `ltests.*`).
+which scans whole repo roots with no `--exclude` (paper \S\ref{sec:sloc-scope}
+/ `tab:eval-scope` notes this same gap for several projects). hostap's
+initial batch generation included findings from `tests/`, `wlantest/`,
+`radius_example/`, and `wpaspy/` — excluded by the hostap oracle's own
+evaluated scope (`data/precision_audit/hostap/README.md`); `b3.json`/`b4.json`
+were regenerated to drop 42 out-of-scope findings (`b1.json`, already
+adjudicated, slipped in one negligible `radius_example.c` row, not unwound).
+curl's batches had the same issue: 24 findings from the 14 WIN_MAC files
+(`lib/vtls/schannel*.c/.h`, `lib/vtls/apple.*`, `lib/system_win32.*`,
+`lib/curlx/{winapi,version_win32,multibyte}.*` — see
+`data/precision_audit/curl/README.md`) were in `b4.json` pre-adjudication;
+all 6 curl batches were regenerated from scratch to drop them before any
+curl adjudication started, so no re-work was needed there. **Before
+adjudicating sqlite/mosquitto/lua/raylib batches, check their batch file
+lists against each project's `tab:eval-scope` exclusion criteria in the
+paper and drop out-of-scope files first**: sqlite's test/tooling/WASM/JNI
+bindings, mosquitto's deps/test/plugins, lua's `ltests.*`.
 
 ## Status
 
-**In progress.** hostap batches 1-2 adjudicated and imported (task 420
-commits); batches 3-4 regenerated to fix the scope contamination above, not
-yet adjudicated. curl/sqlite/mosquitto/lua/raylib batches generated but
-unreviewed for scope contamination and not yet adjudicated — do not treat
-`bench ground-truth` MEM31-C rows for those projects as covering the full
-delta yet. Next step per project: adjudicate each `delta_mem31_b*.json`
-batch (read the actual source at the pinned commit, judge TP/FP per the
-file's existing `categorical_patterns.md` conventions where one exists),
-write an `import_delta_mem31_bN.csv`, then `bench realworld-import-labels
---run 145 --source delta_mem31_task420 <csv>`.
+**In progress.** hostap (all 4 batches, 528 findings) adjudicated and
+imported — done (task 420 commits). curl batches regenerated to drop
+WIN_MAC contamination, not yet adjudicated. sqlite/mosquitto/lua/raylib
+batches generated but unreviewed for scope contamination and not yet
+adjudicated — do not treat `bench ground-truth` MEM31-C rows for those
+projects as covering the full delta yet. Next step per project: adjudicate
+each `delta_mem31_b*.json` batch (read the actual source at the pinned
+commit, judge TP/FP per the file's existing `categorical_patterns.md`
+conventions where one exists), write an `import_delta_mem31_bN.csv`, then
+`bench realworld-import-labels --run 145 --source delta_mem31_task420
+<csv>`.
