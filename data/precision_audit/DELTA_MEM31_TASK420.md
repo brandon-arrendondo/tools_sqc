@@ -21,19 +21,24 @@ own evaluated-scope exclusions (see caveat below):
 | Project   | Raw unlabeled | Dropped (out-of-scope) | In-scope batched | Batches |
 |-----------|---------------|-------------------------|-------------------|---------|
 | hostap    | 528           | 42 (tests/wlantest/radius_example/wpaspy) | 486 | 4 (`delta_mem31_b1..4.json`) — **done** |
-| curl      | 796           | 349 (tests/docs/projects/OS400 + 14 WIN_MAC) | 447 | 4 (`delta_mem31_b1..4.json`) |
-| sqlite    | 1,264         | 503 (tool/test/autosetup/mptest + src/test*.c + ext/jni,wasm) | 761 | 7 (`delta_mem31_b1..7.json`) |
-| mosquitto | 1,421         | 1,042 (test/plugins/apps/client/libcommon/fuzzing/examples) | 379 | 3 (`delta_mem31_b1..3.json`) |
-| raylib    | 15            | 0 (all 3 files are core/platform-backend, in scope) | 15 | 1 (`delta_mem31_b1.json`) |
-| lua       | 2             | 0 (lmem.c is core interpreter source) | 2 | 1 (`delta_mem31_b1.json`) |
-| **Total** | **4,026**     | **1,936**                | **2,090**         | **20** |
+| curl      | 796           | 349 (tests/docs/projects/OS400 + 14 WIN_MAC) | 447 | 4 (`delta_mem31_b1..4.json`) — **done** |
+| sqlite    | 1,264         | 1,115 (tool/test/autosetup/mptest/ext-jni-wasm + `src/tclsqlite.c` (592!) + any `ext/**/*test*.c`) | 149 | 1 (`delta_mem31_b1.json`) |
+| mosquitto | 1,421         | 1,042 (test/plugins/apps/client/libcommon/fuzzing/examples) | 379 | 3 (`delta_mem31_b1..3.json`) — **done** |
+| raylib    | 15            | 0 (all 3 files are core/platform-backend, in scope) | 15 | 1 (`delta_mem31_b1.json`) — **done** |
+| lua       | 2             | 0 (lmem.c is core interpreter source) | 2 | 1 (`delta_mem31_b1.json`) — **done** |
+| **Total** | **4,026**     | **2,548**                | **1,478**         | **14** |
 
 The originally-estimated ~2,244 (task 420) and the first-pass 4,026 raw
-count both overstated the real scope: **1,936 of 4,026 (48%) were findings
-in directories the corresponding project's own oracle already excludes**
-(test harnesses, vendored deps, docs/examples, non-Linux build configs,
-language bindings). The true delta-adjudication workload is ~2,090
-findings, not 4,026.
+count both badly overstated the real scope: **2,548 of 4,026 (63%) were
+findings in directories the corresponding project's own oracle already
+excludes** (test harnesses, vendored deps, docs/examples, non-Linux build
+configs, language bindings). The true delta-adjudication workload is
+~1,478 findings, not 4,026 — and sqlite alone accounts for most of the
+correction: a first-pass "fix" caught `tool/`/`test/`/`autosetup/`/
+`mptest/`/`src/test*.c`/`ext/jni`/`ext/wasm` but missed `src/tclsqlite.c`
+(592 findings — the Tcl language binding, explicitly out-of-scope per
+sqlite's own README) and four `ext/**/test_*.c`/`*_speed_test.c` glue
+files, only caught on a second pass before sqlite adjudication started.
 
 ## Scope caveat — check exclusions BEFORE batching, not after
 
@@ -49,8 +54,24 @@ out-of-scope findings until caught and fixed:
   `tests/`, `docs/`, `projects/OS400/*` (349 findings total) — the first
   fix only caught WIN_MAC; caught the rest on a second pass, before any
   curl adjudication started.
-- **sqlite**: `tool/`, `test/`, `autosetup/`, `mptest/`, `src/test*.c`,
-  `ext/jni`, `ext/wasm` (503 findings) — caught before adjudication started.
+- **sqlite**: two passes needed. First pass caught `tool/`, `test/`,
+  `autosetup/`, `mptest/`, `src/test*.c`, `ext/jni`, `ext/wasm` (503
+  findings). Second pass, prompted by noticing `ext/expert/test_expert.c`
+  in a generated batch and cross-referencing the README's explicit
+  "excluded: test_rtreedoc.c, test_expert.c, fts5_tcl.c" note, caught
+  `src/tclsqlite.c` (592 findings — by far the single biggest
+  contamination source in this whole pass, the Tcl binding, explicitly
+  out-of-scope per README) plus `ext/expert/test_expert.c`,
+  `ext/intck/test_intck.c`, `ext/session/test_session.c`,
+  `ext/session/session_speed_test.c` (20 more, all Tcl/perf-test glue
+  confirmed by reading each file's own header comment: "not included in
+  the SQLite library" / "testing the performance of"). Checked
+  `ext/session/changesetfuzz.c` and `ext/misc/fuzzer.c` against this same
+  "test"-in-name suspicion and found the opposite: both have substantial
+  pre-existing ground-truth labels (134 and 106 respectively), i.e.
+  established in-scope precedent despite the fuzz-sounding names — did
+  NOT exclude them. Total: 1,115 dropped, not 503 (real in-scope count is
+  149, not 761) — caught before any sqlite adjudication started.
 - **mosquitto**: `test/`, `plugins/`, `apps/`, `client/`, `libcommon/`,
   `fuzzing/`, `examples/` (1,042 findings — 73% of the raw count!) —
   caught before adjudication started.
