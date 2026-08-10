@@ -1,0 +1,149 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,curl,lib/urlapi.c,590,FP,urldecode_host: 'result' is CURLcode (Curl_urldecode returns CURLcode); status-typed local misattributed as pointer alloc,delta_mem31_task420,high
+MEM31-C,curl,lib/urlapi.c,601,FP,"urldecode_host line 601 return: same CURLcode 'result', not a pointer; decoded buf freed via curlx_free at line 596 before this return",delta_mem31_task420,high
+MEM31-C,curl,lib/urlapi.c,1367,FP,urlget_format: 'part' (curlx_memdup0) is freed via curlx_free before every reassignment/error return and transferred to *partp on success (line 1421),delta_mem31_task420,high
+MEM31-C,curl,lib/urlapi.c,1385,FP,"urlget_format: 'res' is CURLcode from Curl_urldecode; status-typed local, scoped to the urldecode if-block only",delta_mem31_task420,high
+MEM31-C,curl,lib/urlapi.c,1422,FP,"line 1422 is the function's final 'return CURLUE_OK;', outside 'res' scope (declared/used only lines 1381-1390); real alloc 'decoded'/'part' already freed/transferred",delta_mem31_task420,high
+MEM31-C,curl,lib/urlapi.c,1980,FP,'result' at line 1980 is CURLcode from Curl_urldecode inside an if/else-if block; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/urlapi.c,1989,FP,line 1989 return CURLUE_BAD_HOSTNAME is inside the same status-typed-local block; 'decoded' is freed via curlx_free(decoded) at line 1983 right before this return,delta_mem31_task420,high
+MEM31-C,curl,lib/urlapi.c,1997,FP,"line 1997 is the function's final return, 'result' is CURLcode out of scope; 'decoded' already freed at 1983 on that path or never allocated on others",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/cram.c,59,FP,"Curl_HMAC_final(ctxt, digest) at cram.c:71 frees ctxt internally (hmac.c:121 curlx_free(ctxt)); free-pairing API, no leak",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/digest.c,388,FP,"Curl_MD5_final(ctxt, digest) at digest.c:400 frees ctxt internally (md5.c:601-602); free-pairing API, no leak",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/digest.c,402,FP,"Curl_MD5_final(ctxt, digest) at digest.c:413 frees ctxt internally (md5.c:601-602); free-pairing API, no leak",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/digest.c,425,FP,"Curl_MD5_final(ctxt, digest) at digest.c:437 frees ctxt internally (md5.c:601-602); free-pairing API, no leak",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/digest.c,443,FP,"Curl_MD5_final(ctxt, digest) at digest.c:467 frees ctxt internally (md5.c:601-602); free-pairing API, no leak",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/digest_sspi.c,615,FP,"'resp' (curlx_memdup0) is transferred to caller via *outptr=resp at line 622, not leaked",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/digest_sspi.c,624,FP,line 624 'return CURLE_OK' occurs after resp was already assigned to *outptr (line 622); ownership transferred to caller,delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/krb5_sspi.c,167,FP,"'result' is CURLcode (Curl_create_sspi_identity returns CURLcode); status-typed local, and line 167's return is a literal CURLE_BAD_CONTENT_ENCODING unrelated to result's earlier assignment",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/ntlm.c,621,FP,Curl_ntlm_core_mk_nt_hash returns CURLcode (curl_ntlm_core.h:44); status-typed local named 'result',delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/ntlm.c,625,FP,Curl_ntlm_core_mk_ntlmv2_hash returns CURLcode (curl_ntlm_core.h:53); status-typed local named 'result',delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/ntlm.c,637,FP,Curl_ntlm_core_mk_ntlmv2_resp returns CURLcode (curl_ntlm_core.h:58); status-typed local named 'result',delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/ntlm.c,779,FP,"line 779 goto is preceded by a plain literal 'result = CURLE_TOO_LARGE;' (line 778), unrelated to the earlier mk_nt_hash call; 'result' is CURLcode, not a pointer",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/ntlm.c,802,FP,"line 802 goto is preceded by a plain literal 'result = CURLE_TOO_LARGE;' (line 801), unrelated to the earlier mk_nt_hash call; 'result' is CURLcode, not a pointer",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/ntlm_sspi.c,118,FP,'result' is CURLcode (Curl_create_sspi_identity returns CURLcode); status-typed local misattributed as pointer alloc,delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/ntlm_sspi.c,177,FP,"line 177 return is CURLcode 'result', unrelated later return statement, not a pointer leak",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_gssapi.c,135,FP,"curlx_base64_decode returns CURLcode; 'result' is status-typed, real alloc 'chlg' is freed via Curl_safefree(input_token.value) at line 174 before every later return",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_gssapi.c,143,FP,status-typed 'result'; chlg already freed at line 174 on this straight-line path before this return,delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_gssapi.c,184,FP,status-typed 'result'; chlg already freed at line 174 before this unrelated later return,delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_gssapi.c,191,FP,status-typed 'result'; chlg already freed at line 174 before this unrelated later return,delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_gssapi.c,200,FP,status-typed 'result'; chlg already freed at line 174 before this unrelated later return (function's final return),delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_sspi.c,138,FP,'result' is CURLcode (Curl_create_sspi_identity); status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_sspi.c,180,FP,"curlx_base64_decode returns CURLcode; 'result' status-typed, real alloc 'chlg' freed unconditionally via curlx_free(chlg) at line 237 before this return",delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_sspi.c,247,FP,status-typed 'result'; chlg already freed at line 237 before this unrelated later return,delta_mem31_task420,high
+MEM31-C,curl,lib/vauth/spnego_sspi.c,261,FP,status-typed 'result'; chlg already freed at line 237 before this unrelated later return (function's final return path),delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1597,FP,"h3_data_setup declared 'static CURLcode' (curl_ngtcp2.c:261); 'result' is status-typed, not a pointer allocation",delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1608,FP,h3_data_setup returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1623,FP,h3_data_setup returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1639,FP,h3_data_setup returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1683,FP,h3_data_setup returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1741,FP,h3_stream_open declared 'static CURLcode' (curl_ngtcp2.c:1570); 'result' is status-typed,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1749,FP,h3_stream_open returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1762,FP,h3_stream_open returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1767,FP,h3_stream_open returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_ngtcp2.c,1772,FP,h3_stream_open returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_quiche.c,1009,FP,h3_data_setup returns CURLcode (curl_quiche.c:258); status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_quiche.c,1024,FP,h3_data_setup returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_quiche.c,1051,FP,h3_data_setup returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_quiche.c,1058,FP,h3_data_setup returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_quiche.c,1135,FP,h3_open_stream declared 'static CURLcode' (curl_quiche.c:975); status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/curl_quiche.c,1140,FP,h3_open_stream returns CURLcode; status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic-tls.c,76,FP,Curl_ssl_peer_init returns CURLcode (vtls.h:144); status-typed local misattributed as pointer alloc,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic-tls.c,82,FP,status-typed 'result' (CURLcode); no pointer allocated at line 76,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic-tls.c,86,FP,"status-typed 'result'; #ifdef USE_OPENSSL branch return, unrelated to any allocation",delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic-tls.c,90,FP,"status-typed 'result'; #ifdef USE_GNUTLS branch return, unrelated to any allocation",delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic-tls.c,95,FP,"status-typed 'result'; #ifdef USE_WOLFSSL / fallback branch return, unrelated to any allocation",delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic.c,434,FP,Curl_multi_xfer_sockbuf_borrow returns CURLcode (multiif.h:140); status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic.c,442,FP,status-typed 'result'; literal 'result = CURLE_COULDNT_CONNECT' unrelated to the borrow call,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic.c,448,FP,status-typed 'result'; literal 'result = CURLE_RECV_ERROR' unrelated to the borrow call,delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic.c,661,FP,"'qlog_dir' (curl_getenv) is freed via curlx_free(qlog_dir) at line 691, unconditionally inside the only 'if(qlog_dir)' block before any return",delta_mem31_task420,high
+MEM31-C,curl,lib/vquic/vquic.c,696,FP,"qlog_dir already freed at line 691 before this return (function's final return, reached only when qlog_dir was NULL or already freed)",delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/libssh2.c,1091,FP,"'home' (curl_getenv) is freed via curlx_free(home) at line 1109, unconditionally inside the only 'if(home)' block that uses it",delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/libssh2.c,1160,FP,home already freed at line 1109 and out of scope (declared/used only lines 1091-1109); this is the function's unrelated final return,delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/vssh.c,137,FP,"Curl_getworkingpath: 'result' is CURLcode from Curl_urldecode; real alloc is 'working_path', freed on every error branch (150,158,173,179) or transferred/freed at 186-192",delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/vssh.c,151,FP,status-typed 'result'; working_path freed via curlx_free at line 150 before this return,delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/vssh.c,159,FP,status-typed 'result'; working_path freed via curlx_free at line 158 before this return,delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/vssh.c,174,FP,status-typed 'result'; working_path freed via curlx_free at line 173 before this return,delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/vssh.c,180,FP,status-typed 'result'; working_path freed via curlx_free at line 179 before this return,delta_mem31_task420,high
+MEM31-C,curl,lib/vssh/vssh.c,195,FP,status-typed 'result'; working_path freed at 186 or transferred to *path at 192 before this final return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,728,FP,'qtp_clone' ownership transferred into Curl_ssl_session_create2 (line 738); comment at line 740 explicitly states 'call took ownership of sdata and qtp_clone',delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,745,FP,qtp_clone ownership transferred per explicit comment at line 740; not leaked,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1622,FP,Curl_ssl_init_certinfo returns CURLcode (vtls.h:171); status-typed local misattributed as pointer alloc,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1652,FP,status-typed 'result' (CURLcode); goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1688,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1699,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1710,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1722,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1733,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1749,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1760,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1782,FP,status-typed 'result'; goto out at unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1784,FP,"'issuerp' is a gnutls_datum_t (struct, not a pointer) returned by value from load_file(); unload_file(issuerp) frees its buffer at line 1788, immediately after use and before any goto",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1793,FP,"status-typed 'result'; goto out at unrelated later branch (pkp_pin_peer_pubkey check precedes, unrelated to issuercert block)",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1793,FP,"issuerp already released via unload_file() at line 1788 and out of scope (declared inside the if(config->issuercert) block, lines 1778-1797)",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1821,FP,pkp_pin_peer_pubkey returns CURLcode (gtls.c:1254); status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1821,FP,issuerp already released via unload_file() at line 1788 and out of scope; this goto is in an unrelated later branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/gtls.c,1832,FP,"issuerp already released via unload_file() at line 1788; this is the function's final return, issuerp long out of scope",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/keylog.c,45,FP,"'keylog_file_name' (curl_getenv) is freed via Curl_safefree at line 59, unconditionally inside the only 'if(keylog_file_name)' block",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,431,FP,"mbed_extract_certinfo is a void function (bare 'return;' at line 428); 'result' holds Curl_ssl_init_certinfo's CURLcode return, not a pointer, and is never leaked (void fn, no return value)",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,510,FP,"'newblob' (curlx_memdup0) is freed via curlx_free(newblob) at line 517, immediately after use, before any later return",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,531,FP,"newblob already freed at line 517 and out of scope (declared inside the ca_info_blob PEM-else branch, lines 503-518); this return is in an unrelated ssl_cafile branch",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,543,FP,newblob already freed at line 517 and out of scope; this return is in an unrelated ssl_cafile branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,547,FP,newblob already freed at line 517 and out of scope; this return is in an unrelated ssl_capath branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,565,FP,newblob already freed at line 517 and out of scope; this return is in an unrelated ssl_capath branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,569,FP,newblob already freed at line 517 and out of scope; this return is in an unrelated ssl_capath branch (function's final return),delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,624,FP,"second 'newblob' (mbed_load_clicert, curlx_memdup0 line 624) is freed via curlx_free(newblob) at line 630, immediately after use",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,644,FP,newblob already freed at line 630 and out of scope; this return is in an unrelated ssl_cert_blob branch,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,648,FP,newblob already freed at line 630 and out of scope; this is the function's final return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,1105,FP,Curl_pin_peer_pubkey returns CURLcode (vtls.c:756); status-typed local misattributed as pointer alloc,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,1132,FP,"status-typed 'result'; goto pinnedpubkey_error at line 1112 frees p/pubkey (unrelated to result), then returns result",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,1463,FP,mbed_connect_step2 declared 'static CURLcode' (mbedtls.c:1004); status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,1476,FP,mbed_new_session declared 'static CURLcode' (mbedtls.c:1135); status-typed local,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/mbedtls.c,1488,FP,"mbed_new_session returns CURLcode; status-typed local, function's own final/error return",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,2745,FP,"'qtp_clone' passed into Curl_ssl_session_create2 alongside der_session_buf, which the comment at line 2758 states the call 'took ownership of'; same ownership-transfer pattern as gtls.c:728/wolfssl.c:446",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,3509,FP,curlx_base64_decode returns CURLcode; 'result' status-typed. real alloc 'ech_config' is freed at line 3518 or 3522 within the same #ifdef HAVE_BORINGSSL_LIKE block,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,3519,FP,status-typed 'result'; ech_config already freed at line 3518 immediately before this return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,3528,FP,status-typed 'result'; this return is in the #else (non-BoringSSL) branch which never uses 'result' or the base64-decoded ech_config at all,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,3582,FP,"status-typed 'result'; unrelated #ifdef HAVE_BORINGSSL_LIKE branch return, no relation to line 3509's decode",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,3593,FP,"status-typed 'result'; unrelated later branch return (SSL_ech_set1_server_names check), no relation to line 3509's decode",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,3600,FP,status-typed 'result'; unrelated later branch return (min proto version check),delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/openssl.c,3603,FP,"status-typed 'result'; function's final return, unrelated to line 3509's decode",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,955,FP,"'decode_result' is declared size_t (a status/length value assigned from curlx_base64_decode's CURLcode return, not a pointer); real alloc 'ech_config' is freed at the 'cleanup:' label (line 994) on every goto-cleanup path",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,959,FP,decode_result is not a pointer; ech_config freed at cleanup: label (994) before this goto's eventual return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,970,FP,decode_result is not a pointer; ech_config freed at cleanup: label (994) before this goto's eventual return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,976,FP,decode_result is not a pointer; ech_config freed at cleanup: label (994) before this goto's eventual return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,989,FP,decode_result is not a pointer; ech_config freed at cleanup: label (994) before this goto's eventual return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,999,FP,decode_result is not a pointer; ech_config freed at cleanup: label (994) unconditionally before this final return,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1207,FP,"Curl_ssl_init_certinfo returns CURLcode (vtls.h:171); status-typed local, rustls.c cert-info block",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1225,FP,"line 1225 is 'return map_error(rresult);', unrelated to 'result's assignment at line 1207; stale-taint misattribution",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1241,FP,"line 1241 is 'return CURLE_OK;' after the certinfo loop completes successfully, unrelated to result's earlier assignment",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1257,FP,line 1257 'return CURLE_OK;' is in the wants_write/CURLE_AGAIN branch which never touches 'result' (uses tmperr instead),delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1260,FP,line 1260 'return tmperr;' does not reference 'result' at all,delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1270,FP,"line 1270 'return CURLE_OK;' is in the wants_read/CURLE_AGAIN branch, does not reference 'result'",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1273,FP,line 1273 'return CURLE_SSL_CONNECT_ERROR;' does not reference 'result',delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/rustls.c,1276,FP,line 1276 'return tmperr;' does not reference 'result',delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/vtls_scache.c,1107,FP,"'r' is CURLcode (Curl_ssl_session_unpack returns CURLcode, vtls_scache.c:1091); line 1107's goto is preceded by a plain literal 'r = CURLE_BAD_FUNCTION_ARGUMENT' unrelated to the unpack call",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/wolfssl.c,446,FP,"'qtp_clone' passed into Curl_ssl_session_create2 alongside sdata, which the comment at line 462 states the call 'took ownership of sdata' (qtp_clone travels with it, same as gtls.c/openssl.c pattern)",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/wolfssl.c,470,FP,"qtp_clone ownership transferred per line 462 comment; the 'out:' label only frees 'sdata' (already NULLed) and returns result, not a leak of qtp_clone",delta_mem31_task420,high
+MEM31-C,curl,lib/vtls/wolfssl.c,1583,FP,"Curl_pin_peer_pubkey returns CURLcode (vtls.c:756); line 1583's 'return CURLE_NOT_BUILT_IN;' is in the #else (no-pinning-support) branch, mutually exclusive with the #ifdef branch that calls Curl_pin_peer_pubkey",delta_mem31_task420,high
+MEM31-C,curl,src/tool_cb_hdr.c,156,FP,"'p' is a plain pointer copy of 'copy' (line 160); the real allocation 'copy' is freed via tool_safefree on every early return (190,202) or returned to caller at line 230 (ownership transfer) -- alias-variable misattribution",delta_mem31_task420,high
+MEM31-C,curl,src/tool_cb_hdr.c,191,FP,p/copy freed via tool_safefree(copy) at line 190 before this return,delta_mem31_task420,high
+MEM31-C,curl,src/tool_cb_hdr.c,203,FP,p/copy freed via tool_safefree(copy) at line 202 before this return,delta_mem31_task420,high
+MEM31-C,curl,src/tool_cb_hdr.c,230,FP,"copy (aliased as p) is returned to the caller at line 230, ownership transfer, not a leak",delta_mem31_task420,high
+MEM31-C,curl,src/tool_cb_wrt.c,327,FP,"win_console returns size_t (a byte-count/status value, src/tool_cb_wrt.c:111), not a pointer; 'retval' scoped to the Windows console if-block (322-330)",delta_mem31_task420,high
+MEM31-C,curl,src/tool_cb_wrt.c,362,FP,"retval out of scope (declared/used only lines 327-329); line 362 is the function's unrelated final return using 'rc', not retval",delta_mem31_task420,high
+MEM31-C,curl,src/tool_doswin.c,507,FP,"rename_if_reserved_dos returns SANITIZEcode (an enum status, tool_doswin.c:283), not a pointer; 'sc' status-typed local",delta_mem31_task420,high
+MEM31-C,curl,src/tool_doswin.c,522,FP,"sc is SANITIZEcode status, not memory; line 522 is the function's final success return (SANITIZE_ERR_OK), unrelated to any allocation",delta_mem31_task420,high
+MEM31-C,curl,src/tool_easysrc.c,94,FP,"'list' (slist_wc_append) is assigned to *plist at line 100 on success, ownership transfer to caller's out-param; on failure it is NULL",delta_mem31_task420,high
+MEM31-C,curl,src/tool_easysrc.c,101,FP,list already transferred to *plist at line 100 before this return; not a stack-local leak,delta_mem31_task420,high
+MEM31-C,curl,src/tool_findfile.c,108,FP,"'home' (curl_getenv) is freed via curl_free at every loop-iteration exit path (113,118,127,134) inside the for-loop",delta_mem31_task420,high
+MEM31-C,curl,src/tool_findfile.c,149,FP,"home is loop-scoped (declared inside the for-loop body) and out of scope at line 149, the function's final return well after the loop",delta_mem31_task420,high
+MEM31-C,curl,src/tool_operate.c,1146,FP,"win32_stdin_read_thread returns curl_socket_t (a socket handle/status), not a heap pointer; 'f' misattributed as an allocation",delta_mem31_task420,high
+MEM31-C,curl,src/tool_operate.c,2089,FP,"'env' (curl_getenv) is freed via curl_free(env) at line 2092, unconditionally right after use",delta_mem31_task420,high
+MEM31-C,curl,src/tool_operhlp.c,97,FP,"'uh' (curl_url()) is freed via curl_url_cleanup(uh) at the 'fail:' label (line 166), which every goto fail in this function reaches, including this one",delta_mem31_task420,high
+MEM31-C,curl,src/tool_operhlp.c,102,FP,"uh freed via curl_url_cleanup at the fail: label (166), reached by this goto",delta_mem31_task420,high
+MEM31-C,curl,src/tool_operhlp.c,149,FP,"uh freed via curl_url_cleanup at the fail: label (166), reached by this goto",delta_mem31_task420,high
+MEM31-C,curl,src/tool_operhlp.c,154,FP,"uh freed via curl_url_cleanup at the fail: label (166), reached by this goto",delta_mem31_task420,high
+MEM31-C,curl,src/tool_ssls.c,92,FP,curlx_base64_decode returns CURLcode; 'result' status-typed. Real alloc 'shmac' is freed via tool_safefree at the top of every loop iteration (line 82) and via curlx_free at the 'out:' label (line 128),delta_mem31_task420,high
+MEM31-C,curl,src/tool_urlglob.c,51,FP,"'pat->c.set.elem[0]' (curlx_memdup0) is a struct-field write into the persistent glob->pattern array, owned by the URLGlob struct, not a stack-local leak",delta_mem31_task420,high
+MEM31-C,curl,src/tool_urlglob.c,59,FP,"pat->c.set.elem[0] is a struct field, ownership held by the glob struct; line 59 is the function's normal success return after assignment",delta_mem31_task420,high
+MEM31-C,curl,src/tool_urlglob.c,456,FP,glob_fixed returns CURLcode (tool_urlglob.c:39); 'result' status-typed local misattributed as a pointer allocation,delta_mem31_task420,high

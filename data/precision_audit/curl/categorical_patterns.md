@@ -173,7 +173,63 @@ Root causes, in order of prevalence:
   output)` calls `curlx_free(ctxt)` internally (`lib/hmac.c:123`) — a
   same-named `_init`/`_final` pair where the "closing" call owns the
   free, analogous to the existing `macro_nulls_param_indices` class but at
-  function-call granularity rather than macro. `lib/hmac.c:150`.
+  function-call granularity rather than macro. `lib/hmac.c:150`. **Same
+  pattern also confirmed for `Curl_MD5_init`/`Curl_MD5_final`**
+  (`lib/md5.c:563-606`, `Curl_MD5_final` frees both `ctxt->md5_hashctx`
+  and `ctxt` at lines 601-602) — `lib/vauth/cram.c:59`,
+  `lib/vauth/digest.c:388/402/425/443` (task 420 batch 3).
+
+Batch 3 (`delta_mem31_b3.json`, 148 findings across 31 files spanning
+`lib/vauth`, `lib/vquic`, `lib/vssh`, `lib/vtls`, and `src/tool_*.c`)
+adjudicated **100% FP (148/148)** — MEM31-C's curl precision remains 0%
+across all three delta batches (146+150+148 = 444 findings, 0 TP). No new
+root-cause *categories*, but several notable extensions/variants of the
+existing ones:
+
+- **Status-typed local, broader naming beyond `result`/`res`/`error`/`rc`**:
+  this batch shows the same CURLcode-misattribution class hitting locals
+  named `decode_result` (`size_t`, `lib/vtls/rustls.c:955` — assigned
+  directly from a `CURLcode`-returning call with an implicit narrowing
+  conversion, itself a real but separate code-quality issue sqc does not
+  flag), `retval` (`size_t`, `src/tool_cb_wrt.c:327`, from
+  `win_console()`), `sc` (`SANITIZEcode` enum, `src/tool_doswin.c:507`,
+  from `rename_if_reserved_dos()`), `f` (`curl_socket_t`,
+  `src/tool_operate.c:1146`, from `win32_stdin_read_thread()`), and `r`
+  (`CURLcode`, `lib/vtls/vtls_scache.c:1107`). Always check the callee's
+  *actual* return type — many are `static` helpers local to the same file,
+  a one-line grep away.
+- **QUIC TLS-session `qtp_clone` ownership-transfer**: `curlx_memdup0`'d
+  into `qtp_clone`, then passed into `Curl_ssl_session_create2(...,
+  qtp_clone, quic_tp_len, &sc_session)` alongside the main session buffer;
+  an explicit source comment ("call took ownership of `sdata` and
+  `qtp_clone`" / "took ownership of `sdata`") confirms transfer. Recurs
+  near-identically in `lib/vtls/gtls.c:728/745`,
+  `lib/vtls/openssl.c:2745`, and `lib/vtls/wolfssl.c:446/470` — check for
+  this comment before trusting a "not freed" verdict on any `*_clone`
+  local feeding a `Curl_ssl_session_create2` call.
+- **ECH (Encrypted Client Hello) base64-decode-then-goto-cleanup**: both
+  `ossl_setup_ech()` (`lib/vtls/openssl.c:3480-3604`) and its rustls
+  analog (`lib/vtls/rustls.c:900-1000`) base64-decode an ECHConfig into a
+  local (`ech_config`), which is freed either inline right after use or
+  at a shared `cleanup:`/end-of-branch site — but the function has many
+  unrelated `#ifdef`-gated return statements downstream for other ECH
+  failure modes (GREASE, DNS HTTPS RR, outer-name, proto-version) that
+  sqc also flags as leaking the decode. None of them are on a path where
+  the decoded buffer is still live and unfreed.
+- **`gnutls_datum_t` struct-by-value "allocation"**: `load_file()` in
+  `lib/vtls/gtls.c:196` returns a `gnutls_datum_t` (a stack struct, not a
+  pointer) whose internal buffer is released via `unload_file()`
+  immediately after use (`gtls.c:1784-1788`); sqc treats the struct
+  variable itself (`issuerp`) as a leaked allocation at every later
+  `goto`/return in the enclosing (large, ~250-line) function, well outside
+  `issuerp`'s actual block scope (`gtls.c:1793/1821/1832`).
+- **Alias-variable misattribution reconfirmed on a second file**: same
+  shape as the `lib/curlx/fopen.c` class but in `src/tool_cb_hdr.c`'s
+  `parse_filename()` — `p` is a plain in-place cursor into the real
+  allocation `copy` (`curlx_memdup0` at line 156); `copy` is properly
+  freed on every early return via `tool_safefree(copy)` or returned to
+  the caller at the end. sqc names `p` in the message but `p` never holds
+  a distinct allocation.
 
 ## Output format (per subagent)
 
