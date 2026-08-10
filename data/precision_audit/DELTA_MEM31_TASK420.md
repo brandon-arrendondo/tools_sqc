@@ -28,14 +28,33 @@ This is larger than task 420's original ~2,244 estimate (written when only
 hostap's skew had been sampled); the full delta across all six oracle
 projects is now measured at 4,026.
 
+## Scope caveat (found during hostap b3/b4 regeneration)
+
+The `realworld-unlabeled` source query pulls from the standing benchmark run,
+which scans hostap's **whole repo root** with no `--exclude` (paper
+\S\ref{sec:sloc-scope} / `tab:eval-scope` notes this same gap). The initial
+batch generation therefore included findings from `tests/`, `wlantest/`,
+`radius_example/`, and `wpaspy/` — directories the hostap oracle's own
+evaluated scope (`data/precision_audit/hostap/README.md`) explicitly
+excludes. `delta_mem31_b3.json`/`b4.json` were regenerated to drop these 42
+out-of-scope findings before adjudication; `delta_mem31_b1.json` (already
+adjudicated) slipped in exactly one (`radius_example/radius_example.c:...`,
+negligible, not worth unwinding). **Before adjudicating curl/sqlite/
+mosquitto/lua/raylib batches, check their batch file lists against each
+project's `tab:eval-scope` exclusion criteria in the paper and drop
+out-of-scope files first** — same class of contamination is possible there
+(curl's 14 Win/macOS files, mosquitto's deps/test/plugins, sqlite's
+test/tooling/WASM/JNI bindings, lua's `ltests.*`).
+
 ## Status
 
-**Not started.** Batches only, generated 2026-08-09. No findings have been
-adjudicated yet — do not treat `bench ground-truth` MEM31-C rows as covering
-these. Next step per project: adjudicate each `delta_mem31_b*.json` batch
-(read the actual source at the pinned commit, judge TP/FP per the file's
-existing `categorical_patterns.md` conventions where one exists), write
-`results/delta_mem31_bN.result.json` or an `import_delta_mem31.csv`, then
-`bench realworld-import-labels --run 145 --source delta_mem31_task420
-<csv>`. Prioritize hostap first (smallest, and the case that originally
-surfaced this task), then curl/sqlite/mosquitto by volume.
+**In progress.** hostap batches 1-2 adjudicated and imported (task 420
+commits); batches 3-4 regenerated to fix the scope contamination above, not
+yet adjudicated. curl/sqlite/mosquitto/lua/raylib batches generated but
+unreviewed for scope contamination and not yet adjudicated — do not treat
+`bench ground-truth` MEM31-C rows for those projects as covering the full
+delta yet. Next step per project: adjudicate each `delta_mem31_b*.json`
+batch (read the actual source at the pinned commit, judge TP/FP per the
+file's existing `categorical_patterns.md` conventions where one exists),
+write an `import_delta_mem31_bN.csv`, then `bench realworld-import-labels
+--run 145 --source delta_mem31_task420 <csv>`.
