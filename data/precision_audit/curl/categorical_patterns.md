@@ -86,7 +86,32 @@ plus FN read-through of every file for bugs sqc missed.
 
 Task 420 delta batch (`delta_mem31_b1.json`, 146 findings across 26 `lib/*.c`
 files) adjudicated **100% FP (146/146)**. No TPs, no confirmed new FNs found
-incidentally. Root causes, in order of prevalence:
+incidentally.
+
+Batch 2 (`delta_mem31_b2.json`, 150 findings across 20 `lib/*.c` files, incl.
+`ldap.c` 38 and `socks_gssapi.c` 40) also adjudicated **100% FP (150/150)**.
+Same root causes as b1 dominate (status-typed local ~55%, struct-field/
+container ownership-transfer ~30%), plus one **new** class:
+
+- **Stale-taint-after-unconditional-free, propagated to every later return**:
+  the flagged pointer/buffer (`service.value`/`gss_send_token.value` in
+  `socks_gssapi.c:159/388/395`, `filename` in `tftp.c:697/705`) is freed via a
+  single straight-line `Curl_safefree()`/`curlx_free()` call, then the
+  function has many subsequent unrelated `if(...) return ERR;` branches
+  (auth/negotiation error paths, unrelated `switch` cases). sqc keeps
+  reporting the *already-freed* variable as leaked at every one of those
+  downstream returns instead of clearing the "allocated, not yet freed"
+  state once the unconditional free executes. Distinct from the b1
+  mutually-exclusive-branch class: here the free and every flagged return are
+  on the **same straight-line path**, not divergent branches. Hits:
+  `socks_gssapi.c` (all 40, both `service.value` and `gss_send_token.value`),
+  `socks_sspi.c:499/517` (same shape via CURLcode status locals), `tftp.c`
+  (all 3), `telnet.c` (both, though there `result` is also just CURLcode),
+  `setopt.c` (17 of 19 `return Curl_setstropt(...)` lines that never even
+  touch the flagged `result` variable — same underlying over-broad
+  function-wide taint span).
+
+Root causes, in order of prevalence:
 
 - **CURLcode/int status-typed local misattributed as a pointer allocation**
   (by far the dominant class, ~60% of findings): a local named `result`,
