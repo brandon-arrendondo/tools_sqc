@@ -1,4 +1,4 @@
-# MEM31-C delta-adjudication (task 420) — scaffolding only, NOT adjudicated
+# MEM31-C delta-adjudication (task 420) — COMPLETE
 
 Source: v0.4.176's 21-rule architectural-sweep batch (tasks 397/403-417)
 surfaced a large jump in raw MEM31-C findings, most of it at (file, line)
@@ -86,18 +86,33 @@ of requiring a redo.
 
 ## Status
 
-**In progress.** hostap (486 findings, all 4 batches, 10 TP / 476 FP) and
-curl (447 findings, all 4 batches, **0 TP / 447 FP — 0% precision**) done
-and imported (task 420 commits). curl's delta is a clean sweep of the
-enum/status-typed-local misfire (task 425) plus several codebase-specific
-ownership-transfer/free-pairing/alias FP classes now documented in
-`data/precision_audit/curl/categorical_patterns.md`; no new bugs found.
-sqlite/mosquitto/lua/raylib batches are correctly scoped (see table above)
-but not yet adjudicated — do not treat `bench ground-truth` MEM31-C rows
-for those projects as covering the delta yet. Next step per project:
-adjudicate each `delta_mem31_b*.json` batch (read the actual source at the
-pinned commit, judge TP/FP per the file's existing `categorical_patterns.md`
-conventions where one exists; do NOT split into sub-agent "groups" that
-message each other — that stalled hostap batch 3, see its commit), write
-an `import_delta_mem31_bN.csv`, then `bench realworld-import-labels --run
-145 --source delta_mem31_task420 <csv>`.
+**Complete.** All 6 projects adjudicated and imported (14 batches, ~1,478
+findings). Per-project outcome:
+
+| Project   | Findings | TP | FP | Notes |
+|-----------|----------|----|----|-------|
+| hostap    | 486      | 8  | 478 | genuine `hostapd/main.c` `bss_config` leak (3 early-return paths skip `out:`) + `crypto_wolfssl.c` asymmetric dual-allocation guard |
+| curl      | 447      | 0  | 447 | **0% precision** — clean sweep of the enum/status-typed-local misfire (task 425) plus curl-specific ownership/free-pairing/alias classes |
+| sqlite    | 149      | 0  | 149 | 0% — new borrowed-accessor class found (task 427, `sqlite3_column_blob` misread as an allocation) despite deliberately targeting sqlite's historically-buggy less-fuzzed extension code |
+| mosquitto | 379      | 2  | 377 | genuine `http_api.c` calloc-failure leak + `mosquitto.c` `WinMain` realloc-into-same-var leak (both narrow, OOM-triggered); possible MEM31-C double-free cross-frame scoping bug filed as task 426 |
+| raylib    | 15       | 0  | 15  | global struct field (glfw) + enum-status-type (miniaudio) misfires |
+| lua       | 2        | 0  | 2   | ownership-transfer-via-return-value |
+| **Total** | **1,478**| **10** | **1,468** | **0.7% precision on this delta** |
+
+Follow-up tasks filed from patterns found during this pass:
+- **task 425** — MEM31-C's goto-cleanup heuristic doesn't check that the
+  assigning callee actually returns a pointer (enum/int/u16/bool locals
+  misattributed as allocations); the single largest FP driver across every
+  project (dominant in curl/hostap/sqlite, present in mosquitto/raylib/lua).
+- **task 426** — possible cross-call-frame/recursion double-free tracking
+  bug in MEM31-C, analogous to the CON30-C/POS53-C/STR32-C per-function-
+  scoping fixes (tasks 415-417); found in mosquitto's `subs.c`.
+- **task 427** — MEM31-C doesn't exclude const-qualified/borrowed-accessor
+  return values (e.g. `sqlite3_column_blob`) from its allocation heuristic;
+  31% of the sqlite batch.
+
+Every project's `categorical_patterns.md` (hostap, curl, mosquitto, sqlite —
+lua/raylib were small enough to skip a dedicated file) documents the
+codebase-specific FP classes found, for reuse by any future audit pass on
+these rules/projects. All CSVs live alongside the batch files in each
+project's `data/precision_audit/<project>/import_delta_mem31_b*.csv`.
