@@ -82,6 +82,74 @@ plus FN read-through of every file for bugs sqc missed.
   most of them). Confirm against `~/data-enterprise/curl-main` HEAD to see if
   still-present upstream (upstream-PR candidate).
 
+## MEM31-C
+
+Task 420 delta batch (`delta_mem31_b1.json`, 146 findings across 26 `lib/*.c`
+files) adjudicated **100% FP (146/146)**. No TPs, no confirmed new FNs found
+incidentally. Root causes, in order of prevalence:
+
+- **CURLcode/int status-typed local misattributed as a pointer allocation**
+  (by far the dominant class, ~60% of findings): a local named `result`,
+  `res`, `error`, or `rc` receives the return value of a function whose real
+  name suggests an allocator (`Curl_open`, `Curl_urldecode`,
+  `Curl_dynhds_add`, `Curl_headers_push`, `Curl_shuffle_addr`,
+  `Curl_cf_http_proxy_insert_after`, `http2_cfilter_add/insert_after`,
+  `ftp_parse_url_path`, `doh_probe_run`, `doh2ai`, `Curl_http_req_make2`,
+  `Curl_getaddrinfo_ex`, `Curl_HMAC_init`-lookalikes) but **actually returns
+  `CURLcode`/`int`**, not a pointer. Always check the callee's real declared
+  return type before accepting the finding — grep `^CURLcode <fn>(` /
+  `^int <fn>(` first. Examples: `lib/dict.c:184-262` (`result` vs the real
+  allocation `path`), `lib/http2.c:2873-2943`, `lib/hostip6.c:107-117`
+  (`error` is `int`), `lib/ftp.c:3986-4220`.
+- **Connection-metadata-cache "_get" accessor pattern** (curl-specific,
+  ~15 findings): `Curl_auth_{krb5,gsasl,ntlm,nego}_get(conn, ...)` allocate
+  once and register the struct as connection metadata via
+  `Curl_conn_meta_set(conn, KEY, ptr, xxx_conn_dtor)` (see
+  `lib/vauth/vauth.c:160-224`); the connection owns it and frees it via the
+  registered dtor on teardown. Never a local leak. Hits: `lib/curl_sasl.c`
+  (krb5/gsasl/ntlm, 10 findings), `lib/http.c:3476/3492`,
+  `lib/http_negotiate.c:86/174`.
+- **Struct-field / cache-list ownership transfer via `_append`/`_add`-style
+  APIs**: `Curl_llist_append`, `Curl_slist_append_nodup`,
+  `Curl_bufref_set(..., destructor)`, assignment into a persistent struct
+  field (`ftpc->prevpath`, `outcurl->cookies/asi/hsts`, `req->scheme`) —
+  freed by the owning struct's cleanup/dtor, or by an explicit `curlx_free`
+  on the error branch right next to the allocation. Examples:
+  `lib/altsvc.c:578` (llist), `lib/bufref.c:131` (bufref dtor),
+  `lib/cookie.c:1010/1583`, `lib/easy.c:1001/1038/1047`,
+  `lib/formdata.c` (13 findings — the whole `FormInfo`/`curl_httppost` chain
+  is walked and freed unconditionally at `formdata.c:580-584` regardless of
+  success/failure, and `AddHttpPost`'s `post` is linked into the caller's
+  out-params).
+- **Alias-variable misattribution** (curl-specific, Windows-only
+  `lib/curlx/fopen.c`): sqc names a `const TCHAR *target`/`target_oldpath`
+  local (a plain pointer copy used only for later `CreateFile`/`_wstat`
+  calls) as the allocation site, while the *actual* heap pointer
+  (`filename_t`, `path_w`, `tchar_oldpath`) — declared a few lines earlier —
+  is correctly freed via `curlx_free`/`CURLX_FREE`. Check which variable the
+  allocating call's return value was actually assigned to, not just the name
+  in the message. `lib/curlx/fopen.c:265/292/415/436/449/450/501`.
+- **Mutually-exclusive branch / out-of-scope goto misattribution**: a `goto
+  error`/`return` inside an `if`/`else if` branch that cannot execute on the
+  same path where the flagged variable was assigned (`lib/hostip.c:955/
+  978/981/989`), or a return statement lexically outside the flagged
+  variable's block scope entirely (`lib/http.c:1193-1396` — `u` is scoped to
+  `http.c:1140-1172` and unconditionally `curl_url_cleanup`'d at line 1165,
+  but flagged again at returns 20-200 lines later where `u` isn't even in
+  scope).
+- **`Curl_dnscache_mk_entry`/`Curl_resolv_unlink` cleanup handshake**:
+  `Curl_dnscache_mk_entry(data, &addr, ...)` always nulls/frees `*paddr`
+  internally (success or failure, `hostip.c:601-606`); its own return value
+  (`dns`) is either transferred to the caller via an out-param or released
+  via `Curl_resolv_unlink(data, &dns)` on the error path. Do not flag `addr`
+  or `dns` as leaked past this call without checking both halves of that
+  contract (`lib/hostip.c:942-1011`, `lib/doh.c:1251-1289`).
+- **Free-pairing API frees its own input pointer**: `Curl_HMAC_final(ctxt,
+  output)` calls `curlx_free(ctxt)` internally (`lib/hmac.c:123`) — a
+  same-named `_init`/`_final` pair where the "closing" call owns the
+  free, analogous to the existing `macro_nulls_param_indices` class but at
+  function-call granularity rather than macro. `lib/hmac.c:150`.
+
 ## Output format (per subagent)
 
 Return a JSON array; one object per finding:
