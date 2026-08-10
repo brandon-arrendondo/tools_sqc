@@ -73,3 +73,44 @@ lib/srv_mosq.c:46 `ares_parse_srv_reply`) — those are at different lines/funct
 by this batch; lib/srv_mosq.c *is* in this batch but the flagged lines (85/93/107/115) are in an
 unrelated function (`mosquitto_connect_srv`) from the confirmed bug's location (`srv_callback`,
 line 46).
+
+Batch `delta_mem31_b2` (149 findings, task 420, `src/*` broker daemon incl. persist_read*/
+persist_write_v5): 147 FP / 2 TP. All 8 batch-1 classes recurred (int-status misattribution was
+by far the largest single driver — `rc`/`res`/`rc2` from `property__read_all`,
+`packet__read_binary`, `db__message_insert_incoming`, `alias__add_r2l`, `listeners__add_local`,
+`net__socket_listen_unix`, `password_file__parse`, `persist__read_string_len`,
+`persist__chunk_*_read_v56` all misattributed as allocations). Two new classes:
+
+- **module-static global reallocated/allocated, mistaken for an abandoned local.** The
+  malloc/calloc/realloc target is a file-scope `static` that outlives the function and is freed
+  by a dedicated `*__cleanup()` at broker shutdown, not by the allocating function. Examples:
+  src/keepalive.c:86/101 (`keepalive_list`, freed in `keepalive__cleanup` src/keepalive.c:114),
+  src/mux_poll.c:71/81 (`pollfds`, freed in `mux_poll__cleanup` src/mux_poll.c:256),
+  src/listeners.c:89/97/106/135 (`g_listensock`, realloc'd in place, freed at shutdown).
+
+- **allocation stored into a persistent config-array element or struct field, not a plain
+  local.** `listeners[db.config->listener_count].security_options`/`->auto_id_prefix`/`.host`
+  (src/listeners.c:163-190) and `context->username` (src/net.c:358/366, freed in
+  `context__cleanup` src/context.c:178) are freed correctly on every error branch and, on
+  success, live for the lifetime of the owning long-lived struct — same ownership-transfer
+  family as batch 1's queue/list/hash class but via array-index/struct-field assignment instead
+  of an explicit `DL_APPEND`/`HASH_ADD`.
+
+- **same-named local from a different function/scope misattributed (persist_write_v5.c:203).**
+  Two sibling functions each declare a block-scoped `prop_packet` inside an `if`; an error label
+  in the *second* function is only reachable via paths where that function's own `prop_packet`
+  is out of scope or already freed, but the finding reads as if it were the same variable as the
+  first function's differently-scoped copy of the same name.
+
+Two genuine, if narrow, TPs confirmed:
+
+- **src/http_api.c:100** — `http__canonical_filename()` mallocs `filename` (line 84) and frees it
+  on every other error branch (WIN32 line 104 / POSIX line 112) before their respective returns,
+  but the `filename_canonical = mosquitto_calloc(1, PATH_MAX)` failure branch (lines 98-101)
+  returns `NULL` without freeing `filename` first. Reachable only on a calloc/OOM failure, but a
+  real, previously-undetected leak.
+- **src/mosquitto.c:600 (WinMain, WIN32-only)** — `argv = mosquitto_realloc(argv, ...)` (line 605)
+  reassigns the only reference to `argv` in place; if realloc fails, the prior heap block becomes
+  unreachable and the function returns `MOSQ_ERR_NOMEM` (line 608) without freeing it — the
+  classic "realloc into the same variable" anti-pattern. Windows-only and OOM-triggered, so very
+  narrow, but a genuine defect at the flagged site.
