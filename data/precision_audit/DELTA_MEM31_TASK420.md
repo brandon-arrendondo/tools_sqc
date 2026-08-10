@@ -14,51 +14,65 @@ split for oversized files) with the same schema as the existing
 
 ## Scope
 
-| Project   | Unlabeled MEM31-C findings | Files | Batches |
-|-----------|----------------------------|-------|---------|
-| hostap    | 528                         | 69    | 4 (`delta_mem31_b1..4.json`) |
-| mosquitto | 1,421                       | 189   | 11 (`delta_mem31_b1..11.json`) |
-| sqlite    | 1,264                       | 92    | 9 (`delta_mem31_b1..9.json`) |
-| curl      | 796                         | 145   | 6 (`delta_mem31_b1..6.json`) |
-| raylib    | 15                          | 3     | 1 (`delta_mem31_b1.json`) |
-| lua       | 2                           | 1     | 1 (`delta_mem31_b1.json`) |
-| **Total** | **4,026**                   | 499   | **32** |
+Raw unlabeled counts pulled via `realworld-unlabeled` (whole-repo scan)
+vs. the in-scope counts actually batched, after applying each project's
+own evaluated-scope exclusions (see caveat below):
 
-This is larger than task 420's original ~2,244 estimate (written when only
-hostap's skew had been sampled); the full delta across all six oracle
-projects is now measured at 4,026.
+| Project   | Raw unlabeled | Dropped (out-of-scope) | In-scope batched | Batches |
+|-----------|---------------|-------------------------|-------------------|---------|
+| hostap    | 528           | 42 (tests/wlantest/radius_example/wpaspy) | 486 | 4 (`delta_mem31_b1..4.json`) — **done** |
+| curl      | 796           | 349 (tests/docs/projects/OS400 + 14 WIN_MAC) | 447 | 4 (`delta_mem31_b1..4.json`) |
+| sqlite    | 1,264         | 503 (tool/test/autosetup/mptest + src/test*.c + ext/jni,wasm) | 761 | 7 (`delta_mem31_b1..7.json`) |
+| mosquitto | 1,421         | 1,042 (test/plugins/apps/client/libcommon/fuzzing/examples) | 379 | 3 (`delta_mem31_b1..3.json`) |
+| raylib    | 15            | 0 (all 3 files are core/platform-backend, in scope) | 15 | 1 (`delta_mem31_b1.json`) |
+| lua       | 2             | 0 (lmem.c is core interpreter source) | 2 | 1 (`delta_mem31_b1.json`) |
+| **Total** | **4,026**     | **1,936**                | **2,090**         | **20** |
 
-## Scope caveat (found during hostap b3/b4 regeneration; recurred on curl)
+The originally-estimated ~2,244 (task 420) and the first-pass 4,026 raw
+count both overstated the real scope: **1,936 of 4,026 (48%) were findings
+in directories the corresponding project's own oracle already excludes**
+(test harnesses, vendored deps, docs/examples, non-Linux build configs,
+language bindings). The true delta-adjudication workload is ~2,090
+findings, not 4,026.
 
-The `realworld-unlabeled` source query pulls from the standing benchmark run,
-which scans whole repo roots with no `--exclude` (paper \S\ref{sec:sloc-scope}
-/ `tab:eval-scope` notes this same gap for several projects). hostap's
-initial batch generation included findings from `tests/`, `wlantest/`,
-`radius_example/`, and `wpaspy/` — excluded by the hostap oracle's own
-evaluated scope (`data/precision_audit/hostap/README.md`); `b3.json`/`b4.json`
-were regenerated to drop 42 out-of-scope findings (`b1.json`, already
-adjudicated, slipped in one negligible `radius_example.c` row, not unwound).
-curl's batches had the same issue: 24 findings from the 14 WIN_MAC files
-(`lib/vtls/schannel*.c/.h`, `lib/vtls/apple.*`, `lib/system_win32.*`,
-`lib/curlx/{winapi,version_win32,multibyte}.*` — see
-`data/precision_audit/curl/README.md`) were in `b4.json` pre-adjudication;
-all 6 curl batches were regenerated from scratch to drop them before any
-curl adjudication started, so no re-work was needed there. **Before
-adjudicating sqlite/mosquitto/lua/raylib batches, check their batch file
-lists against each project's `tab:eval-scope` exclusion criteria in the
-paper and drop out-of-scope files first**: sqlite's test/tooling/WASM/JNI
-bindings, mosquitto's deps/test/plugins, lua's `ltests.*`.
+## Scope caveat — check exclusions BEFORE batching, not after
+
+The `realworld-unlabeled` source query pulls from the standing benchmark
+run, which scans whole repo roots with no `--exclude` for several projects
+(paper \S\ref{sec:sloc-scope} / `tab:eval-scope` notes this same gap).
+Every project's initial batch generation here was contaminated with
+out-of-scope findings until caught and fixed:
+- **hostap**: `tests/`, `wlantest/`, `radius_example/`, `wpaspy/` (42
+  findings) — caught only after b1/b2 were already adjudicated; b1 has one
+  negligible leftover `radius_example.c` row, not worth unwinding.
+- **curl**: not just the 14 WIN_MAC files (24 findings) but also
+  `tests/`, `docs/`, `projects/OS400/*` (349 findings total) — the first
+  fix only caught WIN_MAC; caught the rest on a second pass, before any
+  curl adjudication started.
+- **sqlite**: `tool/`, `test/`, `autosetup/`, `mptest/`, `src/test*.c`,
+  `ext/jni`, `ext/wasm` (503 findings) — caught before adjudication started.
+- **mosquitto**: `test/`, `plugins/`, `apps/`, `client/`, `libcommon/`,
+  `fuzzing/`, `examples/` (1,042 findings — 73% of the raw count!) —
+  caught before adjudication started.
+- **lua, raylib**: checked, no contamination (both are small enough that
+  every finding's file was verified against the project's scope by hand).
+
+**Lesson for any future delta batch**: derive the in-scope file predicate
+directly from the project's `README.md`/paper `tab:eval-scope` prefix list
+*before* running `realworld-unlabeled`, not after generating batches — this
+would have caught mosquitto's 73% contamination on the first pass instead
+of requiring a redo.
 
 ## Status
 
-**In progress.** hostap (all 4 batches, 528 findings) adjudicated and
-imported — done (task 420 commits). curl batches regenerated to drop
-WIN_MAC contamination, not yet adjudicated. sqlite/mosquitto/lua/raylib
-batches generated but unreviewed for scope contamination and not yet
-adjudicated — do not treat `bench ground-truth` MEM31-C rows for those
-projects as covering the full delta yet. Next step per project: adjudicate
-each `delta_mem31_b*.json` batch (read the actual source at the pinned
-commit, judge TP/FP per the file's existing `categorical_patterns.md`
-conventions where one exists), write an `import_delta_mem31_bN.csv`, then
-`bench realworld-import-labels --run 145 --source delta_mem31_task420
-<csv>`.
+**In progress.** hostap (486 findings, all 4 batches) adjudicated and
+imported — done (task 420 commits). curl/sqlite/mosquitto/lua/raylib
+batches are now correctly scoped (see table above) but not yet adjudicated
+— do not treat `bench ground-truth` MEM31-C rows for those projects as
+covering the delta yet. Next step per project: adjudicate each
+`delta_mem31_b*.json` batch (read the actual source at the pinned commit,
+judge TP/FP per the file's existing `categorical_patterns.md` conventions
+where one exists; do NOT split into sub-agent "groups" that message each
+other — that stalled hostap batch 3, see its commit), write an
+`import_delta_mem31_bN.csv`, then `bench realworld-import-labels --run 145
+--source delta_mem31_task420 <csv>`.
