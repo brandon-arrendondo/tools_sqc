@@ -1,0 +1,4 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,curl,src/var.c,167,FP,"result is declared 'CURLcode result' in this function's scope, not a pointer -- the status-typed-local misfire (categorical_patterns.md); the real allocation is 'enc' (curlx_base64_decode's out-param), freed via curlx_free(enc) at line 173 on the success path or never allocated on failure.",delta_mem31_task420,high
+MEM31-C,curl,src/var.c,192,FP,"c (curlx_memdup0 result) is freed on every loop iteration via 'if(alloc) curlx_free(c);' immediately before reassignment (line 188), and again after the loop ends (line 199-200) -- loop-scoped lifetime the rule doesn't track across iterations, not a leak.",delta_mem31_task420,high
+MEM31-C,curl,src/var.c,203,FP,"Same CURLcode 'result' local from line 167's function scope; 'return err;' at line 203 is that function's own return (err, not result) after the loop -- not a leak of a non-pointer status variable.",delta_mem31_task420,high
