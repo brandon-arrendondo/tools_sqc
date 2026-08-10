@@ -65,14 +65,18 @@ of requiring a redo.
 
 ## Status
 
-**In progress.** hostap (486 findings, all 4 batches) adjudicated and
-imported — done (task 420 commits). curl/sqlite/mosquitto/lua/raylib
-batches are now correctly scoped (see table above) but not yet adjudicated
-— do not treat `bench ground-truth` MEM31-C rows for those projects as
-covering the delta yet. Next step per project: adjudicate each
-`delta_mem31_b*.json` batch (read the actual source at the pinned commit,
-judge TP/FP per the file's existing `categorical_patterns.md` conventions
-where one exists; do NOT split into sub-agent "groups" that message each
-other — that stalled hostap batch 3, see its commit), write an
-`import_delta_mem31_bN.csv`, then `bench realworld-import-labels --run 145
---source delta_mem31_task420 <csv>`.
+**In progress.** hostap (486 findings, all 4 batches, 10 TP / 476 FP) and
+curl (447 findings, all 4 batches, **0 TP / 447 FP — 0% precision**) done
+and imported (task 420 commits). curl's delta is a clean sweep of the
+enum/status-typed-local misfire (task 425) plus several codebase-specific
+ownership-transfer/free-pairing/alias FP classes now documented in
+`data/precision_audit/curl/categorical_patterns.md`; no new bugs found.
+sqlite/mosquitto/lua/raylib batches are correctly scoped (see table above)
+but not yet adjudicated — do not treat `bench ground-truth` MEM31-C rows
+for those projects as covering the delta yet. Next step per project:
+adjudicate each `delta_mem31_b*.json` batch (read the actual source at the
+pinned commit, judge TP/FP per the file's existing `categorical_patterns.md`
+conventions where one exists; do NOT split into sub-agent "groups" that
+message each other — that stalled hostap batch 3, see its commit), write
+an `import_delta_mem31_bN.csv`, then `bench realworld-import-labels --run
+145 --source delta_mem31_task420 <csv>`.
