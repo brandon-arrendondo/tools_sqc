@@ -10,7 +10,47 @@ model (after libcrc, sqlite, mosquitto). `~/toolchain/curl` is pinned to commit
 ## Scope (task 158) + file reduction (sqlite lesson)
 
 Per task 158: **`lib/` (libcurl) + `src/` (curl CLI)** — the shipped product.
-Excludes `tests/`, `docs/`, `scripts/`, vendored/build tooling.
+Excludes `tests/`, `docs/`, `scripts/`, vendored/build tooling, and
+**`include/`** (curl's public API headers).
+
+### Why `include/` is excluded (task 431 follow-up, 2026-08-13)
+
+This is *not* a blanket "public headers don't count" policy — mosquitto's
+public header (`lib/mosquitto.h`) lives inside `lib/` and stays in-scope
+there under the exact same "shipped product" rule. curl's `include/` is only
+structurally separate because curl's own repo layout puts its public API in
+a dedicated top-level directory instead of alongside the implementation.
+
+The reason it's excluded here is empirical, not architectural: while
+delta-adjudicating task 431's INT09-C fix, `include/` turned out to produce
+218 findings (measured directly, sqc v0.4.198) dominated by three specific,
+*fixable* analyzer gaps rather than a diverse real-bug surface:
+
+- **API02-C** (task 450) misses the size parameter on multi-line wrapped
+  declarations — e.g. `curl_easy_recv(CURL *curl, void *buffer, size_t
+  buflen,\n  size_t *n)` gets flagged as missing a size arg even though
+  `buflen` is right there on line 2. Also flags genuine single-value
+  out-params (`curl_multi_perform`'s `int *running_handles`) that were never
+  arrays/buffers to begin with.
+- **PRE00-C** (task 451) flags `typecheck-gcc.h`'s deliberate multi-evaluation
+  compile-time type-check macro idiom (`curl_easy_setopt`/`curl_easy_getinfo`)
+  as a double-evaluation bug, even though the repeated references are
+  side-effect-free and only one branch is ever evaluated
+  (`__builtin_choose_expr` semantics).
+- **INT09-C** (task 452) can't resolve `#define`-based bitmask type tags
+  (`CURLINFO_STRING + 1`) in enum-initializer arithmetic — the same
+  const-eval class task 431 fixed for prior-enumerator references, just for
+  object-like macros instead. All 67 of curl's post-431-fix INT09-C findings
+  are this one root cause.
+
+Until those are fixed, adjudicating `include/` would mostly measure "does
+sqc handle these three known gaps," not signal about real bugs. Once fixed,
+revisit bringing `include/` into scope — consistent with mosquitto's
+precedent — since it would no longer be dominated by known junk.
+
+The realworld-benchmark sqc scan config (`mcp_servers/realworld_server.py`)
+mirrors this exclusion (`--exclude include/**`), matching the already-scoped
+cppcheck/clang-tidy `source_dirs` for curl.
 
 Applying the **sqlite scope lesson** (measure precision on what you ship *and
 run* in the benchmark environment): the benchmark host is **Linux**, so files
