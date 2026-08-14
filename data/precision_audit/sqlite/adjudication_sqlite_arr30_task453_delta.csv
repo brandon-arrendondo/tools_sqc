@@ -1,0 +1,9 @@
+rule,idx,project,file,line,verdict,reason
+ARR30-C,0,sqlite,src/os_unix.c,4728,FP,assert()-only bounds check (debug builds); guarded by the preceding assert(ofst>=UNIX_SHM_BASE && ofst+n<=UNIX_SHM_BASE+SQLITE_SHM_NLOCK) in the caller unixShmSystemLock
+ARR30-C,1,sqlite,src/os_unix.c,5375,FP,iMutex loops ofst..ofst+n where ofst/n are validated by the caller contract (mirrored in unixShmSystemLock's assert) to stay within SQLITE_SHM_NLOCK; classic caller-contract-bounded index, not a real OOB
+ARR30-C,2,sqlite,src/os_unix.c,5378,FP,same ofst/n-bounded loop as line 5375 (sqlite3_mutex_enter on aMutex[iMutex])
+ARR30-C,3,sqlite,src/os_unix.c,5441,FP,ii loops ofst..ofst+n on aLock[SQLITE_SHM_NLOCK], same caller-contract bound as the aMutex loops above
+ARR30-C,4,sqlite,src/os_unix.c,5454,FP,same ofst/n-bounded loop as line 5441 (aLock[ii] = -1 in the exclusive-lock branch)
+ARR30-C,5,sqlite,src/os_unix.c,5466,FP,cleanup loop iMutex-- down to ofst, same caller-contract bound as the acquire loop it unwinds
+ARR30-C,6,sqlite,src/printf.c,508,FP,"bufpt aliases either the fixed buf[etBUFSIZE=70] or a heap buffer sized to precision+10(+precision/3) via printfTempBuf, chosen by the precision<etBUFSIZE-10-etBUFSIZE/3 branch a few lines up; flagging a fixed size-70 bound is the known buffer-aliasing FP class (task 150/206) since the large-precision path is properly sized"
+ARR30-C,7,sqlite,src/printf.c,804,FP,same bufpt buf-vs-heap-zExtra aliasing as line 508 -- fixed size-70 assumption doesn't hold on the heap-backed path
