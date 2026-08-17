@@ -1,0 +1,9 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,mosquitto,lib/property_mosq.c,127,FP,str1 is written by packet__read_string(packet,&str1,&slen1) (output parameter) and only read at line 127 after the rc==0 success check passed
+EXP33-C,mosquitto,lib/property_mosq.c,160,FP,str2 is written by packet__read_string(packet,&str2,&slen2) (output parameter) and only read at line 160 after the rc==0 success check passed
+EXP33-C,mosquitto,src/broker_control.c,233,FP,plg_id is declared static mosquitto_plugin_id_t plg_id at file scope; static storage duration objects without an initializer are implicitly zero-initialized in C so it is never truly indeterminate even before broker_control__init runs,exp33_delta_adjudication_0.4.207,high
+EXP33-C,mosquitto,src/conf.c,799,FP,config__copy(&config_reload,config) at line 799 executes only inside the same if(reload) block that already ran config__init_reload(&config_reload) earlier in that block,exp33_delta_adjudication_0.4.207
+EXP33-C,mosquitto,src/logging.c,367,FP,Every case (including default) of the switch(priority) at line 254 sets syslog_priority before the guarded block reaches the syslog() call at line 367 so it is always initialized,exp33_delta_adjudication_0.4.207,high
+EXP33-C,mosquitto,src/net.c,985,FP,old_mask is assigned via old_mask = umask(0007) at line 981 four lines before the umask(old_mask) read at line 985 both under the identical #ifndef WIN32 guard,exp33_delta_adjudication_0.4.207,high
+EXP33-C,mosquitto,src/persist_read.c,495,FP,cfg_chunk is written by persist__chunk_cfg_read_v56 or persist__chunk_cfg_read_v234 (output parameter) and only read at line 495 after the rc==0 success check passed,exp33_delta_adjudication_0.4.207,high
+EXP33-C,mosquitto,src/plugin_init.c,39,FP,FormatMessage(...,(LPTSTR)&buf,0

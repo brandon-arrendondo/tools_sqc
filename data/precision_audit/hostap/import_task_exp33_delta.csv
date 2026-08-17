@@ -1,0 +1,7 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,hostap,hostapd/config_file.c,2013,FP,sizeof(*pw) is an unevaluated operand computed from pw's static pointer type; it does not dereference or read pw's value,exp33_delta_adjudication_0.4.207,high
+EXP33-C,hostap,src/ap/ieee802_11.c,2395,FP,prepare_auth_resp_fils is a static function (forward-declared at line 69 defined at line 2409) not a variable; the call at 2395 is an ordinary function call not a read of an uninitialized static variable,exp33_delta_adjudication_0.4.207,high
+EXP33-C,hostap,src/ap/ieee802_11.c,2665,FP,Same misidentification as line 2395; prepare_auth_resp_fils is a static function being called not a variable being read,exp33_delta_adjudication_0.4.207,high
+EXP33-C,hostap,src/crypto/crypto_openssl.c,1433,FP,sizeof(*ctx) is an unevaluated operand computed from ctx's static pointer type; it does not dereference or read ctx's value,exp33_delta_adjudication_0.4.207,high
+EXP33-C,hostap,src/radius/radius_client.c,1744,FP,claddr6 is written by getsockname(sel_sock,(struct sockaddr*)&claddr6,&claddrlen) at line 1741 (output parameter) and only read at 1744 inside the guarding if(getsockname(...)==0) block
+EXP33-C,hostap,src/rsn_supp/wpa_ft.c,477,FP,rsnxe is only passed (via the ternary rsnxe_len ? rsnxe : NULL) when rsnxe_len is nonzero which only happens after wpa_gen_rsnxe(sm,rsnxe,sizeof(rsnxe)) already wrote rsnxe and set rsnxe_len=res in the same branch

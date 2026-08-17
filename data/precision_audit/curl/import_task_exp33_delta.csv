@@ -1,0 +1,44 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,curl,lib/asyn-ares.c,922,FP,a4.s_addr is set either directly at line 911 or via curlx_inet_pton(&a4) at line 914 before any use; the function returns early on pton failure so a4 is always set by line 922,exp33_delta_adjudication_0.4.207,high
+EXP33-C,curl,lib/curl_addrinfo.c,417,FP,curlx_inet_pton(AF_INET6, dotted, &in6) is the call that writes into in6 (output parameter); this line is the initializing call itself
+EXP33-C,curl,lib/curl_addrinfo.c,433,FP,Same pattern as line 417 in Curl_is_ipaddr; curlx_inet_pton writes to in6 via pointer, it does not read it,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/curl_fopen.c,133,FP,sb is populated by curlx_fstat(fileno(*fh),&sb) inside the same #ifndef _WIN32 block that guards the Android elif branch reading sb.st_mode, so sb is always set on that path
+EXP33-C,curl,lib/curl_ntlm_core.c,319,FP,setup_des_key(keys, DESKEY(ks)) is the call that writes the DES_key_schedule ks (output parameter); it is not a read of ks,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/curl_ntlm_core.c,371,FP,Same pattern as line 319 in Curl_ntlm_core_mk_lm_hash; setup_des_key(pw, DESKEY(ks)) writes ks, it does not read it
+EXP33-C,curl,lib/curlx/inet_ntop.c,157,FP,tmp is a local char array; sizeof(tmp) is an unevaluated operand and (tp - tmp) is pointer arithmetic on the decayed array address, neither reads array contents,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/curlx/timeval.c,83,FP,tsnow.tv_sec is only read inside the if-branch where clock_gettime(...,&tsnow) already returned 0, meaning clock_gettime wrote tsnow via its output pointer before the read
+EXP33-C,curl,lib/curlx/version_win32.c,206,FP,pRtlVerifyVersionInfo is a static function pointer; static storage duration objects without an initializer are implicitly zero-initialized in C, so it is never truly indeterminate,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/file.c,225,FP,__unix_path_semantics is declared extern (defined with static storage duration in another translation unit), not a local uninitialized variable; extern globals are zero-initialized by default absent another definition,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/hostip.c,141,FP,curlx_dyn_init(&out[0], 1024) is the call that initializes the dynbuf out[0]; it is a write via output parameter, not a read
+EXP33-C,curl,lib/hostip.c,791,FP,curlx_inet_pton(AF_INET6, hostname, &in6) is the initializing call for in6 (output parameter)
+EXP33-C,curl,lib/hostip.c,1201,FP,keep_sigact is set at line 1162 on the initial sigsetjmp(...)==0 pass before the alarm/signal handler is armed; the siglongjmp-return path only reaches clean_up after that assignment already ran in the same stack frame,exp33_delta_adjudication_0.4.207,medium
+EXP33-C,curl,lib/http.c,2018,FP,cookiehost is written by copy_custom_value(ptr,&cookiehost) at line 2015 (output parameter) and only read at 2018 after the result==0 success check passed,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/http2.c,1106,FP,scratch[0] is unconditionally null-terminated via scratch[len]='\0' regardless of whether the guarded memcpy ran, so the %s read via curl_msnprintf only reads initialized bytes up to the terminator,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/idn.c,372,FP,decoded is written by Curl_idn_decode(host->name,&decoded) (output parameter) and only read at line 372 after the result==0 success check,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/if2ip.c,114,FP,Line 114 is the plain declaration statement void *addr; itself, not a read; addr is set in both branches of the subsequent if/else before its actual use,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/if2ip.c,115,FP,Line 115 is the plain declaration statement const char *ip; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/if2ip.c,117,FP,Line 117 is the plain declaration statement char ipstr[64]; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/ldap.c,372,FP,Line 372 is (void)ldap_option; inside the !LDAP_OPT_X_TLS branch, a discard idiom that does not observably use the value and is followed only by an error return,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/ldap.c,442,FP,Line 442 is the plain declaration statement char *name; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/mprintf.c,963,FP,output[] is populated by parsefmt(format,output,input
+EXP33-C,curl,lib/openldap.c,730,TP,Curl_sasl_decode_mech only writes *len when a mechanism name in mechtable matches; if no entry matches, the function returns 0 without touching llen, yet openldap.c unconditionally compares bvals[i].bv_len==llen afterward
+EXP33-C,curl,lib/rand.c,118,FP,randseed is a static local; static storage duration variables without an initializer are implicitly zero-initialized in C, so the += read is never on truly indeterminate memory,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/rand.c,156,FP,Same static-storage-duration randseed as line 118; it is zero-initialized by default and is otherwise set on the first !seeded pass before any later read,exp33_delta_adjudication_0.4.207,high
+EXP33-C,curl,lib/rtsp.c,764,FP,Line 764 is the declaration const char *rtp_buf; itself; the only use of rtp_buf at line 776 is always preceded by the assignment at line 775 on that path,exp33_delta_adjudication_0.4.207,high
+EXP33-C,curl,lib/telnet.c,1456,FP,pfd[1].fd is assigned at line 1452, four lines before the pfd[1].fd<0 check at line 1456, in the same else-branch with no intervening path
+EXP33-C,curl,lib/url.c,2022,FP,VERBOSE(envp = proxy_env) at line 1972 assigns envp unconditionally when verbose strings are enabled; when CURL_DISABLE_VERBOSE_STRINGS is set, both this VERBOSE macro and the infof() call at 2022 compile to no-ops that never touch envp,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/version.c,275,FP,outp = &out[0] only computes the address of the array's first element; it does not read out's contents,exp33_delta_adjudication_0.4.207,high
+EXP33-C,curl,lib/vssh/libssh2.c,3420,FP,sock is declared assigned (sock = conn->sock[FIRSTSOCKET]) and used at line 3420 all inside the identical #ifdef CURL_LIBSSH2_DEBUG guard with no path between the assignment and the use that bypasses it,exp33_delta_adjudication_0.4.207,high
+EXP33-C,curl,lib/vtls/mbedtls.c,763,FP,Line 763 is (void)errorbuf; in the !MBEDTLS_FS_IO branch, a discard idiom with no observable use of the value,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/vtls/openssl.c,2160,FP,addr is written by curlx_inet_pton(AF_INET/AF_INET6, peer->hostname, &addr) earlier in the same function (output parameter) and only reached via memcmp after that call succeeded
+EXP33-C,curl,lib/vtls/schannel.c,839,FP,s_win_has_alpn is a static variable; static storage duration variables without an initializer are implicitly zero-initialized in C,exp33_delta_adjudication_0.4.207,high
+EXP33-C,curl,lib/vtls/schannel.c,1987,FP,InitSecBuffer(&outbuf[0], ...) is the call that writes/initializes outbuf[0]; it is not a read of outbuf's contents,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/vtls/schannel_verify.c,177,FP,Line 177 is the plain declaration statement char buffer[WINAPI_ERROR_LEN]; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/vtls/schannel_verify.c,445,FP,curlx_inet_pton(AF_INET, hostname, &ia) is the initializing call for ia (output parameter)
+EXP33-C,curl,lib/vtls/schannel_verify.c,452,FP,curlx_inet_pton(AF_INET6, hostname, &ia6) is the initializing call for ia6 (output parameter)
+EXP33-C,curl,lib/vtls/schannel_verify.c,601,FP,cert_hostname_buff is populated by cert_get_name_string(...,cert_hostname_buff,len
+EXP33-C,curl,lib/vtls/schannel_verify.c,720,FP,Line 720 is the plain declaration statement char buffer[WINAPI_ERROR_LEN]; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,lib/vtls/vtls.c,1212,FP,curlx_inet_pton(AF_INET, hostname, &addr) is the initializing call for addr in get_peer_type (output parameter)
+EXP33-C,curl,src/config2setopts.c,100,FP,Line 100 is the plain declaration statement char buffer[STRERROR_LEN]; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,curl,src/tool_cb_hdr.c,226,FP,sanitized is written by sanitize_file_name(&sanitized,copy,0) (output parameter) and only read at line 226 after the sc (error code) success check passed
+EXP33-C,curl,src/tool_cb_wrt.c,341,FP,rc is set on every path reaching line 341: either via win_console(...,&rc) in the WIN32/tty branch or via rc = fwrite(...) in the else block both immediately before the bytes==rc check,exp33_delta_adjudication_0.4.207

@@ -1,0 +1,22 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,lua,ldblib.c,172,FP,ar is populated by lua_getinfo(L1,options,&ar) at line 168 (output parameter) and only read starting at line 172 after that call succeeded
+EXP33-C,lua,ldblib.c,222,FP,ar is already written by lua_getstack(L1,level,&ar) at line 219 (output parameter) before lua_getlocal(L1
+EXP33-C,lua,ldblib.c,250,FP,ar is already written by lua_getstack(L1,level,&ar) at line 244 (output parameter) before lua_setlocal(L1
+EXP33-C,lua,lobject.c,633,FP,Line 633 is the plain declaration statement char bf[LUA_N2SBUFFSZ]; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,lua,lparser.c,1174,FP,args.k is set to VVOID directly or written via explist/constructor/codestring output-parameter calls in every switch branch that continues past line 1171; the only branch that skips this returns early at line 1169,exp33_delta_adjudication_0.4.207,high
+EXP33-C,lua,lparser.c,1738,FP,explist(ls,&e) is evaluated as an argument to adjust_assign in the same call expression and writes e via its output parameter before adjust_assign's body executes and reads it,exp33_delta_adjudication_0.4.207
+EXP33-C,lua,lparser.c,1893,FP,var is written by buildglobal(ls,varname,&var) at line 1892 (buildglobal's own body starts by writing *var via init_exp) and var.u.ind.keystr is only read at line 1893 after that call returns
+EXP33-C,lua,lparser.c,1911,FP,e is written by explist(ls,&e) at line 1910 (output parameter) in the statement immediately preceding the adjust_assign(ls,nvars
+EXP33-C,lua,lparser.c,1917,FP,buildglobal(ls,varname,&var) at line 1917 is itself the initializing call for var (its first statement is init_exp(var
+EXP33-C,lua,lparser.c,1966,FP,buildglobal(ls,fname,&var) at line 1966 is itself the initializing call for var matching the same pattern as lines 1893 and 1917
+EXP33-C,lua,lstrlib.c,605,FP,Line 605 is the plain declaration statement const char *ep; char previous; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,lua,lstrlib.c,644,FP,Line 644 is the plain declaration statement const char *res; itself, not a read,exp33_delta_adjudication_0.4.207
+EXP33-C,lua,lstrlib.c,1190,FP,len is written by lua_tolstring(L,arg,&len) at line 1189 (output parameter) and only read at line 1190 in the immediately following addquoted call
+EXP33-C,lua,lstrlib.c,1365,FP,l is written by luaL_tolstring(L,arg,&l) at line 1361 (output parameter) and only read at line 1365 after that call returns
+EXP33-C,lua,lstrlib.c,1681,FP,len is written by luaL_checklstring(L,arg,&len) at line 1680 (output parameter) and only read at line 1681 in the immediately following argcheck
+EXP33-C,lua,lstrlib.c,1808,FP,f is written by copywithendian((char*)&f,data+pos,sizeof(f)
+EXP33-C,lua,ltable.c,228,FP,getnodekey(cast(lua_State*,NULL),&key
+EXP33-C,lua,ltable.c,998,FP,setsvalue(cast(lua_State*,NULL),&ko
+EXP33-C,lua,ltable.c,1109,FP,setsvalue(cast(lua_State*,NULL),&tk
+EXP33-C,lua,lvm.c,593,FP,i2 is written by luaV_flttointeger(fltvalue(t2),&i2,F2Ieq) as the left operand of the && at line 592-593; short-circuit evaluation guarantees i2 was written before the right operand ivalue(t1)==i2 is evaluated
+EXP33-C,lua,lvm.c,598,FP,i1 is written by luaV_flttointeger(fltvalue(t1),&i1,F2Ieq) as the left operand of the && at line 597-598; short-circuit evaluation guarantees i1 was written before the right operand i1==ivalue(t2) is evaluated
