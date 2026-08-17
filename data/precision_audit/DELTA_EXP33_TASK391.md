@@ -85,6 +85,22 @@ this rule's already-poor prior showings (MSC13-C's delta pass, by
 contrast, landed at 68.6% precision) — EXP33-C at this snapshot is
 overwhelmingly a false-positive-generating rule.
 
+## Adversarial spot-check
+
+Given how lopsided this pass's result is (1 TP in 240 findings), the two
+highest-stakes claims were independently re-verified rather than taken on
+a single subagent's say-so: the lone TP claim was given to 3 independent
+refuters tasked with trying to overturn it to FP, and 21 of the 162
+sqlite FP verdicts (a stratified sample covering every FP category below)
+were given to 3 independent verifiers tasked with trying to overturn them
+to TP. Both directions came back unanimous — 3/3 refuters agree the TP
+survives, 21/21 sampled FPs confirmed. One verifier caught that the
+original adjudicator's reasoning for `src/vdbe.c:3149` was factually
+wrong (it claimed `sqlite3BtreePayloadFetch()` never returns null, which
+is false) even though the verdict itself held for an independently
+re-derived, correct reason — a useful reminder that a right verdict can
+ride on a wrong justification, worth spot-checking rather than assuming.
+
 ## The one true positive
 
 `curl/lib/openldap.c:730` — `Curl_sasl_decode_mech` (in
