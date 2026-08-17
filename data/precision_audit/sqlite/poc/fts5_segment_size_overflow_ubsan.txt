@@ -1,0 +1,4 @@
+$ gcc -O0 -g -fsanitize=undefined -o repro fts5_segment_size_overflow_poc.c
+$ ./repro
+fts5_segment_size_overflow_poc.c:7:12: runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'
+pgnoFirst=0 pgnoLast=2147483647 -> fts5SegmentSize=-2147483648 (INT_MAX=2147483647)
