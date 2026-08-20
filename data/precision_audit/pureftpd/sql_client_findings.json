@@ -1,0 +1,4043 @@
+[
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 7,
+  "message": "Header file 'log_mysql_p.h' has the same first 8 characters (case-insensitive) as 'log_mysql.h'. This may cause ambiguity on systems with limited filename support.",
+  "rule_id": "PRE08-C",
+  "severity": "Medium",
+  "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'log_mysql_p.h' -> unique name)"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 28,
+  "message": "Empty if statement body has no effect.",
+  "rule_id": "MSC12-C",
+  "severity": "Low",
+  "suggestion": "Add code to the if body or remove the empty branch"
+ },
+ {
+  "column": 8,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 54,
+  "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+  "rule_id": "MEM10-C",
+  "severity": "Medium",
+  "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 59,
+  "message": "Mixed string management approaches detected. Static char array at line 251 and dynamic allocation at line 59. Consider adopting a consistent approach.",
+  "rule_id": "STR01-C",
+  "severity": "Low",
+  "suggestion": "Adopt either static string arrays OR dynamic allocation consistently throughout the codebase. Document the chosen approach in coding standards."
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 59,
+  "message": "Return value of 'malloc' assigned to 'to' but not checked for errors: 'malloc(to_len + (size_t) 4U)' - Returns NULL on allocation failure",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 59,
+  "message": "Memory allocation result not cast; assign to 'to' without explicit cast",
+  "rule_id": "MEM02-C",
+  "severity": "Low",
+  "suggestion": "Cast the result: (char *)malloc(...)"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 59,
+  "message": "Return value from malloc() should be checked for errors",
+  "rule_id": "ERR00-C",
+  "severity": "Medium",
+  "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 59,
+  "message": "malloc() argument 1 contains arithmetic that may overflow: 'to_len + (size_t) 4U'",
+  "rule_id": "INT32-C",
+  "severity": "High",
+  "suggestion": "Validate arithmetic operations before passing to allocation functions"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 59,
+  "message": "malloc() called with potentially zero size argument: 'to_len + (size_t) 4U' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+  "rule_id": "MEM04-C",
+  "severity": "Low",
+  "suggestion": "Check that size argument is non-zero before calling malloc()"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 59,
+  "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+  "rule_id": "MEM06-C",
+  "severity": "Medium",
+  "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 63,
+  "message": "Magic number '0xff' appears 4 times. Consider using a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xff };"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 68,
+  "message": "Potentially unsafe array access with variable index 'to_len': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 68,
+  "message": "Subscript operation 'to[to_len]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 68,
+  "message": "Potential null pointer dereference in array access of variable 'to'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'to' is not NULL before array access"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 69,
+  "message": "Potentially unsafe array access with expression 'to_len + 1': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 69,
+  "message": "Subscript operation 'to[to_len + 1]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 70,
+  "message": "Potentially unsafe array access with expression 'to_len + 2': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 70,
+  "message": "Subscript operation 'to[to_len + 2]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 71,
+  "message": "Potentially unsafe array access with expression 'to_len + 3': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 71,
+  "message": "Subscript operation 'to[to_len + 3]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 83,
+  "message": "Potentially unsafe array access with variable index 'to_len': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 83,
+  "message": "Subscript operation 'to[to_len]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 84,
+  "message": "Potentially unsafe array access with expression 'to_len + 1': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 84,
+  "message": "Subscript operation 'to[to_len + 1]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 85,
+  "message": "Potentially unsafe array access with expression 'to_len + 2': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 85,
+  "message": "Subscript operation 'to[to_len + 2]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 86,
+  "message": "Potentially unsafe array access with expression 'to_len + 3': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 86,
+  "message": "Subscript operation 'to[to_len + 3]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 88,
+  "message": "Pointer dereference '*to++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 88,
+  "message": "Increment/decrement operation 'to++' on non-array pointer 'to'",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Use array indexing or ensure pointer refers to an array"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 91,
+  "message": "Potentially unsafe array access with variable index 'escaped_len': Buffer 'to' with dynamic size (to_len + (size_t) 4U) (allocated at line 59)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 91,
+  "message": "Subscript operation 'to[escaped_len]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 93,
+  "message": "Function returns pointer to local variable 'to' with automatic storage duration",
+  "rule_id": "DCL30-C",
+  "severity": "High",
+  "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+ },
+ {
+  "column": 12,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 93,
+  "message": "Returning pointer to local array 'to' which will be destroyed when function returns, creating a dangling pointer.",
+  "rule_id": "ARR00-C",
+  "severity": "Medium",
+  "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 110,
+  "message": "Pointer to const assigned to non-const pointer without cast: *query_pnt = query: '*query_pnt = query'",
+  "rule_id": "EXP40-C",
+  "severity": "Low",
+  "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 118,
+  "message": "Unbounded while loop with pointer increment. Loop increments 'orig_str_scan' without size/length bounds checking.",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+ },
+ {
+  "column": 12,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 121,
+  "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+  "rule_id": "CON43-C",
+  "severity": "High",
+  "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 129,
+  "message": "Passing potentially null pointer 'user' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'user' is not NULL before passing to function"
+ },
+ {
+  "column": 41,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 129,
+  "message": "Do not cast away const qualification: 'user_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 140,
+  "message": "Passing potentially null pointer 'ip' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'ip' is not NULL before passing to function"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 140,
+  "message": "Do not cast away const qualification: 'ip_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 151,
+  "message": "Passing potentially null pointer 'port' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'port' is not NULL before passing to function"
+ },
+ {
+  "column": 41,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 151,
+  "message": "Do not cast away const qualification: 'port_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 162,
+  "message": "Passing potentially null pointer 'peer_ip' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'peer_ip' is not NULL before passing to function"
+ },
+ {
+  "column": 44,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 162,
+  "message": "Do not cast away const qualification: 'peer_ip_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 173,
+  "message": "Passing potentially null pointer 'decimal_ip' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'decimal_ip' is not NULL before passing to function"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 173,
+  "message": "Do not cast away const qualification: 'decimal_ip_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 17,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 181,
+  "message": "Pointer dereference '*query_pnt++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 190,
+  "message": "Pointer dereference '*query_pnt++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 24,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 190,
+  "message": "Pointer dereference '*orig_str_scan' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+ },
+ {
+  "column": 24,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 190,
+  "message": "Pointer dereference '*orig_str_scan' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 194,
+  "message": "Pointer dereference '*query_pnt' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 196,
+  "message": "Function returns pointer to local variable 'query' with automatic storage duration",
+  "rule_id": "DCL30-C",
+  "severity": "High",
+  "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+ },
+ {
+  "column": 32,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 245,
+  "message": "Parameter 'const char * const account' appears to represent a size but doesn't use size_t",
+  "rule_id": "INT01-C",
+  "severity": "Medium",
+  "suggestion": "Use size_t for parameters representing object sizes"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 251,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 55,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 265,
+  "message": "Variable 'query' is used uninitialized",
+  "rule_id": "EXP33-C",
+  "severity": "High",
+  "suggestion": "Initialize 'query' before use, e.g., at its declaration"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 283,
+  "message": "Side effect in right operand of '||' operator may not execute due to short-circuit evaluation: '(length = (size_t) lengths[0] + (size_t) 1U) <= (size_t) 1U'",
+  "rule_id": "EXP02-C",
+  "severity": "Low",
+  "suggestion": "Move side effects to separate statements before the logical expression"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 286,
+  "message": "Return value of 'malloc' assigned to 'answer' but not checked for errors: 'malloc(length)' - Returns NULL on allocation failure",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 286,
+  "message": "Memory allocation result not cast; assign to 'answer' without explicit cast",
+  "rule_id": "MEM02-C",
+  "severity": "Low",
+  "suggestion": "Cast the result: (char *)malloc(...)"
+ },
+ {
+  "column": 19,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 286,
+  "message": "Return value from malloc() should be checked for errors",
+  "rule_id": "ERR00-C",
+  "severity": "Medium",
+  "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+ },
+ {
+  "column": 19,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 286,
+  "message": "malloc() called with potentially zero size argument: 'length' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+  "rule_id": "MEM04-C",
+  "severity": "Low",
+  "suggestion": "Check that size argument is non-zero before calling malloc()"
+ },
+ {
+  "column": 19,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 286,
+  "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+  "rule_id": "MEM06-C",
+  "severity": "Medium",
+  "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 289,
+  "message": "Use of strncpy() 'strncpy(answer, row[0], length - (size_t) 1U)' does not guarantee null-termination, violating type safety",
+  "rule_id": "API07-C",
+  "severity": "Medium",
+  "suggestion": "Use strncpy_s() (C11 Annex K) or manually null-terminate the destination buffer"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 289,
+  "message": "Call to strncpy may inadvertently truncate string without proper length validation",
+  "rule_id": "STR03-C",
+  "severity": "Medium",
+  "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 290,
+  "message": "Subscript operation 'answer[length - (size_t) 1U]' on non-array pointer 'answer'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 290,
+  "message": "Potential null pointer dereference in array access of variable 'answer'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'answer' is not NULL before array access"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 302,
+  "message": "Function returns pointer to local variable 'answer' with automatic storage duration",
+  "rule_id": "DCL30-C",
+  "severity": "High",
+  "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+ },
+ {
+  "column": 12,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 302,
+  "message": "Returning pointer to local array 'answer' which will be destroyed when function returns, creating a dangling pointer.",
+  "rule_id": "ARR00-C",
+  "severity": "Medium",
+  "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 305,
+  "message": "Function 'pw_mysql_check' does not validate pointer parameter 'result' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'result' at the start of the function, e.g., 'if (!result) { return error_code; }'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 305,
+  "message": "Function 'pw_mysql_check' does not validate pointer parameter 'password' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'password' at the start of the function, e.g., 'if (!password) { return error_code; }'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 305,
+  "message": "Function 'pw_mysql_check' does not validate pointer parameter 'sa' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 305,
+  "message": "Function 'pw_mysql_check' does not validate pointer parameter 'peer' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'peer' at the start of the function, e.g., 'if (!peer) { return error_code; }'"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 306,
+  "message": "Parameter 'const char *account' appears to represent a size but doesn't use size_t",
+  "rule_id": "INT01-C",
+  "severity": "Medium",
+  "suggestion": "Use size_t for parameters representing object sizes"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 333,
+  "message": "Multiple variables (4) declared in single declaration: int crypto_argon2 = 0, crypto_scrypt = 0, crypto_crypt = 0,",
+  "rule_id": "DCL04-C",
+  "severity": "Low",
+  "suggestion": "Declare each variable on its own line with an explanatory comment"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 335,
+  "message": "Value assigned to 'decimal_ip_num' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 336,
+  "message": "Array size '42' should use a symbolic constant instead of magic number.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { ARRAY_SIZE = 42 };"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 337,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 338,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 339,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 345,
+  "message": "Expression contains 2 function calls with potentially unsequenced side effects. Order of evaluation is unspecified.",
+  "rule_id": "EXP10-C",
+  "severity": "Medium",
+  "suggestion": "Separate function calls into distinct statements to ensure defined evaluation order"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 348,
+  "message": "Expression contains 2 function calls with potentially unsequenced side effects. Order of evaluation is unspecified.",
+  "rule_id": "EXP10-C",
+  "severity": "Medium",
+  "suggestion": "Separate function calls into distinct statements to ensure defined evaluation order"
+ },
+ {
+  "column": 6,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 353,
+  "message": "Variable 'decimal_ip' is used uninitialized",
+  "rule_id": "EXP33-C",
+  "severity": "High",
+  "suggestion": "Initialize 'decimal_ip' before use, e.g., at its declaration"
+ },
+ {
+  "column": 8,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 355,
+  "message": "Complex function pointer declaration should use typedef for clarity",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Use typedef to simplify complex function pointer declarations"
+ },
+ {
+  "column": 64,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 357,
+  "message": "Magic number '24' should use a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 24 };"
+ },
+ {
+  "column": 51,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 358,
+  "message": "Magic number '16' should use a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 16 };"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 359,
+  "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+  "rule_id": "EXP14-C",
+  "severity": "Medium",
+  "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 360,
+  "message": "Unsafe macro 'SNCHECK' called with side effect in argument 2: 'snprintf(decimal_ip, sizeof decimal_ip,\n                             \"%lu\", decimal_ip_num)'",
+  "rule_id": "PRE31-C",
+  "severity": "High",
+  "suggestion": "Move side effects outside macro call or use inline function"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 360,
+  "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+  "rule_id": "STR03-C",
+  "severity": "Medium",
+  "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+ },
+ {
+  "column": 30,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 360,
+  "message": "Do not cast away const qualification: 'decimal_ip'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 394,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 52,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 394,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 395,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 395,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 396,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 400,
+  "message": "Memory allocated with 'pw_mysql_getquery' for variable 'uid' is not freed",
+  "rule_id": "MEM31-C",
+  "severity": "High",
+  "suggestion": "Add 'free(uid)' before the variable goes out of scope"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 401,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 50,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 401,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 402,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 402,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 403,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 409,
+  "message": "Memory allocated with 'pw_mysql_getquery' for variable 'gid' is not freed",
+  "rule_id": "MEM31-C",
+  "severity": "High",
+  "suggestion": "Add 'free(gid)' before the variable goes out of scope"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 410,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 50,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 410,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 411,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 411,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 412,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 418,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 51,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 418,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 419,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 48,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 419,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 420,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 455,
+  "message": "Value assigned to 'crypted' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 456,
+  "message": "Passing null pointer 'spwd' to 'pure_strcmp' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'spwd' is not NULL before passing to 'pure_strcmp'"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 462,
+  "message": "Passing null pointer 'spwd' to 'pure_strcmp' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'spwd' is not NULL before passing to 'pure_strcmp'"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 468,
+  "message": "Unreachable code after unconditional 'goto'.",
+  "rule_id": "MSC07-C",
+  "severity": "Low",
+  "suggestion": "Remove the unreachable code or restructure the control flow"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 473,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 473,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 45,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 477,
+  "message": "Potential null pointer dereference in member access of variable 'pw'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'pw' is not NULL before member access"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 482,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 482,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 53,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 486,
+  "message": "Potential null pointer dereference in member access of variable 'gr'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'gr' is not NULL before member access"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 495,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 55,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 495,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 496,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 52,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 496,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 497,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 498,
+  "message": "Return value of 'strtoull' assigned to 'q' but not checked for errors: 'strtoull(sqta_fs, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 498,
+  "message": "strtoull() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoull() and check errno afterward to detect errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 498,
+  "message": "In-band function 'strtoull' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoull(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 506,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 55,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 506,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 507,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 52,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 507,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 508,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 509,
+  "message": "Return value of 'strtoull' assigned to 'q' but not checked for errors: 'strtoull(sqta_sz, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 509,
+  "message": "strtoull() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoull() and check errno afterward to detect errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 509,
+  "message": "In-band function 'strtoull' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoull(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 512,
+  "message": "Unsigned integer multiplication 'q * (1024UL * 1024UL)' may wrap without overflow checking",
+  "rule_id": "INT30-C",
+  "severity": "High",
+  "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+ },
+ {
+  "column": 44,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 512,
+  "message": "Magic number '1024UL' appears 4 times. Consider using a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 1024UL };"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 519,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 56,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 519,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 520,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 53,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 520,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 521,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 28,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 522,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned int) strtoul(ratio_ul, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 522,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 522,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 530,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 56,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 530,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 531,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 53,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 531,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 532,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 28,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 533,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned int) strtoul(ratio_dl, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 533,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 533,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 543,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 60,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 543,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 544,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 57,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 544,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 545,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 29,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 546,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned long) strtoul(bandwidth_ul, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 546,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 546,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 549,
+  "message": "Unsigned integer multiplication 'q * 1024UL' may wrap without overflow checking",
+  "rule_id": "INT30-C",
+  "severity": "High",
+  "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 554,
+  "message": "Passing null pointer 'escaped_account' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 60,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 554,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 555,
+  "message": "Passing null pointer 'escaped_port' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 57,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 555,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 556,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_mysql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_mysql_getquery'"
+ },
+ {
+  "column": 29,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 557,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned long) strtoul(bandwidth_dl, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 557,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 557,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 560,
+  "message": "Unsigned integer multiplication 'q * 1024UL' may wrap without overflow checking",
+  "rule_id": "INT30-C",
+  "severity": "High",
+  "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 574,
+  "message": "Do not cast away const qualification: '(void *) spwd'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 576,
+  "message": "Do not cast away const qualification: '(void *) uid'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 579,
+  "message": "Do not cast away const qualification: '(void *) gid'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 581,
+  "message": "Do not cast away const qualification: '(void *) dir'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 583,
+  "message": "Do not cast away const qualification: '(void *) sqta_fs'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 584,
+  "message": "Do not cast away const qualification: '(void *) sqta_sz'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 587,
+  "message": "Do not cast away const qualification: '(void *) ratio_ul'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 588,
+  "message": "Do not cast away const qualification: '(void *) ratio_dl'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 591,
+  "message": "Do not cast away const qualification: '(void *) bandwidth_ul'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 592,
+  "message": "Do not cast away const qualification: '(void *) bandwidth_dl'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 604,
+  "message": "Magic number '421' appears 2 times. Consider using a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 421 };"
+ },
+ {
+  "column": 20,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 615,
+  "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+  "rule_id": "ERR07-C",
+  "severity": "Medium",
+  "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+ },
+ {
+  "column": 20,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 615,
+  "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+  "rule_id": "ERR34-C",
+  "severity": "High",
+  "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+ },
+ {
+  "column": 16,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 622,
+  "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+  "rule_id": "ERR07-C",
+  "severity": "Medium",
+  "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+ },
+ {
+  "column": 16,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 622,
+  "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+  "rule_id": "ERR34-C",
+  "severity": "High",
+  "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 623,
+  "message": "Magic number '65535' should use a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 65535 };"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 631,
+  "message": "Function-like macro 'ZFREE' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+  "rule_id": "PRE00-C",
+  "severity": "Low",
+  "suggestion": null
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.c",
+  "line": 631,
+  "message": "Macro evaluates parameter 'X' multiple times; use inline function instead",
+  "rule_id": "PRE12-C",
+  "severity": "Medium",
+  "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.h",
+  "line": 2,
+  "message": "Reserved identifier '__LOG_MYSQL_H__' should not be used as a macro name",
+  "rule_id": "DCL37-C",
+  "severity": "Medium",
+  "suggestion": "Use a non-reserved macro name"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.h",
+  "line": 4,
+  "message": "Macro 'PASSWD_SQL_ARGON2' contains hard-coded sensitive information: \"argon2\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.h",
+  "line": 5,
+  "message": "Macro 'PASSWD_SQL_SCRYPT' contains hard-coded sensitive information: \"scrypt\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.h",
+  "line": 6,
+  "message": "Macro 'PASSWD_SQL_CRYPT' contains hard-coded sensitive information: \"crypt\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.h",
+  "line": 7,
+  "message": "Macro 'PASSWD_SQL_CLEARTEXT' contains hard-coded sensitive information: \"cleartext\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.h",
+  "line": 8,
+  "message": "Macro 'PASSWD_SQL_ANY' contains hard-coded sensitive information: \"any\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql.h",
+  "line": 20,
+  "message": "Parameter 'const char *account' appears to represent a size but doesn't use size_t",
+  "rule_id": "INT01-C",
+  "severity": "Medium",
+  "suggestion": "Use size_t for parameters representing object sizes"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql_p.h",
+  "line": 2,
+  "message": "Reserved identifier '__LOG_MYSQL_P_H__' should not be used as a macro name",
+  "rule_id": "DCL37-C",
+  "severity": "Medium",
+  "suggestion": "Use a non-reserved macro name"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql_p.h",
+  "line": 7,
+  "message": "Magic number '32224' should use a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 32224 };"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql_p.h",
+  "line": 43,
+  "message": "Shared variable 'mysql_config_keywords' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+  "rule_id": "CON03-C",
+  "severity": "Medium",
+  "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+ },
+ {
+  "column": 23,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql_p.h",
+  "line": 43,
+  "message": "Array declaration 'mysql_config_keywords[]' has implicit bounds; specify explicit size",
+  "rule_id": "ARR02-C",
+  "severity": "Medium",
+  "suggestion": "Explicitly specify array bounds even when using an initializer"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_mysql_p.h",
+  "line": 75,
+  "message": "Function has pointer parameter without size argument: 'extern void my_make_scrambled_password(char *to, const char *password,' - Add size_t parameter to specify array capacity",
+  "rule_id": "API02-C",
+  "severity": "High",
+  "suggestion": "Add a size_t parameter after 'char *to' to specify the maximum number of elements in the array"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 9,
+  "message": "Header file 'log_pgsql_p.h' has the same first 8 characters (case-insensitive) as 'log_pgsql.h'. This may cause ambiguity on systems with limited filename support.",
+  "rule_id": "PRE08-C",
+  "severity": "Medium",
+  "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'log_pgsql_p.h' -> unique name)"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 30,
+  "message": "Empty if statement body has no effect.",
+  "rule_id": "MSC12-C",
+  "severity": "Low",
+  "suggestion": "Add code to the if body or remove the empty branch"
+ },
+ {
+  "column": 36,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 46,
+  "message": "Usage of external pointer typedef 'PGconn' (likely from header). Pointer typedefs can cause confusion with const-qualification",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Avoid using pointer typedefs from external headers, or use const-qualified versions"
+ },
+ {
+  "column": 8,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 57,
+  "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+  "rule_id": "MEM10-C",
+  "severity": "Medium",
+  "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 62,
+  "message": "Mixed string management approaches detected. Static char array at line 350 and dynamic allocation at line 62. Consider adopting a consistent approach.",
+  "rule_id": "STR01-C",
+  "severity": "Low",
+  "suggestion": "Adopt either static string arrays OR dynamic allocation consistently throughout the codebase. Document the chosen approach in coding standards."
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 62,
+  "message": "Return value of 'malloc' assigned to 'to' but not checked for errors: 'malloc(to_len + (size_t) 2U)' - Returns NULL on allocation failure",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 62,
+  "message": "Memory allocation result not cast; assign to 'to' without explicit cast",
+  "rule_id": "MEM02-C",
+  "severity": "Low",
+  "suggestion": "Cast the result: (char *)malloc(...)"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 62,
+  "message": "Return value from malloc() should be checked for errors",
+  "rule_id": "ERR00-C",
+  "severity": "Medium",
+  "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 62,
+  "message": "malloc() argument 1 contains arithmetic that may overflow: 'to_len + (size_t) 2U'",
+  "rule_id": "INT32-C",
+  "severity": "High",
+  "suggestion": "Validate arithmetic operations before passing to allocation functions"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 62,
+  "message": "malloc() called with potentially zero size argument: 'to_len + (size_t) 2U' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+  "rule_id": "MEM04-C",
+  "severity": "Low",
+  "suggestion": "Check that size argument is non-zero before calling malloc()"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 62,
+  "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+  "rule_id": "MEM06-C",
+  "severity": "Medium",
+  "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 66,
+  "message": "Magic number '0xff' appears 2 times. Consider using a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xff };"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 68,
+  "message": "Potentially unsafe array access with variable index 'to_len': Buffer 'to' with dynamic size (to_len + (size_t) 2U) (allocated at line 62)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 68,
+  "message": "Subscript operation 'to[to_len]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 68,
+  "message": "Potential null pointer dereference in array access of variable 'to'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'to' is not NULL before array access"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 69,
+  "message": "Potentially unsafe array access with expression 'to_len + 1': Buffer 'to' with dynamic size (to_len + (size_t) 2U) (allocated at line 62)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 69,
+  "message": "Subscript operation 'to[to_len + 1]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 81,
+  "message": "Potentially unsafe array access with variable index 'to_len': Buffer 'to' with dynamic size (to_len + (size_t) 2U) (allocated at line 62)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 81,
+  "message": "Subscript operation 'to[to_len]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 82,
+  "message": "Potentially unsafe array access with expression 'to_len + 1': Buffer 'to' with dynamic size (to_len + (size_t) 2U) (allocated at line 62)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 82,
+  "message": "Subscript operation 'to[to_len + 1]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 84,
+  "message": "Pointer dereference '*to++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 84,
+  "message": "Increment/decrement operation 'to++' on non-array pointer 'to'",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Use array indexing or ensure pointer refers to an array"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 87,
+  "message": "Potentially unsafe array access with variable index 'tolen': Buffer 'to' with dynamic size (to_len + (size_t) 2U) (allocated at line 62)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 87,
+  "message": "Subscript operation 'to[tolen]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 91,
+  "message": "Function returns pointer to local variable 'to' with automatic storage duration",
+  "rule_id": "DCL30-C",
+  "severity": "High",
+  "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+ },
+ {
+  "column": 12,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 91,
+  "message": "Returning pointer to local array 'to' which will be destroyed when function returns, creating a dangling pointer.",
+  "rule_id": "ARR00-C",
+  "severity": "Medium",
+  "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 109,
+  "message": "Pointer to const assigned to non-const pointer without cast: *query_pnt = query: '*query_pnt = query'",
+  "rule_id": "EXP40-C",
+  "severity": "Low",
+  "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 117,
+  "message": "Unbounded while loop with pointer increment. Loop increments 'orig_str_scan' without size/length bounds checking.",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+ },
+ {
+  "column": 12,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 120,
+  "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+  "rule_id": "CON43-C",
+  "severity": "High",
+  "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 128,
+  "message": "Passing potentially null pointer 'user' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'user' is not NULL before passing to function"
+ },
+ {
+  "column": 41,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 128,
+  "message": "Do not cast away const qualification: 'user_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 139,
+  "message": "Passing potentially null pointer 'ip' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'ip' is not NULL before passing to function"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 139,
+  "message": "Do not cast away const qualification: 'ip_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 150,
+  "message": "Passing potentially null pointer 'port' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'port' is not NULL before passing to function"
+ },
+ {
+  "column": 41,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 150,
+  "message": "Do not cast away const qualification: 'port_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 161,
+  "message": "Passing potentially null pointer 'peer_ip' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'peer_ip' is not NULL before passing to function"
+ },
+ {
+  "column": 44,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 161,
+  "message": "Do not cast away const qualification: 'peer_ip_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 172,
+  "message": "Passing potentially null pointer 'decimal_ip' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'decimal_ip' is not NULL before passing to function"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 172,
+  "message": "Do not cast away const qualification: 'decimal_ip_len'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 17,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 180,
+  "message": "Pointer dereference '*query_pnt++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 189,
+  "message": "Pointer dereference '*query_pnt++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 24,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 189,
+  "message": "Pointer dereference '*orig_str_scan' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+ },
+ {
+  "column": 24,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 189,
+  "message": "Pointer dereference '*orig_str_scan' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 193,
+  "message": "Pointer dereference '*query_pnt' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 195,
+  "message": "Function returns pointer to local variable 'query' with automatic storage duration",
+  "rule_id": "DCL30-C",
+  "severity": "High",
+  "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 203,
+  "message": "Pointer to const assigned to non-const pointer without cast: *target = to: '*target = to'",
+  "rule_id": "EXP40-C",
+  "severity": "Low",
+  "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+ },
+ {
+  "column": 8,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 207,
+  "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+  "rule_id": "CON43-C",
+  "severity": "High",
+  "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 212,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 213,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 216,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 217,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 220,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 221,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 224,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 225,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 228,
+  "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+  "rule_id": "MSC17-C",
+  "severity": "Medium",
+  "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 229,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 231,
+  "message": "Pointer dereference '*target++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 231,
+  "message": "Pointer dereference '*source' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+ },
+ {
+  "column": 25,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 231,
+  "message": "Pointer dereference '*source' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 236,
+  "message": "Pointer dereference '*target' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 8,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 248,
+  "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+  "rule_id": "MEM10-C",
+  "severity": "Medium",
+  "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 253,
+  "message": "Return value of 'malloc' assigned to 'to' but not checked for errors: 'malloc(to_len)' - Returns NULL on allocation failure",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 253,
+  "message": "Memory allocation result not cast; assign to 'to' without explicit cast",
+  "rule_id": "MEM02-C",
+  "severity": "Low",
+  "suggestion": "Cast the result: (char *)malloc(...)"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 253,
+  "message": "Return value from malloc() should be checked for errors",
+  "rule_id": "ERR00-C",
+  "severity": "Medium",
+  "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 253,
+  "message": "malloc() called with potentially zero size argument: 'to_len' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+  "rule_id": "MEM04-C",
+  "severity": "Low",
+  "suggestion": "Check that size argument is non-zero before calling malloc()"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 253,
+  "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+  "rule_id": "MEM06-C",
+  "severity": "Medium",
+  "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 259,
+  "message": "Pointer dereference '*to++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+  "rule_id": "STR34-C",
+  "severity": "Medium",
+  "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 259,
+  "message": "Increment/decrement operation 'to++' on non-array pointer 'to'",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Use array indexing or ensure pointer refers to an array"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 262,
+  "message": "Potentially unsafe array access with variable index 'tolen': Buffer 'to' with dynamic size (to_len) (allocated at line 253)",
+  "rule_id": "ARR30-C",
+  "severity": "High",
+  "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 262,
+  "message": "Subscript operation 'to[tolen]' on non-array pointer 'to'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 262,
+  "message": "Potential null pointer dereference in array access of variable 'to'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'to' is not NULL before array access"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 264,
+  "message": "Function returns pointer to local variable 'to' with automatic storage duration",
+  "rule_id": "DCL30-C",
+  "severity": "High",
+  "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+ },
+ {
+  "column": 12,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 264,
+  "message": "Returning pointer to local array 'to' which will be destroyed when function returns, creating a dangling pointer.",
+  "rule_id": "ARR00-C",
+  "severity": "Medium",
+  "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+ },
+ {
+  "column": 28,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 267,
+  "message": "Usage of external pointer typedef 'PGconn' (likely from header). Pointer typedefs can cause confusion with const-qualification",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Avoid using pointer typedefs from external headers, or use const-qualified versions"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 271,
+  "message": "Value assigned to 'escaped_server' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 272,
+  "message": "Value assigned to 'escaped_db' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 273,
+  "message": "Value assigned to 'escaped_user' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 274,
+  "message": "Value assigned to 'escaped_pw' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 280,
+  "message": "Side effect in right operand of '||' operator may not execute due to short-circuit evaluation: '(escaped_db = pw_pgsql_escape_conninfo(db)) == NULL'",
+  "rule_id": "EXP02-C",
+  "severity": "Low",
+  "suggestion": "Move side effects to separate statements before the logical expression"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 281,
+  "message": "Side effect in right operand of '||' operator may not execute due to short-circuit evaluation: '(escaped_user = pw_pgsql_escape_conninfo(user)) == NULL'",
+  "rule_id": "EXP02-C",
+  "severity": "Low",
+  "suggestion": "Move side effects to separate statements before the logical expression"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 282,
+  "message": "Side effect in right operand of '||' operator may not execute due to short-circuit evaluation: '(escaped_pw = pw_pgsql_escape_conninfo(pw)) == NULL'",
+  "rule_id": "EXP02-C",
+  "severity": "Low",
+  "suggestion": "Move side effects to separate statements before the logical expression"
+ },
+ {
+  "column": 16,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 290,
+  "message": "Passing potentially null pointer 'escaped_server' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_server' is not NULL before passing to function"
+ },
+ {
+  "column": 55,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 290,
+  "message": "Passing potentially null pointer 'escaped_db' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_db' is not NULL before passing to function"
+ },
+ {
+  "column": 16,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 291,
+  "message": "Passing potentially null pointer 'escaped_user' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_user' is not NULL before passing to function"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 291,
+  "message": "Passing potentially null pointer 'escaped_pw' to function",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_pw' is not NULL before passing to function"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 292,
+  "message": "Return value of 'malloc' assigned to 'conninfo' but not checked for errors: 'malloc(sizeof_conninfo)' - Returns NULL on allocation failure",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 292,
+  "message": "Memory allocation result not cast; assign to 'conninfo' without explicit cast",
+  "rule_id": "MEM02-C",
+  "severity": "Low",
+  "suggestion": "Cast the result: (char *)malloc(...)"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 292,
+  "message": "Return value from malloc() should be checked for errors",
+  "rule_id": "ERR00-C",
+  "severity": "Medium",
+  "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 292,
+  "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+  "rule_id": "MEM06-C",
+  "severity": "Medium",
+  "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 295,
+  "message": "Unsafe macro 'SNCHECK' called with side effect in argument 2: 'snprintf(conninfo, sizeof_conninfo,\n                         PGSQL_CONNECT_FMTSTRING,\n                         escaped_server, port, escaped_db,\n                         escaped_user, escaped_pw)'",
+  "rule_id": "PRE31-C",
+  "severity": "High",
+  "suggestion": "Move side effects outside macro call or use inline function"
+ },
+ {
+  "column": 17,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 295,
+  "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+  "rule_id": "STR03-C",
+  "severity": "Medium",
+  "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+ },
+ {
+  "column": 32,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 322,
+  "message": "Usage of external pointer typedef 'PGconn' (likely from header). Pointer typedefs can cause confusion with const-qualification",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Avoid using pointer typedefs from external headers, or use const-qualified versions"
+ },
+ {
+  "column": 4,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 325,
+  "message": "Usage of external pointer typedef 'PGresult' (likely from header). Pointer typedefs can cause confusion with const-qualification",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Avoid using pointer typedefs from external headers, or use const-qualified versions"
+ },
+ {
+  "column": 31,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 339,
+  "message": "Usage of external pointer typedef 'PGconn' (likely from header). Pointer typedefs can cause confusion with const-qualification",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Avoid using pointer typedefs from external headers, or use const-qualified versions"
+ },
+ {
+  "column": 32,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 341,
+  "message": "Parameter 'const char * const account' appears to represent a size but doesn't use size_t",
+  "rule_id": "INT01-C",
+  "severity": "Medium",
+  "suggestion": "Use size_t for parameters representing object sizes"
+ },
+ {
+  "column": 4,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 347,
+  "message": "Usage of external pointer typedef 'PGresult' (likely from header). Pointer typedefs can cause confusion with const-qualification",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Avoid using pointer typedefs from external headers, or use const-qualified versions"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 350,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 370,
+  "message": "Side effect in right operand of '||' operator may not execute due to short-circuit evaluation: '(answer = malloc(length)) == NULL'",
+  "rule_id": "EXP02-C",
+  "severity": "Low",
+  "suggestion": "Move side effects to separate statements before the logical expression"
+ },
+ {
+  "column": 28,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 370,
+  "message": "Return value of 'malloc' assigned to 'answer' but not checked for errors: 'malloc(length)' - Returns NULL on allocation failure",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+ },
+ {
+  "column": 28,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 370,
+  "message": "Memory allocation result not cast; assign to 'answer' without explicit cast",
+  "rule_id": "MEM02-C",
+  "severity": "Low",
+  "suggestion": "Cast the result: (char *)malloc(...)"
+ },
+ {
+  "column": 37,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 370,
+  "message": "Return value from malloc() should be checked for errors",
+  "rule_id": "ERR00-C",
+  "severity": "Medium",
+  "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+ },
+ {
+  "column": 37,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 370,
+  "message": "malloc() called with potentially zero size argument: 'length' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+  "rule_id": "MEM04-C",
+  "severity": "Low",
+  "suggestion": "Check that size argument is non-zero before calling malloc()"
+ },
+ {
+  "column": 37,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 370,
+  "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+  "rule_id": "MEM06-C",
+  "severity": "Medium",
+  "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 373,
+  "message": "Use of strncpy() 'strncpy(answer, PQgetvalue(qresult, 0, 0), length - (size_t) 1U)' does not guarantee null-termination, violating type safety",
+  "rule_id": "API07-C",
+  "severity": "Medium",
+  "suggestion": "Use strncpy_s() (C11 Annex K) or manually null-terminate the destination buffer"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 373,
+  "message": "Call to strncpy may inadvertently truncate string without proper length validation",
+  "rule_id": "STR03-C",
+  "severity": "Medium",
+  "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 374,
+  "message": "Subscript operation 'answer[length - (size_t) 1U]' on non-array pointer 'answer'. Subscript notation implies array access",
+  "rule_id": "ARR37-C",
+  "severity": "High",
+  "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 374,
+  "message": "Potential null pointer dereference in array access of variable 'answer'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'answer' is not NULL before array access"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 381,
+  "message": "Function returns pointer to local variable 'answer' with automatic storage duration",
+  "rule_id": "DCL30-C",
+  "severity": "High",
+  "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+ },
+ {
+  "column": 12,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 381,
+  "message": "Returning pointer to local array 'answer' which will be destroyed when function returns, creating a dangling pointer.",
+  "rule_id": "ARR00-C",
+  "severity": "Medium",
+  "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 384,
+  "message": "Function 'pw_pgsql_check' does not validate pointer parameter 'result' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'result' at the start of the function, e.g., 'if (!result) { return error_code; }'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 384,
+  "message": "Function 'pw_pgsql_check' does not validate pointer parameter 'password' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'password' at the start of the function, e.g., 'if (!password) { return error_code; }'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 384,
+  "message": "Function 'pw_pgsql_check' does not validate pointer parameter 'sa' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 384,
+  "message": "Function 'pw_pgsql_check' does not validate pointer parameter 'peer' before use",
+  "rule_id": "API00-C",
+  "severity": "Medium",
+  "suggestion": "Add validation check for 'peer' at the start of the function, e.g., 'if (!peer) { return error_code; }'"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 385,
+  "message": "Parameter 'const char *account' appears to represent a size but doesn't use size_t",
+  "rule_id": "INT01-C",
+  "severity": "Medium",
+  "suggestion": "Use size_t for parameters representing object sizes"
+ },
+ {
+  "column": 4,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 389,
+  "message": "Usage of external pointer typedef 'PGconn' (likely from header). Pointer typedefs can cause confusion with const-qualification",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Avoid using pointer typedefs from external headers, or use const-qualified versions"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 411,
+  "message": "Sensitive buffer 'scrambled_password' not cleared before function exit",
+  "rule_id": "MEM03-C",
+  "severity": "Medium",
+  "suggestion": "Call SecureZeroMemory(scrambled_password, size) or memset(scrambled_password, 0, size) before the buffer goes out of scope"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 413,
+  "message": "Multiple variables (4) declared in single declaration: int crypto_argon2 = 0, crypto_scrypt = 0, crypto_crypt = 0, crypto_plain = 0;",
+  "rule_id": "DCL04-C",
+  "severity": "Low",
+  "suggestion": "Declare each variable on its own line with an explanatory comment"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 414,
+  "message": "Value assigned to 'decimal_ip_num' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 415,
+  "message": "Array size '42' should use a symbolic constant instead of magic number.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { ARRAY_SIZE = 42 };"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 416,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 417,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 418,
+  "message": "Fixed-size buffer may be used with environment variable",
+  "rule_id": "ENV01-C",
+  "severity": "High",
+  "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 424,
+  "message": "Expression contains 2 function calls with potentially unsequenced side effects. Order of evaluation is unspecified.",
+  "rule_id": "EXP10-C",
+  "severity": "Medium",
+  "suggestion": "Separate function calls into distinct statements to ensure defined evaluation order"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 427,
+  "message": "Expression contains 2 function calls with potentially unsequenced side effects. Order of evaluation is unspecified.",
+  "rule_id": "EXP10-C",
+  "severity": "Medium",
+  "suggestion": "Separate function calls into distinct statements to ensure defined evaluation order"
+ },
+ {
+  "column": 6,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 432,
+  "message": "Variable 'decimal_ip' is used uninitialized",
+  "rule_id": "EXP33-C",
+  "severity": "High",
+  "suggestion": "Initialize 'decimal_ip' before use, e.g., at its declaration"
+ },
+ {
+  "column": 8,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 434,
+  "message": "Complex function pointer declaration should use typedef for clarity",
+  "rule_id": "DCL05-C",
+  "severity": "Medium",
+  "suggestion": "Use typedef to simplify complex function pointer declarations"
+ },
+ {
+  "column": 64,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 436,
+  "message": "Magic number '24' should use a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 24 };"
+ },
+ {
+  "column": 51,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 437,
+  "message": "Magic number '16' should use a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 16 };"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 438,
+  "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+  "rule_id": "EXP14-C",
+  "severity": "Medium",
+  "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 439,
+  "message": "Unsafe macro 'SNCHECK' called with side effect in argument 2: 'snprintf(decimal_ip, sizeof decimal_ip,\n                             \"%lu\", decimal_ip_num)'",
+  "rule_id": "PRE31-C",
+  "severity": "High",
+  "suggestion": "Move side effects outside macro call or use inline function"
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 439,
+  "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+  "rule_id": "STR03-C",
+  "severity": "Medium",
+  "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+ },
+ {
+  "column": 30,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 439,
+  "message": "Do not cast away const qualification: 'decimal_ip'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 471,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 52,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 471,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 472,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 472,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 473,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 477,
+  "message": "Memory allocated with 'pw_pgsql_getquery' for variable 'uid' is not freed",
+  "rule_id": "MEM31-C",
+  "severity": "High",
+  "suggestion": "Add 'free(uid)' before the variable goes out of scope"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 478,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 50,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 478,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 479,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 479,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 480,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 15,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 486,
+  "message": "Memory allocated with 'pw_pgsql_getquery' for variable 'gid' is not freed",
+  "rule_id": "MEM31-C",
+  "severity": "High",
+  "suggestion": "Add 'free(gid)' before the variable goes out of scope"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 487,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 50,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 487,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 488,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 488,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 489,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 495,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 51,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 495,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 496,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 48,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 496,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 497,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 532,
+  "message": "Value assigned to 'crypted' is never read on any execution path before being overwritten or the function returning.",
+  "rule_id": "MSC13-C",
+  "severity": "Low",
+  "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 533,
+  "message": "Passing null pointer 'spwd' to 'pure_strcmp' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'spwd' is not NULL before passing to 'pure_strcmp'"
+ },
+ {
+  "column": 35,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 539,
+  "message": "Passing null pointer 'spwd' to 'pure_strcmp' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'spwd' is not NULL before passing to 'pure_strcmp'"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 545,
+  "message": "Unreachable code after unconditional 'goto'.",
+  "rule_id": "MSC07-C",
+  "severity": "Low",
+  "suggestion": "Remove the unreachable code or restructure the control flow"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 550,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 550,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 45,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 554,
+  "message": "Potential null pointer dereference in member access of variable 'pw'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'pw' is not NULL before member access"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 559,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 27,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 559,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 45,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 563,
+  "message": "Potential null pointer dereference in member access of variable 'gr'",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'gr' is not NULL before member access"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 572,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 55,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 572,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 573,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 52,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 573,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 574,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 575,
+  "message": "Return value of 'strtoull' assigned to 'q' but not checked for errors: 'strtoull(sqta_fs, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 575,
+  "message": "strtoull() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoull() and check errno afterward to detect errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 575,
+  "message": "In-band function 'strtoull' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoull(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 583,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 55,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 583,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 584,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 52,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 584,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 585,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 34,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 586,
+  "message": "Return value of 'strtoull' assigned to 'q' but not checked for errors: 'strtoull(sqta_sz, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 586,
+  "message": "strtoull() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoull() and check errno afterward to detect errors"
+ },
+ {
+  "column": 38,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 586,
+  "message": "In-band function 'strtoull' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoull(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 589,
+  "message": "Unsigned integer multiplication 'q * (1024UL * 1024UL)' may wrap without overflow checking",
+  "rule_id": "INT30-C",
+  "severity": "High",
+  "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+ },
+ {
+  "column": 44,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 589,
+  "message": "Magic number '1024UL' appears 4 times. Consider using a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 1024UL };"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 596,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 56,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 596,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 597,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 53,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 597,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 598,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 28,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 599,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned int) strtoul(ratio_ul, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 599,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 599,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 607,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 56,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 607,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 608,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 53,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 608,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 39,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 609,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 28,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 610,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned int) strtoul(ratio_dl, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 610,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 610,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 620,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 60,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 620,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 621,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 57,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 621,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 622,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 29,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 623,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned long) strtoul(bandwidth_ul, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 623,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 623,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 626,
+  "message": "Unsigned integer multiplication 'q * 1024UL' may wrap without overflow checking",
+  "rule_id": "INT30-C",
+  "severity": "High",
+  "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 631,
+  "message": "Passing null pointer 'escaped_account' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_account' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 60,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 631,
+  "message": "Passing null pointer 'escaped_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 632,
+  "message": "Passing null pointer 'escaped_port' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_port' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 57,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 632,
+  "message": "Passing null pointer 'escaped_peer_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_peer_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 43,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 633,
+  "message": "Passing null pointer 'escaped_decimal_ip' to 'pw_pgsql_getquery' which does not check for NULL",
+  "rule_id": "EXP34-C",
+  "severity": "High",
+  "suggestion": "Check if 'escaped_decimal_ip' is not NULL before passing to 'pw_pgsql_getquery'"
+ },
+ {
+  "column": 29,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 634,
+  "message": "Return value of 'strtoul' assigned to 'q' but not checked for errors: '(unsigned long) strtoul(bandwidth_dl, NULL, 10)' - Can return error indicator",
+  "rule_id": "ERR33-C",
+  "severity": "High",
+  "suggestion": "Check return value for errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 634,
+  "message": "strtoul() can set errno but errno is not checked after the call",
+  "rule_id": "ERR01-C",
+  "severity": "Low",
+  "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+ },
+ {
+  "column": 49,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 634,
+  "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+  "rule_id": "ERR30-C",
+  "severity": "Medium",
+  "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+ },
+ {
+  "column": 47,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 637,
+  "message": "Unsigned integer multiplication 'q * 1024UL' may wrap without overflow checking",
+  "rule_id": "INT30-C",
+  "severity": "High",
+  "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 651,
+  "message": "Do not cast away const qualification: '(void *) spwd'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 653,
+  "message": "Do not cast away const qualification: '(void *) uid'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 14,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 656,
+  "message": "Do not cast away const qualification: '(void *) gid'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 658,
+  "message": "Do not cast away const qualification: '(void *) dir'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 5,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 659,
+  "message": "Pointer 'scrambled_password' freed without clearing sensitive data first",
+  "rule_id": "MEM03-C",
+  "severity": "Medium",
+  "suggestion": "Add 'memset(scrambled_password, 0, size);' before free(scrambled_password) to clear sensitive data"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 661,
+  "message": "Do not cast away const qualification: '(void *) sqta_fs'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 662,
+  "message": "Do not cast away const qualification: '(void *) sqta_sz'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 665,
+  "message": "Do not cast away const qualification: '(void *) ratio_ul'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 666,
+  "message": "Do not cast away const qualification: '(void *) ratio_dl'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 669,
+  "message": "Do not cast away const qualification: '(void *) bandwidth_ul'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 10,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 670,
+  "message": "Do not cast away const qualification: '(void *) bandwidth_dl'",
+  "rule_id": "EXP05-C",
+  "severity": "Medium",
+  "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+ },
+ {
+  "column": 13,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 682,
+  "message": "Magic number '421' appears 2 times. Consider using a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 421 };"
+ },
+ {
+  "column": 16,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 688,
+  "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+  "rule_id": "ERR07-C",
+  "severity": "Medium",
+  "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+ },
+ {
+  "column": 16,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 688,
+  "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+  "rule_id": "ERR34-C",
+  "severity": "High",
+  "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+ },
+ {
+  "column": 33,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 689,
+  "message": "Magic number '65535' should use a symbolic constant.",
+  "rule_id": "DCL06-C",
+  "severity": "Low",
+  "suggestion": "Define a constant: enum { CONSTANT_NAME = 65535 };"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 697,
+  "message": "Function-like macro 'ZFREE' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+  "rule_id": "PRE00-C",
+  "severity": "Low",
+  "suggestion": null
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.c",
+  "line": 697,
+  "message": "Macro evaluates parameter 'X' multiple times; use inline function instead",
+  "rule_id": "PRE12-C",
+  "severity": "Medium",
+  "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 2,
+  "message": "Reserved identifier '__LOG_PGSQL_H__' should not be used as a macro name",
+  "rule_id": "DCL37-C",
+  "severity": "Medium",
+  "suggestion": "Use a non-reserved macro name"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 4,
+  "message": "Macro 'PASSWD_SQL_ARGON2' contains hard-coded sensitive information: \"argon2\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 5,
+  "message": "Macro 'PASSWD_SQL_SCRYPT' contains hard-coded sensitive information: \"scrypt\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 6,
+  "message": "Macro 'PASSWD_SQL_CRYPT' contains hard-coded sensitive information: \"crypt\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 7,
+  "message": "Macro 'PASSWD_SQL_CLEARTEXT' contains hard-coded sensitive information: \"cleartext\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 8,
+  "message": "Macro 'PASSWD_SQL_PGSQL' contains hard-coded sensitive information: \"password\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 9,
+  "message": "Macro 'PASSWD_SQL_ANY' contains hard-coded sensitive information: \"any\". Sensitive data should not be embedded in source code.",
+  "rule_id": "MSC41-C",
+  "severity": "High",
+  "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+ },
+ {
+  "column": 21,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql.h",
+  "line": 19,
+  "message": "Parameter 'const char *account' appears to represent a size but doesn't use size_t",
+  "rule_id": "INT01-C",
+  "severity": "Medium",
+  "suggestion": "Use size_t for parameters representing object sizes"
+ },
+ {
+  "column": 9,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql_p.h",
+  "line": 2,
+  "message": "Reserved identifier '__LOG_PGSQL_P_H__' should not be used as a macro name",
+  "rule_id": "DCL37-C",
+  "severity": "Medium",
+  "suggestion": "Use a non-reserved macro name"
+ },
+ {
+  "column": 1,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql_p.h",
+  "line": 33,
+  "message": "Shared variable 'pgsql_config_keywords' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+  "rule_id": "CON03-C",
+  "severity": "Medium",
+  "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+ },
+ {
+  "column": 23,
+  "file": "/home/brandon/toolchain/pure-ftpd/src/log_pgsql_p.h",
+  "line": 33,
+  "message": "Array declaration 'pgsql_config_keywords[]' has implicit bounds; specify explicit size",
+  "rule_id": "ARR02-C",
+  "severity": "Medium",
+  "suggestion": "Explicitly specify array bounds even when using an initializer"
+ }
+]
