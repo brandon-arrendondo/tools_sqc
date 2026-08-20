@@ -142,3 +142,40 @@ original `src/kernel/boot.c:24`, plus three more of the identical
 `src/arch/x86/machine/cpu_identification.c:21`), zero additions, zero
 change to any other rule (5100 → 5096 total, exact match). Full suite:
 3760 passed, 0 failed.
+
+## Update: task 474 (partial) fixed in v0.4.225 (commit 36feac10)
+
+`check_empty_function` flagged the pervasive "documented no-op stub" idiom
+(`/* Don't need to do anything */`, `/* Nothing to do */`, `/* Do nothing
+*/`) as dead code — an empty function body containing at least one
+comment is now treated as documented, not forgotten, and skipped.
+
+A first attempt applied the identical exception to
+`check_empty_control_flow` (if/else/for/while bodies) too, but that broke
+4 of CERT's own canonical MSC12-C wiki examples
+(`tests/fail/wiki_{,non}compliant_{1,2}.c`) plus 4 synthetic tests: CERT's
+own textbook illustrations of an empty *branch* use the exact same "lone
+placeholder comment in an otherwise-empty block" shape (`/* Handle error
+*/`, `/* This code is unreachable */`) to demonstrate the violation being
+detected. That part of the fix was reverted — the comment-implies-
+documented heuristic only holds for whole function bodies, not
+control-flow branches, and is scoped there.
+
+**Real-world impact**: seL4 MSC12-C findings 133 → 120 (-9.8%; 13
+removed, all confirmed documented-stub instances — `Arch_activateIdleThread`,
+`Arch_postModifyRegisters`, `Arch_prepareNextDomain`,
+`Arch_prepareSetDomain`, `handleSpuriousIRQ`, `Mode_postModifyRegisters`
+across arm/riscv/x86 — see
+`data/precision_audit/sel4/adjudication_msc12_task474_0.4.225.csv`), zero
+additions, zero change to any other rule (5096 → 5083, exact match). Full
+suite: 3761 passed, 0 failed. Combined precision across all task
+381/473/474/477 labels: 10.0% (5 TP / 50 labeled),
+`bench realworld-score sqc-0.4.225-36feac10`.
+
+**Still open**: task 474's other sub-problem, a deliberate empty switch
+case with a bare `break;` and no comment at all (`case
+cap_asid_control_cap: break;`, `case EPState_Recv: break;`, `default:
+break;`), is untouched — there's no comment signal to key off, and this
+fix was deliberately kept narrow after the control-flow near-miss above.
+Left open pending a different approach (see task 474's remaining notes in
+todo-sqlite-cli).
