@@ -179,3 +179,31 @@ break;`), is untouched — there's no comment signal to key off, and this
 fix was deliberately kept narrow after the control-flow near-miss above.
 Left open pending a different approach (see task 474's remaining notes in
 todo-sqlite-cli).
+
+## Update: task 474 closed in v0.4.226 (commit 23ae3f12) — confidence, not a heuristic
+
+Confirmed this sub-problem is genuinely ambiguous, not a detection gap: a
+real seL4 instance (`src/api/syscall.c:242`, `default: break; /* syscall
+is not for benchmarking */`) DOES carry an explanatory trailing comment
+justifying the no-op, structurally identical to
+`check_empty_switch_case`'s own existing test fixture
+(`tests/fail/testcases_empty_switch_case.c`, `/* empty case body —
+VIOLATION */` before a `break;`) which demonstrates the opposite verdict
+with the same shape. Comment presence cannot disambiguate this case any
+more than it could for if/else/for/while bodies.
+
+Rather than force a heuristic that can't actually be confident,
+`check_empty_switch_case` now sets `requires_manual_review: Some(true)`
+on its findings — the same pattern 23 other rules (CON43-C, MEM10-C,
+etc.) already use for genuinely ambiguous cases. This surfaces as `low?`
+instead of `low` in CLI output and remains fully suppressible per-finding
+via the existing `SQC-SUPPRESS`/`suppress.toml` mechanism with a
+justification — both mechanisms already existed, just weren't wired up
+for this check. No change to finding count (still 120 on seL4 — this is
+a confidence/severity-display change, not a detection change) or to any
+other rule. Full suite: 3761 passed, 0 failed.
+
+(Noted but out of scope here: the JSON/SARIF/CSV/Excel exporters don't
+currently serialize `requires_manual_review` at all — the `?` marker is
+CLI-stdout-only, a gap affecting all 24 rules that set it, not just this
+one. Filed as a follow-up.)
