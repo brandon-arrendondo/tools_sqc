@@ -1,0 +1,5 @@
+rule,idx,project,file,line,verdict,reason
+MSC12-C,0,sel4,src/arch/x86/kernel/boot_sys.c,52,FP,"Misattribution: BOOT_BSS-decorated declaration ('BOOT_BSS\nboot_state_t boot_state;', macro on its own line) -- same class as src/kernel/boot.c:24 fixed by task 477, tree-sitter's error recovery orphans the trailing identifier as a bare-identifier statement."
+MSC12-C,1,sel4,src/arch/x86/kernel/boot_sys.c,57,FP,"Same BOOT_BSS-decorated declaration misattribution as idx 0 (cmdline_opt_t cmdline_opt;)."
+MSC12-C,2,sel4,src/arch/x86/machine/cpu_identification.c,21,FP,"Same BOOT_BSS-decorated declaration misattribution as idx 0 (BOOT_BSS static cpu_identity_t cpu_identity;)."
+MSC12-C,3,sel4,src/kernel/boot.c,24,FP,"BOOT_BSS rootserver_mem_t rootserver; -- the original instance that motivated task 477; confirms the fix (this finding is gone in the post-fix run, kept here as a historical record tying the run to its adjudication)."

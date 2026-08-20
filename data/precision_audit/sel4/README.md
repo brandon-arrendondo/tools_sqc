@@ -119,5 +119,26 @@ an attribute-macro-decorated declaration (`BOOT_BSS rootserver_mem_t
 rootserver;`) misread as a discarded-expression statement). What the fix
 demonstrably did: cut the raw finding volume by a quarter with zero
 recall cost, confirmed against a real, disjoint 40-item resample. The
-remaining FP families are each their own smaller, separate fix (not filed
-as a task yet — none dominates the way busy-wait did).
+remaining FP families are each their own smaller, separate fix — filed
+as tasks 474-477.
+
+## Update: task 477 fixed in v0.4.224 (commit 0264c3b7)
+
+`BOOT_BSS`-decorated declarations (seL4's section-placement attribute
+macro, e.g. `BOOT_BSS rootserver_mem_t rootserver;`) confused tree-sitter's
+error recovery into splitting the declaration into a `declaration` node
+with a synthesized `MISSING ";"` plus an orphan `expression_statement` for
+the trailing identifier — `check_no_effect_expression` then flagged that
+orphan identifier as a no-effect bare-identifier statement.
+`check_no_effect_expression` now skips an expression_statement whose
+immediately preceding sibling is a `declaration` containing a `MISSING`
+node anywhere in it (same family as the pre-existing
+ERROR+function_declarator skip, different malformed-declaration shape).
+
+**Real-world impact**: seL4 MSC12-C findings 137 → 133 (4 removed: the
+original `src/kernel/boot.c:24`, plus three more of the identical
+`BOOT_BSS` pattern found by the fix generalizing correctly —
+`src/arch/x86/kernel/boot_sys.c:52,57` and
+`src/arch/x86/machine/cpu_identification.c:21`), zero additions, zero
+change to any other rule (5100 → 5096 total, exact match). Full suite:
+3760 passed, 0 failed.
