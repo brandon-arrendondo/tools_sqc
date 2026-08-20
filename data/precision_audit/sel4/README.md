@@ -72,3 +72,52 @@ hunting — teach `check_empty_control_flow` to recognize the `while
 volatile/memory-mapped condition) as intentional, the same way task 379/380
 taught `check_empty_switch_case` to recognize grouped case labels. Filed as
 a follow-up (see todo-sqlite-cli).
+
+## Update: fixed in v0.4.223 (commit ca163f93, task 473)
+
+Both `check_empty_control_flow` (braced-empty `while (cond) { }`/`for`/`do`
+bodies) and `check_no_effect_expression` (bare-semicolon `while (cond);`
+form, including the `while (cond) { ; }` variant) now skip the empty body
+when the loop's condition invokes a function, or reads through
+pointer/field/array indirection *combined with* an explicit
+comparison/bitwise/logical operator — the "polling with a mask/comparison"
+signature that covers essentially every real busy-wait in this sample
+(`*UART_REG(x) & MASK`, `timer->stat != DONE`, `vtd_read(...) & 1`).
+Deliberately narrow: a bare dereference/field-read with no operator
+(`while (*flag);`, `while (!timer->tistat);`) is structurally
+indistinguishable from a forgotten loop body and stays flagged — this is
+pinned down by the pre-existing test `tests/fail/testcases_empty_while_body.c`
+(`while (*flag) { }`), which the fix must not regress.
+
+**Real-world impact** (sqc-0.4.223-ca163f93 vs. sqc-0.4.222-c52f9692, same
+seL4 checkout): MSC12-C's raw finding count on seL4 dropped **23.9%**, 180 →
+137 (all 43 removed were the `while`/bare-semicolon busy-wait "Stray
+semicolon"/"Empty while loop body" messages; every other MSC12-C sub-check's
+count was unchanged), with zero change to any other rule (5143 → 5100 total
+findings, an exact match). Full test suite: 3760 passed, 0 failed — no
+regressions, including the 40-item pre-fix sample re-verified against the
+post-fix run.
+
+**Re-measured precision** on the post-fix run, adjudicating a fresh
+40-finding sample plus tracking all 4 previously-confirmed TPs (all
+double-semicolon typos, all still present — recall held):
+
+| | Pre-fix (0.4.222) | Post-fix (0.4.223) |
+|---|---|---|
+| MSC12-C raw findings | 180 | 137 |
+| Sample labels accumulated | 40 | 59 (union of both samples still present in the post-fix run) |
+| TP (labeled findings) | 4 | 5 |
+| Sample/oracle precision | 10.0% | **8.5%** (`bench realworld-score sqc-0.4.223-ca163f93`) |
+
+The nominal percentage moved within sampling noise (5/59 vs. 4/40) rather
+than jumping, because precision here is bottlenecked by the *other* FP
+families this fix didn't touch (documented no-op stubs, deliberate empty
+switch cases, macro-hidden lock/barrier statements, and — new in this
+sample — two misattribution classes: seL4's Isabelle proof-annotation
+comments (`/** AUXUPD/GHOSTUPD ... */`) inside "empty" if/else branches, and
+an attribute-macro-decorated declaration (`BOOT_BSS rootserver_mem_t
+rootserver;`) misread as a discarded-expression statement). What the fix
+demonstrably did: cut the raw finding volume by a quarter with zero
+recall cost, confirmed against a real, disjoint 40-item resample. The
+remaining FP families are each their own smaller, separate fix (not filed
+as a task yet — none dominates the way busy-wait did).
