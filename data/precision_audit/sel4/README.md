@@ -207,3 +207,48 @@ other rule. Full suite: 3761 passed, 0 failed.
 currently serialize `requires_manual_review` at all — the `?` marker is
 CLI-stdout-only, a gap affecting all 24 rules that set it, not just this
 one. Filed as a follow-up.)
+
+## Update: task 478 fixed in v0.4.227 (commit c89daa9f) — export serialization
+
+The gap noted above is closed: `requires_manual_review` now serializes in
+all four export formats (`JSON`'s own boolean field, SARIF's
+`properties.requiresManualReview` extension bag, and a `[NEEDS MANUAL
+REVIEW]` title prefix + description note for CSV/Excel's fixed
+Azure-DevOps-work-item schema), and `bench/db.py`'s `realworld_violations`
+table gained a matching column so the benchmark pipeline captures the
+signal too. No detection change, no finding-count change. Full suite:
+3761 passed, 0 failed.
+
+## Update: task 475 fixed in v0.4.228 (commit 9b959b7e) — macro-hidden lock/barrier statements
+
+`check_no_effect_expression`'s bare-identifier-as-statement branch now
+skips an identifier when it's a known `#define` object-like macro —
+reusing DCL40-C's existing mechanism (`is_defined_macro_name` against the
+current file's source, plus `ProjectContext::defined_macro_names`
+collected cross-file during `-d` pre-scan and threaded in via
+`set_project_context`) rather than a new name-heuristic. This mirrors the
+rule's existing `call_expression` exception for macros invoked with `()`,
+extended to the parenthesis-less object-like form. Confirmed real: seL4's
+`NODE_LOCK_SYS`/`IPI_MEM_BARRIER`/`SCHED_APPEND_CURRENT_TCB` all have real
+`#define`s in header files (`include/smp/lock.h`,
+`include/arch/*/machine/hardware.h`, `include/object/tcb.h`) expanding to
+a lock acquire/release, a memory-barrier instruction, and a real
+scheduler-queue append respectively.
+
+**Real-world impact**: seL4 MSC12-C findings 120 → 84 (-30%, 36 removed,
+all confirmed bare-macro-identifier statements — the exact family task 475
+was filed for), zero additions, zero change to any other rule (5083 →
+5047 total, exact match — expected, since the fix is fully contained
+inside MSC12-C's own identifier branch and can't touch any other rule's
+checks). Full suite: 3762 passed, 0 failed, including the new pass
+fixture `tests/pass/testcases_object_macro_statement.c`.
+`bench realworld-score 168` (run `sqc-0.4.228-9b959b7e`): recall held at
+5/5 (all previously-confirmed TPs still flagged); labeled-sample precision
+15.6% (5/32) vs. the prior 10.0% (5/50) — not a real precision gain, just
+a shrinking labeled denominator as fixed FPs drop out of the run; 52/84
+(61.9%) of this run's MSC12-C findings remain unlabeled and would need
+delta-adjudication before any precision claim beyond "recall held, raw
+FPs of this family eliminated."
+
+**Still open**: task 476 (seL4's AUXUPD/GHOSTUPD Isabelle proof-annotation
+comments misread as empty if/else branches).
