@@ -1,0 +1,2 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC14-C,curl,lib/curlx/strerr.c,282,FP,"This call is inside '#if defined(HAVE_STRERROR_R) && defined(HAVE_POSIX_STRERROR_R)', explicitly the POSIX (int-returning) variant, and the code correctly treats the return value as an int error code -- the POSIX/GNU return-type ambiguity the rule warns about has already been resolved by the preprocessor guard.",delta_lt3_task550,high

@@ -1,0 +1,7 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+CON04-C,sqlite,src/threads.c,77,FP,p->tid is joined via pthread_join in the cross-file/cross-function sqlite3ThreadJoin() (src/threads.c:97); the checker's join-tracking doesn't look beyond the creating function.,delta_lt3_task550,high
+DCL02-C,sqlite,ext/fts5/fts5_tcl.c,1309,FP,Same checker bug as the lua instance: 'h' and 'n' are not visually similar; a normalization-heuristic false positive.,delta_lt3_task550,medium
+FIO10-C,sqlite,src/os_unix.c,7686,FP,"os_unix.c targets POSIX exclusively, where rename()'s destination-overwrite semantics are well-defined (atomic replace), not implementation-defined; the return value is also checked (if(rename(...))).",delta_lt3_task550,high
+INT00-C,sqlite,ext/fts5/fts5_tcl.c,184,FP,"iCmd is declared 'static sqlite3_int64' (a 64-bit type); %lld is the exactly correct format specifier for it, no data-model assumption is violated.",delta_lt3_task550,high
+INT00-C,sqlite,ext/fts5/fts5_tcl.c,579,FP,"Same pattern as line 184: iCmd is sqlite3_int64, %lld correctly matches.",delta_lt3_task550,high
+INT33-C,sqlite,ext/fts5/fts5_tcl.c,1313,TP,"nSlot is read directly from a Tcl test-script integer argument (Tcl_GetIntFromObj) with no zero-check before being used as the modulo divisor in f5t_fts5HashKey; invoking the Tcl test command with NSLOT=0 crashes with a real divide-by-zero (test-harness-only impact, but a genuine unchecked-modulo violation).",delta_lt3_task550,medium
