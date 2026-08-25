@@ -1,0 +1,10 @@
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcpy_sse2_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:496
+496	../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S: No such file or directory.
+#0  __memcpy_sse2_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:496
+#1  0x00007ffff7e532bb in __GI__IO_file_xsgetn (fp=0x5555555592a0, data=<optimized out>, n=1259) at ./libio/fileops.c:1295
+#2  0x00007ffff7e48715 in __GI__IO_fread (buf=0x0, size=1259, count=1, fp=0x5555555592a0) at ./libio/iofread.c:38
+#3  0x000055555555527e in main (argc=2, argv=0x7fffffffdfb8) at expert_readsqlfromfile_null_poc.c:30
