@@ -1,0 +1,42 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+API07-C,mosquitto,lib/net_mosq.c,539,FP,"addr is memset(0) immediately before strncpy(sizeof-1), so the last byte is guaranteed NUL from the zero-fill.",delta_lt2_task549,high
+API07-C,mosquitto,src/net.c,963,FP,"addr is memset(0) immediately before strncpy(sizeof-1), guaranteeing NUL termination from the zero-fill.",delta_lt2_task549,high
+API07-C,mosquitto,src/subs.c,224,FP,"shared is calloc'd (zero-filled) and strncpy copies exactly slen+1 bytes, which is the full source string including its own NUL terminator.",delta_lt2_task549,high
+API07-C,mosquitto,src/subs.c,556,FP,"child is calloc'd (zero-filled) and strncpy copies len+1 bytes, the exact string length plus terminator.",delta_lt2_task549,high
+CON02-C,mosquitto,src/signals.c,36,TP,flag_reload is a plain bool (not volatile sig_atomic_t) set in handle_signal() and polled unsynchronized in signal__flag_check().,delta_lt2_task549,medium
+CON02-C,mosquitto,src/signals.c,37,TP,flag_log_rotate is a plain bool set in the signal handler and polled unsynchronized in signal__flag_check().,delta_lt2_task549,medium
+CON02-C,mosquitto,src/signals.c,39,TP,flag_db_backup is a plain bool set in the signal handler and polled unsynchronized in signal__flag_check().,delta_lt2_task549,medium
+CON02-C,mosquitto,src/signals.c,41,TP,flag_tree_print is a plain bool set in the signal handler and polled unsynchronized in signal__flag_check().,delta_lt2_task549,medium
+CON02-C,mosquitto,src/signals.c,42,TP,flag_xtreport is a plain bool set in the signal handler and polled unsynchronized in signal__flag_check().,delta_lt2_task549,medium
+CON33-C,mosquitto,src/net.c,113,FP,Broker src/ spawns no pthreads (only signals.c has a Windows-only signal thread); net__print_error's strerror() call runs in a single-threaded broker event loop.,delta_lt2_task549,high
+CON33-C,mosquitto,src/net.c,402,FP,"Same net__print_error() helper, single-threaded broker context, no worker threads in src/.",delta_lt2_task549,high
+CON33-C,mosquitto,src/persist_read.c,568,FP,"Called only during single-threaded startup persistence load, no concurrent broker threads.",delta_lt2_task549,high
+CON34-C,mosquitto,src/net.c,113,FP,"Same as CON33-C finding: broker is single-threaded (no pthread_create in src/), so strerror() has no concurrent-access risk here.",delta_lt2_task549,high
+CON34-C,mosquitto,src/net.c,402,FP,"Same net__print_error() helper, single-threaded broker context.",delta_lt2_task549,high
+CON34-C,mosquitto,src/persist_read.c,568,FP,Single-threaded startup persistence-load error path.,delta_lt2_task549,high
+CON37-C,mosquitto,src/signals.c,76,FP,"signal(SIGINT,...) is called in signal__setup() before any thread is created; broker src/ never calls pthread_create.",delta_lt2_task549,high
+CON37-C,mosquitto,src/signals.c,77,FP,"signal(SIGTERM,...) called in the same single-threaded signal__setup() before any thread spawn.",delta_lt2_task549,high
+CON37-C,mosquitto,src/signals.c,79,FP,"signal(SIGHUP,...) called in single-threaded signal__setup(), no threads active yet.",delta_lt2_task549,high
+CON37-C,mosquitto,src/signals.c,82,FP,"signal(SIGUSR1,...) called in single-threaded signal__setup(); the only pthread/CreateThread call in signals.c happens later (Windows-only, after all POSIX registrations).",delta_lt2_task549,high
+CON37-C,mosquitto,src/signals.c,83,FP,"signal(SIGUSR2,...) called in single-threaded signal__setup(), no threads spawned in broker src/.",delta_lt2_task549,high
+CON37-C,mosquitto,src/signals.c,84,FP,"signal(SIGPIPE, SIG_IGN) called in single-threaded signal__setup(), no threads active.",delta_lt2_task549,high
+CON37-C,mosquitto,src/signals.c,87,FP,"signal(SIGRTMIN,...) called in single-threaded signal__setup(), no threads active.",delta_lt2_task549,high
+ENV34-C,mosquitto,src/logging.c,104,FP,"*ti = localtime(&s) is stored into a local out-parameter and consumed immediately by the caller's strftime() call a few lines later, not held beyond that use.",delta_lt2_task549,high
+ENV34-C,mosquitto,src/net.c,113,FP,"buf = strerror(errno) is passed to log__printf on the very next line, never stored further.",delta_lt2_task549,high
+ENV34-C,mosquitto,src/persist_read.c,568,FP,"err = strerror(errno) is passed to log__printf on the very next line, never stored further.",delta_lt2_task549,high
+FIO17-C,mosquitto,src/persist_read.c,109,FP,"The fread() at line 109 reads a fixed 2-byte uint16_t length prefix (i16temp), not a character/string buffer; the actual string read in persist__read_string_len() explicitly NUL-terminates at s[len]='\\0'.",delta_lt2_task549,high
+INT36-C,mosquitto,libmosquittopp.h,103,FP,"The 'pointer' name in the message is the garbled text 'connect(const char *host, int port' -- this is a default-argument value (int port=1883) in a C++ method declaration, not a pointer initialization; checker parsing bug.",delta_lt2_task549,high
+INT36-C,mosquitto,libmosquittopp.h,106,FP,"Same pattern: garbled name is the connect_async() signature text; int port=1883 is a default parameter value, not a pointer init.",delta_lt2_task549,high
+INT36-C,mosquitto,libmosquittopp.h,141,FP,"Same pattern: garbled name is the socks5_set() signature text; int port=1080 is a default parameter value, not a pointer init.",delta_lt2_task549,high
+MSC37-C,mosquitto,libmosquittopp.h,34,FP,"Line 34 is 'namespace mosqpp{', a namespace declaration, not a function body at all.",delta_lt2_task549,high
+MSC37-C,mosquitto,libmosquittopp.h,90,FP,"Line 90 is 'class mosqpp_EXPORT mosquittopp{', a class declaration, not a function body.",delta_lt2_task549,high
+POS02-C,mosquitto,lib/net_mosq.c,476,FP,"This bind() is in net__try_connect(), the client-side outgoing-connection library code (lib/net_mosq.c is libmosquitto, not the broker); it binds a local interface for an outbound connect, not a privileged server bind requiring root.",delta_lt2_task549,medium
+POS02-C,mosquitto,lib/net_mosq.c,1158,FP,"bind() here targets an ephemeral loopback socketpair (port 0, INADDR_LOOPBACK) used for internal signalling, which never requires elevated privileges.",delta_lt2_task549,high
+POS02-C,mosquitto,lib/net_mosq.c,1163,FP,listen() on the same non-privileged ephemeral loopback socketpair.,delta_lt2_task549,high
+POS02-C,mosquitto,src/net.c,900,FP,"listeners__start() (which calls this bind()) is invoked from main() at line 558, well after drop_privileges() at line 487; the broker has already dropped privileges before this bind executes.",delta_lt2_task549,high
+POS02-C,mosquitto,src/net.c,914,FP,"Same net__socket_listen() call chain, executed after drop_privileges() in main(), so privileges are already dropped by this point.",delta_lt2_task549,high
+POS02-C,mosquitto,src/net.c,983,FP,"Unix-socket bind() in net__socket_listen_unix(), also only reached via listeners__start() after drop_privileges() in main().",delta_lt2_task549,high
+POS02-C,mosquitto,src/net.c,993,FP,"listen() on the same unix socket, reached after privileges are already dropped.",delta_lt2_task549,high
+SIG02-C,mosquitto,src/signals.c,82,TP,"signal(SIGUSR1, handle_signal) triggers flag_db_backup, a genuine normal-operation on-demand backup trigger, not an abnormal-condition handler.",delta_lt2_task549,medium
+SIG02-C,mosquitto,src/signals.c,83,TP,"signal(SIGUSR2, handle_signal) triggers flag_tree_print/flag_xtreport, genuine normal-operation diagnostic-dump triggers.",delta_lt2_task549,medium
+SIG02-C,mosquitto,src/signals.c,84,FP,"Line 84 is signal(SIGPIPE, SIG_IGN), which merely ignores SIGPIPE to prevent termination on broken-pipe writes; it registers no handler and is not an IPC/normal-functionality trigger, contrary to the message's 'connection/data handling' description.",delta_lt2_task549,medium

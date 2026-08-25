@@ -1,0 +1,4 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP30-C,hostap,src/eap_server/eap_server_tnc.c,167,FP,"wpabuf_head(req) and wpabuf_len(req) are both pure read-only accessors on the same object with no side effects, so evaluation order does not matter.",delta_lt2_task549,high
+FIO05-C,hostap,hostapd/hlr_auc_gw.c,505,FP,"fname is milenage_file, set only from a command-line -m option (optarg), i.e. an operator-supplied local config path, not attacker/remote-controlled.",delta_lt2_task549,medium
+MSC37-C,hostap,src/tls/libtommath.c,583,FP,"mp_exptmod() ends with an if/else where both branches explicitly return (mp_exptmod_fast or s_mp_exptmod) under the standard build config (BN_MP_EXPTMOD_FAST_C defined); the trailing dead code after both returns is a documented compiler-warning-suppression stub, not a real fallthrough.",delta_lt2_task549,medium

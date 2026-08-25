@@ -1,0 +1,4 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+FIO05-C,raylib,src/rcore.c,2102,TP,LoadFileText() is a public raylib API opening an arbitrary caller-supplied fileName with fopen and no fstat/ownership check anywhere in the function.,delta_lt2_task549,medium
+FIO05-C,raylib,src/rcore.c,2435,TP,"GetFileLength() opens an arbitrary caller-supplied fileName with fopen; a stat() call is present only as a commented-out alternative, never invoked.",delta_lt2_task549,medium
+INT34-C,raylib,src/rcore.c,3477,FP,"Loop bound 'for (i=1; i<=sizeof(bitLen); i++)' with sizeof(bitLen)==8 keeps the shift amount 8*(sizeof(bitLen)-i) structurally within 0..56, always non-negative and within the 64-bit type width.",delta_lt2_task549,high

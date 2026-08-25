@@ -1,0 +1,9 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+ENV34-C,curl,lib/curlx/timeval.c,264,FP,"tm = gmtime(&intime) is used immediately in the next line (*store = *tm) to copy the struct contents out, never stored beyond that.",delta_lt2_task549,high
+ENV34-C,curl,src/toolx/tool_time.c,53,FP,"tm = localtime(&intime) is used immediately in the next line (*store = *tm) to copy the struct out, never stored beyond that.",delta_lt2_task549,high
+MSC42-C,curl,lib/curl_ntlm_core.c,320,FP,"DES_ecb_encrypt implements the NTLM/LanManager hash per the legacy Microsoft NTLM protocol spec; DES is protocol-mandated for interop, not a free algorithm choice.",delta_lt2_task549,high
+MSC42-C,curl,lib/curl_ntlm_core.c,324,FP,Same NTLM/LM-hash protocol-mandated DES usage in Curl_ntlm_core_lm_resp().,delta_lt2_task549,high
+MSC42-C,curl,lib/curl_ntlm_core.c,328,FP,Same NTLM/LM-hash protocol-mandated DES usage.,delta_lt2_task549,high
+MSC42-C,curl,lib/curl_ntlm_core.c,372,FP,DES usage in Curl_ntlm_core_mk_lm_hash() implementing the mandated LanManager hash algorithm for NTLM interop.,delta_lt2_task549,high
+MSC42-C,curl,lib/curl_ntlm_core.c,376,FP,Same protocol-mandated DES usage for LM hash computation.,delta_lt2_task549,high
+MSC07-C,curl,lib/getinfo.c,261,FP,"Line 261 is a 'case CURLINFO_REDIRECT_COUNT:' label immediately following the prior case's break; case labels are reachable via the switch dispatch, not sequentially unreachable code.",delta_lt2_task549,high

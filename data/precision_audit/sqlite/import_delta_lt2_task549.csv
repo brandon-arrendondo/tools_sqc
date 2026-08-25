@@ -1,0 +1,15 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+DCL00-C,sqlite,ext/fts5/fts5_tcl.c,618,TP,"char c = zType[0]; is only ever compared (c=='b', c=='d', etc.) in the following if/else chain, never reassigned.",delta_lt2_task549,high
+DCL30-C,sqlite,ext/fts5/fts5_tcl.c,81,FP,"'SQLITE_ERROR' is an integer macro constant returned by an int-returning function, not a local pointer variable; checker misparsed the identifier.",delta_lt2_task549,high
+DCL30-C,sqlite,ext/fts5/fts5_tcl.c,111,FP,"*ppDb = db copies db's pointer VALUE through the output parameter (standard idiom), it does not store the address of local variable db, so no dangling pointer results.",delta_lt2_task549,high
+ENV34-C,sqlite,src/date.c,566,FP,"pX = localtime(t) is taken under a mutex and copied out via *pTm = *pX before the mutex is released, the canonical safe pattern for this exact hazard.",delta_lt2_task549,high
+ENV34-C,sqlite,src/date.c,1759,FP,"pTm = gmtime(&t) is taken under a mutex and copied via memcpy(&sNow, pTm, ...) before the mutex is released.",delta_lt2_task549,high
+EXP30-C,sqlite,ext/fts5/fts5_tcl.c,592,FP,"sqlite3_value_blob(apVal[i]) and sqlite3_value_bytes(apVal[i]) are both read-only accessors on the same value object, no side effects.",delta_lt2_task549,high
+FIO47-C,sqlite,ext/fts5/fts5_tcl.c,184,FP,"Format string \f5t_2_%lld\"" has a single %lld specifier correctly matched to the sqlite3_int64 argument iCmd++; there is no %d specifier"," checker misidentified the argument.""",delta_lt2_task549,high
+FIO47-C,sqlite,ext/fts5/fts5_tcl.c,579,FP,"Format string \f5t_%lld\"" has a single %lld specifier correctly matched to sqlite3_int64 iCmd++; no %d specifier present.""",delta_lt2_task549,high
+INT34-C,sqlite,ext/misc/compress.c,64,FP,"Loop bound 'for(i=4; i>=0; i--)' keeps the shift amount 7*(4-i) structurally within 0..28, within the 32-bit unsigned int width.",delta_lt2_task549,high
+MSC07-C,sqlite,ext/fts5/fts5_tcl.c,1123,FP,"Line 1123 is the 'usage:' label reached via 'goto usage;' earlier in the function (line 1102); goto targets are reachable, not dead code after the preceding return.",delta_lt2_task549,high
+MSC37-C,sqlite,src/memjournal.c,403,FP,"sqlite3JournalCreate() unconditionally executes 'return rc;' at the end of the function after the if-block, covering every path.",delta_lt2_task549,high
+PRE11-C,sqlite,ext/fts5/fts5_tcl.c,266,TP,"#define CASE(i,str) case i: assert( strcmp(aSub[i].zName, str)==0 ); literally ends with a trailing semicolon after the assert.",delta_lt2_task549,high
+STR02-C,sqlite,ext/expert/sqlite3expert.c,1442,FP,zSql passed to sqlite3_exec() here is read verbatim from the target database's own sqlite_schema.sql column to mirror its schema into a virtual db; it is not externally-tainted user query data.,delta_lt2_task549,medium
+STR02-C,sqlite,ext/recover/sqlite3recover.c,546,FP,"recoverExec()'s zSql is built via recoverMPrintf, and the primary call sites use %Q-escaped SQL string quoting (e.g. ATTACH %Q AS recovery); this is a database-recovery utility processing its own target file, not a network-facing service concatenating untrusted external input.",delta_lt2_task549,medium
