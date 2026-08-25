@@ -1,0 +1,43 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+ARR37-C,curl,lib/curl_fnmatch.c,77,FP,"p = *pattern where pattern is a const unsigned char** parameter pointing into the caller's pattern buffer, so p++ walks an array-backed string, checker just missed the indirection",delta_arr37_task538,high
+ARR37-C,curl,lib/doh.c,1070,FP,"cp = *buf derived from the caller's DNS response buffer (const unsigned char **buf), so clen = *cp++ walks an array-backed buffer",delta_arr37_task538,high
+ARR37-C,curl,lib/doh.c,1085,FP,"cp is the same buffer-backed pointer as above (cp = *buf), cp += clen stays within the RR buffer",delta_arr37_task538,high
+ARR37-C,curl,lib/doh.c,1091,FP,"cp is the same buffer-backed pointer as above (cp = *buf), clen = *cp++ walks the RR buffer",delta_arr37_task538,high
+ARR37-C,curl,lib/http_aws_sigv4.c,102,FP,"value is the same &l->data[colon]-derived pointer into the header data buffer, value++ walks it",delta_arr37_task538,high
+ARR37-C,curl,lib/http_aws_sigv4.c,112,FP,"value is the same &l->data[colon]-derived pointer into the header data buffer, *value++ walks it",delta_arr37_task538,high
+ARR37-C,curl,lib/http_aws_sigv4.c,93,FP,"value = &l->data[colon] is a pointer into the header's data buffer (l->data), so ++value stays within that array",delta_arr37_task538,high
+ARR37-C,curl,lib/parsedate.c,212,FP,"what = &weekday[0] or &Curl_wkday[0] (both real static arrays) depending on the branch, so what[0]/strlen(what[0]) reads within the array; checker missed the array origin through the conditional assignment",delta_arr37_task538,high
+ARR37-C,curl,lib/parsedate.c,214,FP,"same what pointer as above, initialized from &weekday[0]/&Curl_wkday[0], curl_strnequal(check, what[0], len) reads within the array",delta_arr37_task538,high
+ARR37-C,curl,lib/parsedate.c,216,FP,"same what pointer as above, array-backed via &weekday[0]/&Curl_wkday[0], what++ walks the array within its 7-element bound loop",delta_arr37_task538,high
+ARR37-C,curl,lib/parsedate.c,229,FP,"what = &Curl_month[0] (static array), what[0] reads within the array; checker missed the array origin",delta_arr37_task538,high
+ARR37-C,curl,lib/parsedate.c,231,FP,"same what pointer, array-backed via &Curl_month[0], what++ walks the 12-element array in the bounded loop",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,411,FP,"h = &hostname[len + 1] is a pointer into the hostname buffer, h[2] reads within that buffer",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,412,FP,"h is the same hostname-buffer-derived pointer, h += 2 stays within it",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,414,FP,"h is the same hostname-buffer-derived pointer (h = &hostname[len+1]), zoneid[i++] = *h++ walks within the buffer",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,691,FP,"p = *str where str is a const char** into the caller's path buffer (is_dot's str param), so p[0]/p[1]/p[2] read within an array-backed string",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,739,FP,"p = input (const char *p = input, itself the caller-supplied path buffer), p + 1 stays within that array; the arithmetic result is assigned to input, not p itself",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,751,FP,"p is the same input-buffer-derived pointer (const char *p = input) in the sibling branch, p + 1 stays within the array",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,871,FP,"ptr = &path[2] is a pointer into the path buffer, ptr[0] reads within that buffer",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,876,FP,"ptr is the same path-buffer-derived pointer (ptr = &path[2]), ptr += 9 stays within the buffer per the localhost/127.0.0.1 prefix logic",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,897,FP,"ptr is the same path-buffer-derived pointer, ptr -= 2 backs up within the same buffer (Windows UNC-path case)",delta_arr37_task538,high
+ARR37-C,curl,lib/urlapi.c,946,FP,"p = &url[schemelen + 1] is a pointer into the url buffer, p++ walks within it counting leading slashes",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,351,FP,"ptr = *str where str is the caller's char** into a form-parameter word buffer, so ++ptr walks an array-backed string",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,354,FP,"ptr is the same *str-derived buffer pointer, ptr[1] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,359,FP,"ptr is the same *str-derived buffer pointer, ptr += 2 stays within it (skip escape sequence)",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,370,FP,"ptr is the same *str-derived buffer pointer, ptr[1] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,371,FP,"ptr is the same *str-derived buffer pointer, ++ptr walks it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,376,FP,"ptr is the same *str-derived buffer pointer, ++ptr walks it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,380,FP,"ptr is the same *str-derived buffer pointer, ++ptr walks it in the trailing-data scan loop",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,387,FP,"ptr is the same *str-derived buffer pointer, ++ptr walks it in the fallback non-quoted scan loop",delta_arr37_task538,high
+ARR37-C,curl,src/tool_formparse.c,394,FP,"ptr is the same *str-derived buffer pointer, ++ptr walks it in the final scan loop",delta_arr37_task538,high
+ARR37-C,curl,src/tool_libinfo.c,206,FP,"builtin = built_in_protos, a static array of protocol name pointers, so builtin++ walks that array; checker missed the array origin at loop init",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,164,FP,"pattern = *patternp, a pointer into the caller's URL-glob pattern buffer (const char **patternp), ++pattern walks it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,175,FP,"pattern is the same *patternp-derived buffer pointer, pattern[1] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,176,FP,"pattern is the same *patternp-derived buffer pointer, ++pattern walks it past an escaped char",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,182,FP,"pattern is the same *patternp-derived buffer pointer, pattern++ walks it while copying into glob->buf",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,238,FP,"pattern = *patternp in glob_range, a pointer into the caller's pattern buffer, pattern[1] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,239,FP,"pattern is the same *patternp-derived buffer pointer, pattern[0] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,240,FP,"pattern is the same *patternp-derived buffer pointer, pattern[2] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,241,FP,"pattern is the same *patternp-derived buffer pointer, pattern[3] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,246,FP,"pattern is the same *patternp-derived buffer pointer, pattern[4] reads within it",delta_arr37_task538,high
+ARR37-C,curl,src/tool_urlglob.c,258,FP,"pattern is the same *patternp-derived buffer pointer, pattern += 4 stays within it",delta_arr37_task538,high
