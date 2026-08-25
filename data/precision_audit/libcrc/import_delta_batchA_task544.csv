@@ -1,0 +1,2 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+ERR33-C,libcrc,src/nmea-chk.c,72,FP,"checksum is an unsigned char (0-255) and format \%02hhX\"" always produces exactly 2 hex digits into a 3-byte result buffer"," so snprintf can never return negative or >= 3 here; truncation is provably unreachable given the fixed input range.""",delta_err33_task544

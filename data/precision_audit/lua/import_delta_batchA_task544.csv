@@ -1,0 +1,4 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM30-C,lua,lmem.c,115,FP,"L (lua_State*) is never freed anywhere in lmem.c; grep of the file shows only luaM_free_/callfrealloc operating on 'block', not on L, so 'passing freed pointer L' is a checker mismatch, not a real UAF.",delta_mem30_task544,high
+MEM30-C,lua,lmem.c,134,FP,Same as line 115: L is passed to luaM_saferealloc_ here but L is never freed in this file; no use-after-free exists.,delta_mem30_task544,high
+MEM30-C,lua,lmem.c,194,FP,"Same pattern inside luaM_saferealloc_ calling luaM_realloc_(L,...); L is never freed anywhere in lmem.c.",delta_mem30_task544,high
