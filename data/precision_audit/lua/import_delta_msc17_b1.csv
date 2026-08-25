@@ -1,0 +1,131 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,lua,lapi.c,443,FP,"case LUA_VTABLE: { ... return res; } is a brace-wrapped block whose final statement is a return; sqc's checker inspects only the compound_statement node itself, not its last inner statement.",delta_msc17_task534,high
+MSC17-C,lua,lapi.c,977,FP,case LUA_TTABLE: { ... break; } ends in break inside braces; the case body as a whole is a compound_statement so the literal break is missed.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,985,FP,"case LUA_TUSERDATA: { ... break; } ends in break inside braces, same brace-wrapped compound_statement miss.",delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1180,FP,case LUA_GCSTOP: { g->gcstp = GCSTPUSR; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1184,FP,case LUA_GCRESTART: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1189,FP,case LUA_GCCOLLECT: { luaC_fullgc(...); break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1193,FP,case LUA_GCCOUNT: { res = ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1198,FP,case LUA_GCCOUNTB: { res = ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1202,FP,case LUA_GCSTEP: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1221,FP,case LUA_GCISRUNNING: { res = gcrunning(g); break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1225,FP,case LUA_GCGEN: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1230,FP,case LUA_GCINC: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1235,FP,case LUA_GCPARAM: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1376,FP,"case LUA_VCCL: { ... return """"; } ends in a return inside braces, control never reaches the next case.",delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1384,FP,"case LUA_VLCL: { ... return (name==NULL)?""(no name)"":getstr(name); } ends in a return inside braces.",delta_msc17_task534,high
+MSC17-C,lua,lapi.c,1450,FP,"case LUA_VLCL: { return *getupvalref(L, fidx, n, NULL); } is a single-statement return block, not a fallthrough.",delta_msc17_task534,high
+MSC17-C,lua,lauxlib.c,930,FP,case LUA_TNUMBER: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lbaselib.c,210,FP,case LUA_GCCOUNT: { ...; return 1; } ends in a return inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lbaselib.c,217,FP,case LUA_GCSTEP: { ...; return 1; } ends in a return inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lbaselib.c,224,FP,case LUA_GCISRUNNING: { ...; return 1; } ends in a return inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lbaselib.c,230,FP,"case LUA_GCGEN: { return pushmode(L, lua_gc(L, o)); } is a single-statement return block.",delta_msc17_task534,high
+MSC17-C,lua,lbaselib.c,233,FP,"case LUA_GCINC: { return pushmode(L, lua_gc(L, o)); } is a single-statement return block.",delta_msc17_task534,high
+MSC17-C,lua,lbaselib.c,236,FP,case LUA_GCPARAM: { ...; return 1; } ends in a return inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,98,FP,case VKSTR: { ...; return 1; } ends in a return inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,102,FP,case VCONST: { ...; return 1; } ends in a return inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,821,FP,case VCONST: { const2exp(...); break; } ends in break inside braces (dischargevars).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,828,FP,case VLOCAL: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,834,FP,case VUPVAL: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,839,FP,case VINDEXUP: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,844,FP,case VINDEXI: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,850,FP,case VINDEXSTR: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,856,FP,case VINDEXED: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,862,FP,case VVARGIND: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,868,FP,"case VVARARG: case VCALL: { luaK_setoneret(fs, e); break; } ends in break inside braces.",delta_msc17_task534,high
+MSC17-C,lua,lcode.c,885,FP,"case VNIL: { luaK_nil(fs, reg, 1); break; } ends in break inside braces (discharge2reg).",delta_msc17_task534,high
+MSC17-C,lua,lcode.c,889,FP,case VFALSE: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,893,FP,case VTRUE: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,900,FP,case VK: { luaK_codek(...); break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,904,FP,case VKFLT: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,908,FP,case VKINT: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,912,FP,case VRELOC: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,917,FP,case VNONRELOC: { if (...) ...; break; } ends in a top-level break inside braces even though preceded by an if.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1107,FP,case VLOCAL: { ...; return; } ends in a return inside braces (luaK_storevar).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1112,FP,case VUPVAL: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1117,FP,case VINDEXUP: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1121,FP,case VINDEXI: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1125,FP,case VINDEXSTR: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1133,FP,case VINDEXED: { ...; break; } ends in break inside braces (the preceding VVARGIND case already has an explicit FALLTHROUGH comment).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1182,FP,case VJMP: { ...; break; } ends in break inside braces (luaK_goiftrue).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1187,FP,case VK: case VKFLT: case VKINT: case VKSTR: case VTRUE: { pc = NO_JUMP; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1209,FP,case VJMP: { pc = e->u.info; break; } ends in break inside braces (luaK_goiffalse).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1213,FP,case VNIL: case VFALSE: { pc = NO_JUMP; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1233,FP,case VNIL: case VFALSE: { e->k = VTRUE; break; } ends in break inside braces (codenot).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1237,FP,case VK: case VKFLT: case VKINT: case VKSTR: case VTRUE: { e->k = VFALSE; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1241,FP,"case VJMP: { negatecondition(fs, e); break; } ends in break inside braces.",delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1246,FP,case VRELOC: case VNONRELOC: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1403,FP,case LUA_OPBAND ... LUA_OPBNOT: { ...; return (...); } ends in a return inside braces (validop).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1722,FP,"case OPR_AND: { luaK_goiftrue(fs, v); break; } ends in break inside braces (luaK_infix).",delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1726,FP,"case OPR_OR: { luaK_goiffalse(fs, v); break; } ends in break inside braces.",delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1730,FP,case OPR_CONCAT: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1738,FP,case OPR_SHL: case OPR_SHR: (arith group): { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1745,FP,case OPR_EQ: case OPR_NE: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1752,FP,case OPR_LT: case OPR_LE: case OPR_GT: case OPR_GE: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1794,FP,case OPR_AND: { ...; *e1 = *e2; break; } ends in break inside braces (luaK_posfix).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1800,FP,case OPR_OR: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1806,FP,case OPR_CONCAT: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1811,FP,case OPR_ADD: case OPR_MUL: { codecommutative(...); break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1820,FP,case OPR_DIV: case OPR_IDIV: case OPR_MOD: case OPR_POW: { codearith(...); break; } ends in break inside braces (the preceding OPR_SUB case already has an explicit FALLTHROUGH comment).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1824,FP,case OPR_BAND: case OPR_BOR: case OPR_BXOR: { codebitwise(...); break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1828,FP,case OPR_SHL: { if/else if/else ...; break; } ends in a top-level break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1840,FP,case OPR_SHR: { if/else ...; break; } ends in a top-level break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1847,FP,case OPR_EQ: case OPR_NE: { codeeq(...); break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1856,FP,case OPR_LT: case OPR_LE: { codeorder(...); break; } ends in break inside braces (the preceding OPR_GT/GE case already has an explicit FALLTHROUGH comment).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1945,FP,case OP_RETURN: case OP_TAILCALL: { ...; break; } ends in break inside braces (the preceding OP_RETURN0/1 case already has an explicit FALLTHROUGH comment).,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1952,FP,case OP_GETVARG: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1957,FP,case OP_VARARG: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcode.c,1962,FP,case OP_JMP: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lcorolib.c,134,FP,"case LUA_OK: { if (...) return COS_NORM; else if (...) return COS_DEAD; else return COS_YIELD; } every branch of the nested if/else-if/else returns, so control cannot fall through even though the outer node is an if-statement rather than a literal return.",delta_msc17_task534,high
+MSC17-C,lua,lcorolib.c,180,FP,case COS_DEAD: case COS_YIELD: { ...; if (status == LUA_OK) { ...; return 1; } else { ...; return 2; } } every branch of the trailing if/else returns.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,336,FP,"case 'S': { funcinfo(ar, f); break; } ends in break inside braces (auxgetinfo).",delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,340,FP,case 'l': { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,344,FP,case 'u': { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,356,FP,case 't': { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,368,FP,case 'n': { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,376,FP,case 'r': { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,455,FP,case OP_LOADNIL: { ...; break; } ends in break inside braces (findsetreg).,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,460,FP,case OP_TFORCALL: { change = ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,465,FP,case OP_CALL: case OP_TAILCALL: { change = ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,469,FP,case OP_JMP: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,517,FP,case OP_MOVE: { if (...) return basicgetobjname(...); break; } ends in a top-level break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,523,FP,case OP_GETUPVAL: { *name = ...; return strupval; } ends in a return inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,578,FP,"case OP_GETTABUP: { ...; return isEnv(p, lastpc, i, 1); } ends in a return inside braces (getobjname).",delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,583,FP,"case OP_GETTABLE: case OP_GETVARG: { ...; return isEnv(p, lastpc, i, 0); } ends in a return inside braces.",delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,588,FP,"case OP_GETI: { *name = ""integer index""; return ""field""; } ends in a return inside braces.",delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,592,FP,"case OP_GETFIELD: { ...; return isEnv(p, lastpc, i, 0); } ends in a return inside braces.",delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,597,FP,"case OP_SELF: { ...; return ""method""; } ends in a return inside braces.",delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,623,FP,"case OP_TFORCALL: { *name = ""for iterator""; return ""for iterator""; } ends in a return inside braces (funcnamefromcode).",delta_msc17_task534,high
+MSC17-C,lua,ldebug.c,635,FP,case OP_MMBIN: case OP_MMBINI: case OP_MMBINK: { tm = ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,ldo.c,680,FP,case LUA_VLCL: { ...; return -1; } ends in a return inside braces (luaD_pretailcall).,delta_msc17_task534,high
+MSC17-C,lua,ldo.c,728,FP,case LUA_VLCL: { ...; return ci; } ends in a return inside braces (luaD_precall).,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,116,FP,case LUA_VTABLE: { res = luaH_size(...); break; } ends in break inside braces (objsize).,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,120,FP,case LUA_VLCL: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,125,FP,case LUA_VCCL: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,130,FP,case LUA_VUSERDATA: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,135,FP,case LUA_VPROTO: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,139,FP,case LUA_VTHREAD: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,143,FP,case LUA_VSHRSTR: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,148,FP,case LUA_VLNGSTR: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,153,FP,case LUA_VUPVAL: { res = sizeof(UpVal); break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,170,FP,case LUA_VUSERDATA: { ...; return &u->gclist; } ends in a return inside braces (getgclist).,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,343,FP,case LUA_VSHRSTR: case LUA_VLNGSTR: { set2black(o); break; } ends in break inside braces (reallymarkobject).,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,347,FP,case LUA_VUPVAL: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,366,FP,case LUA_VLCL: case LUA_VCCL: case LUA_VTABLE: case LUA_VTHREAD: case LUA_VPROTO: { linkobjgclist(...); break; } ends in break inside braces (the preceding LUA_VUSERDATA case already has an explicit FALLTHROUGH comment).,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,845,FP,case LUA_VLCL: { ...; break; } ends in break inside braces (freeobj).,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,850,FP,case LUA_VCCL: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,861,FP,case LUA_VUSERDATA: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,866,FP,case LUA_VSHRSTR: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,872,FP,case LUA_VLNGSTR: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1623,FP,case GCSpause: { ...; break; } ends in break inside braces (singlestep).,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1629,FP,case GCSpropagate: { if/else ...; break; } ends in a top-level break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1638,FP,case GCSenteratomic: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1648,FP,case GCSswpallgc: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1653,FP,case GCSswpfinobj: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1658,FP,case GCSswptobefnz: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1663,FP,case GCSswpend: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,lgc.c,1669,FP,case GCScallfin: { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,llex.c,304,FP,"case EOZ: { ...; lexerror(ls, msg, TK_EOS); break; } ends in a top-level break inside braces (read_long_string), and lexerror itself never returns.",delta_msc17_task534,high
+MSC17-C,lua,llex.c,311,FP,case ']': { if (...) { ...; goto endloop; } break; } ends in a top-level break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,llex.c,318,FP,case '\n': case '\r': { ...; break; } ends in break inside braces.,delta_msc17_task534,high
+MSC17-C,lua,llex.c,415,FP,case '\\': { ...; no_save: break; } ends in a labeled break statement inside braces (read_string).,delta_msc17_task534,high

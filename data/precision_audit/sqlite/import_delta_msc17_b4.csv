@@ -1,0 +1,131 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,sqlite,src/expr.c,5089,FP,"case TK_INTEGER's body is a scoping block whose only inner statement is ""return target;"" (line 5091); sqc only saw the block's outer node kind, not the return inside it",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5093,FP,"case TK_TRUEFALSE's block ends with ""return target;"" (line 5095), a real terminator nested inside the case's own scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5104,FP,"case TK_STRING's block ends with ""return target;"" (line 5107), nested inside the case's scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5109,FP,"case TK_NULLS's block ends with ""return target;"" (line 5113), nested inside the case's scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5115,FP,"the default: block ends with ""return target;"" (line 5122); it cannot fall into the later case TK_BLOB since it always returns first",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5140,FP,"case TK_VARIABLE's block ends with ""return target;"" (line 5145), nested inside the case's scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5147,FP,"case TK_REGISTER's entire body is ""{ return pExpr->iTable; }"" - it always returns and never reaches TK_CAST",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5171,FP,"case TK_EQ (shared body for TK_IS/TK_LT.../TK_EQ) ends with an explicit top-level ""break;"" at line 5207",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5210,FP,"case TK_OR's body ends with an explicit top-level ""break;"" at line 5212",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5223,FP,"case TK_CONCAT's shared arithmetic-op body ends with an explicit top-level ""break;"" at line 5251",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5253,FP,"case TK_UMINUS ends with an explicit top-level ""break;"" at line 5275 (both integer/float sub-branches instead return early)",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5278,FP,"case TK_NOT (shared with TK_BITNOT) ends with an explicit top-level ""break;"" at line 5284",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5286,FP,"case TK_TRUTH ends with an explicit top-level ""break;"" at line 5296",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5299,FP,"case TK_NOTNULL (shared with TK_ISNULL) ends with an explicit top-level ""break;"" at line 5311",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5313,FP,"case TK_AGG_FUNCTION ends with an explicit top-level ""break;"" at line 5324",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5326,FP,"case TK_FUNCTION's block ends with ""return target;"" (line 5450), nested inside the case's own scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5510,FP,"case TK_BETWEEN's block ends with ""return target;"" (line 5512), nested inside the case's own scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5514,FP,"case TK_COLLATE ends in an if/else where the if branch returns (line 5525) and the else branch does a goto (line 5528); every path terminates, the outer if-statement's node kind is just not literally return/goto",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5532,FP,"case TK_UPLUS (shared with TK_SPAN) body is ""pExpr = pExpr->pLeft; goto expr_code_doover;"" (line 5534), a real goto terminator nested inside the case's scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5537,FP,"case TK_TRIGGER ends with an explicit top-level ""break;"" at line 5594",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5597,FP,"case TK_VECTOR ends with an explicit top-level ""break;"" at line 5599",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5608,FP,"case TK_IF_NULL_ROW ends with an explicit top-level ""break;"" at line 5639",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6114,FP,"case TK_OR (shared with TK_AND, in sqlite3ExprIfTrue) ends with an explicit top-level ""break;"" at line 6140",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6142,FP,"case TK_NOT ends with an explicit top-level ""break;"" at line 6145",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6147,FP,"case TK_TRUTH ends with an explicit top-level ""break;"" at line 6162",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6165,FP,"case TK_ISNOT (shared with TK_IS) ends with the ""/* no break */ deliberate_fall_through"" marker at line 6170 - a code annotation, not a plain text comment, so sqc's comment scan misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6176,FP,"case TK_EQ (shared TK_LT.../TK_EQ body) ends with an explicit top-level ""break;"" at line 6208",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6211,FP,"case TK_NOTNULL (shared with TK_ISNULL) ends with an explicit top-level ""break;"" at line 6220",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6222,FP,"case TK_BETWEEN ends with an explicit top-level ""break;"" at line 6225",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6311,FP,"case TK_OR (shared with TK_AND, in sqlite3ExprIfFalse) ends with an explicit top-level ""break;"" at line 6337",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6339,FP,"case TK_NOT ends with an explicit top-level ""break;"" at line 6342",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6344,FP,"case TK_TRUTH ends with an explicit top-level ""break;"" at line 6362",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6365,FP,"case TK_ISNOT (shared with TK_IS) ends with the ""/* no break */ deliberate_fall_through"" marker at line 6370, a code annotation not caught by a plain-text comment scan",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6376,FP,"case TK_EQ (shared TK_LT.../TK_EQ body) ends with an explicit top-level ""break;"" at line 6408",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6411,FP,"case TK_NOTNULL (shared with TK_ISNULL) ends with an explicit top-level ""break;"" at line 6418",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6420,FP,"case TK_BETWEEN ends with an explicit top-level ""break;"" at line 6423",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6691,FP,"case TK_IN's block ends with ""return exprImpliesNotNull(...)"" (line 6694), nested inside the case's own scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6696,FP,"case TK_BETWEEN's block ends with ""return exprImpliesNotNull(...)"" (line 6708), nested inside the case's own scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6721,FP,"case TK_CONCAT (end of TK_EQ.../TK_CONCAT chain) ends with ""seenNot = 1; /* no break */ deliberate_fall_through"" (line 6723), a code annotation not caught by a plain-text comment scan",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6727,FP,"case TK_SLASH (end of TK_STAR/TK_REM/TK_BITAND/TK_SLASH chain) ends with an if that returns plus ""/* no break */ deliberate_fall_through"" (line 6729), a code annotation not caught by a plain-text comment scan",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6734,FP,"case TK_UMINUS (end of TK_SPAN/TK_COLLATE/TK_UPLUS/TK_UMINUS chain) body is ""return exprImpliesNotNull(...)"" (line 6735), a plain return nested in the case's scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6737,FP,"case TK_TRUTH ends with a return statement (line 6740) reached after two early ""if(...) return 0;"" guards; every path returns, nested in the case's scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,6960,FP,"case TK_GE (end of TK_EQ...TK_GE chain) ends with a guarded ""return WRC_Prune;"" then ""/* no break */ deliberate_fall_through"" at line 6982, a code annotation not caught by a plain-text comment scan",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,7393,FP,"the default: block ends with ""return WRC_Prune;"" (line 7431) after a series of early ""if(...) break;"" guards; the outer compound block's node kind isn't literally return but its final statement is",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,7435,FP,"case TK_COLUMN (shared with TK_IF_NULL_ROW/TK_AGG_COLUMN) block ends with ""return WRC_Continue;"" (line 7451), nested inside the case's own scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,126,FP,"case SQLITE_FLOAT (shared with SQLITE_BLOB/SQLITE_INTEGER) in lengthFunc ends with an explicit top-level ""break;"" at line 128",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,130,FP,"case SQLITE_TEXT in lengthFunc ends with an explicit top-level ""break;"" at line 143",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,163,FP,"case SQLITE_BLOB in bytelengthFunc ends with an explicit top-level ""break;"" at line 165",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,168,FP,"case SQLITE_FLOAT (shared with SQLITE_INTEGER) in bytelengthFunc ends with an explicit top-level ""break;"" at line 171",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,173,FP,"case SQLITE_TEXT in bytelengthFunc ends with an explicit top-level ""break;"" at line 179",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,198,FP,"case SQLITE_INTEGER in absFunc ends with an explicit top-level ""break;"" at line 211",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,213,FP,"case SQLITE_NULL in absFunc ends with an explicit top-level ""break;"" at line 216",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,1100,FP,"case SQLITE_FLOAT in sqlite3QuoteValue ends with an explicit top-level ""break;"" at line 1113",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,1115,FP,"case SQLITE_INTEGER in sqlite3QuoteValue ends with an explicit top-level ""break;"" at line 1117",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,1119,FP,"case SQLITE_BLOB in sqlite3QuoteValue ends with an explicit top-level ""break;"" at line 1137",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,1139,FP,"case SQLITE_TEXT in sqlite3QuoteValue ends with an explicit top-level ""break;"" at line 1142",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,2467,FP,"case SQLITE_INTEGER in ceilingFunc ends with an explicit top-level ""break;"" at line 2469",delta_msc17_task534,high
+MSC17-C,sqlite,src/func.c,2471,FP,"case SQLITE_FLOAT in ceilingFunc ends with an explicit top-level ""break;"" at line 2474",delta_msc17_task534,high
+MSC17-C,sqlite,src/insert.c,2008,FP,"case OE_Replace ends with an explicit top-level ""break;"" at line 2016",delta_msc17_task534,high
+MSC17-C,sqlite,src/insert.c,2018,FP,"case OE_Abort ends with the ""/* no break */ deliberate_fall_through"" marker at line 2020 before falling into OE_Rollback/OE_Fail, a code annotation not caught by a plain-text comment scan",delta_msc17_task534,high
+MSC17-C,sqlite,src/insert.c,2301,FP,"the default: label ends with ""onError = OE_Abort; /* no break */ deliberate_fall_through"" at line 2303, a code annotation not caught by a plain-text comment scan",delta_msc17_task534,high
+MSC17-C,sqlite,src/insert.c,2307,FP,"case OE_Fail (shared body for OE_Rollback/OE_Abort/OE_Fail) ends with an explicit top-level ""break;"" at line 2312",delta_msc17_task534,high
+MSC17-C,sqlite,src/insert.c,2314,FP,"case OE_Replace ends with an explicit top-level ""break;"" at line 2359",delta_msc17_task534,high
+MSC17-C,sqlite,src/insert.c,2580,FP,"case OE_Fail (shared body for OE_Rollback/OE_Abort/OE_Fail) ends with an explicit top-level ""break;"" at line 2585",delta_msc17_task534,high
+MSC17-C,sqlite,src/insert.c,2593,FP,"case OE_Ignore ends with an explicit top-level ""break;"" at line 2596",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,798,FP,"case SQLITE_NULL in jsonAppendSqlValue ends with an explicit top-level ""break;"" at line 800",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,802,FP,"case SQLITE_FLOAT in jsonAppendSqlValue ends with an explicit top-level ""break;"" at line 804",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,806,FP,"case SQLITE_INTEGER in jsonAppendSqlValue ends with an explicit top-level ""break;"" at line 810",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,812,FP,"case SQLITE_TEXT in jsonAppendSqlValue ends with an explicit top-level ""break;"" at line 820",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1018,FP,"case 0x20 (shared whitespace-byte chain) in json5Whitespace ends with ""n++; break;"" at line 1020",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1022,FP,"case '/' in json5Whitespace ends with ""goto whitespace_done;"" at line 1046, a real goto terminator nested in the case's scoping braces",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1048,FP,"case 0xc2 in json5Whitespace ends with ""goto whitespace_done;"" at line 1053",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1055,FP,"case 0xe1 in json5Whitespace ends with ""goto whitespace_done;"" at line 1060",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1062,FP,"case 0xe2 in json5Whitespace ends with ""goto whitespace_done;"" at line 1074",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1076,FP,"case 0xe3 in json5Whitespace ends with ""goto whitespace_done;"" at line 1081",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1083,FP,"case 0xef in json5Whitespace ends with ""goto whitespace_done;"" at line 1088",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1380,FP,"case JSONB_FALSE (shared with JSONB_NULL/JSONB_TRUE) in jsonbValidityCheck body is a single ""return n+sz==1 ? 0 : i+1;"" statement, always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1383,FP,"case JSONB_INT in jsonbValidityCheck ends with ""return 0;"" at line 1398",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1400,FP,"case JSONB_INT5 in jsonbValidityCheck ends with ""return 0;"" at line 1418",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1421,FP,"case JSONB_FLOAT5 (shared with JSONB_FLOAT) in jsonbValidityCheck ends with ""return 0;"" at line 1463",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1465,FP,"case JSONB_TEXT in jsonbValidityCheck ends with ""return 0;"" at line 1472",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1475,FP,"case JSONB_TEXT5 (shared with JSONB_TEXTJ) in jsonbValidityCheck ends with ""return 0;"" at line 1504",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1506,FP,"case JSONB_TEXTRAW in jsonbValidityCheck's entire body is ""{ return 0; }""",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1509,FP,"case JSONB_ARRAY in jsonbValidityCheck ends with ""return 0;"" at line 1523",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1525,FP,"case JSONB_OBJECT in jsonbValidityCheck ends with ""return 0;"" at line 1546",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1579,FP,"case '{' in jsonTranslateTextToBlob ends with ""return j+1;"" at line 1678",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1680,FP,"case '[' in jsonTranslateTextToBlob ends with ""return j+1;"" at line 1731",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1733,FP,"case '\''' body is ""pParse->hasNonstd=1; opcode=JSONB_TEXT; goto parse_string;"" (line 1738), a real goto terminator; the case label appears inside a shared, still-open block with case '\"' which likely confused the checker's brace-based case-boundary detection",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1801,FP,"case 't' in jsonTranslateTextToBlob ends with ""return -1;"" at line 1807",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1809,FP,"case 'f' ends with ""return -1;"" at line 1815",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1817,FP,"case '+' body is ""...; t = 0x00; goto parse_number;"" (line 1821), a real goto terminator; the label sits in a shared open block with subsequent case '.'/'-'.../'9' labels",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1959,FP,"case '}' ends with ""return -2;"" at line 1961",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1963,FP,"case ']' ends with ""return -3;"" at line 1965",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1967,FP,"case ',' ends with ""return -4;"" at line 1969",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1971,FP,"case ':' ends with ""return -5;"" at line 1973",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1975,FP,"case 0 body is ""{ return 0; }""",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1981,FP,"case 0x20 (shared whitespace chain 0x09/0x0a/0x0d/0x20) ends with ""goto json_parse_restart;"" at line 1983, a real goto terminator",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,1992,FP,"case 0xef (shared byte chain 0x0b/0x0c/'/'/0xc2/0xe1/0xe2/0xe3/0xef) ends with ""return -1;"" at line 2000",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2002,FP,"case 'n' body ends with the comment ""/* fall-through into the default case that checks for NaN */"" plus the ""deliberate_fall_through"" marker (lines 2007-2008), explicitly documenting the intentional fallthrough into default",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2198,FP,"case JSONB_NULL in jsonTranslateBlobToText ends with ""return i+1;"" at line 2200",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2202,FP,"case JSONB_TRUE ends with ""return i+1;"" at line 2204",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2206,FP,"case JSONB_FALSE ends with ""return i+1;"" at line 2208",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2211,FP,"case JSONB_FLOAT (shared with JSONB_INT) ends with an explicit top-level ""break;"" at line 2214",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2216,FP,"case JSONB_INT5 ends with an explicit top-level ""break;"" at line 2239",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2241,FP,"case JSONB_FLOAT5 ends with an explicit top-level ""break;"" at line 2258",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2261,FP,"case JSONB_TEXTJ (shared with JSONB_TEXT) ends with an explicit top-level ""break;"" at line 2268",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2270,FP,"case JSONB_TEXT5 ends with an explicit top-level ""break;"" at line 2358",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2360,FP,"case JSONB_TEXTRAW ends with an explicit top-level ""break;"" at line 2362",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2364,FP,"case JSONB_ARRAY ends with an explicit top-level ""break;"" at line 2375",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2377,FP,"case JSONB_OBJECT ends with an explicit top-level ""break;"" at line 2389",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2450,FP,"case JSONB_ARRAY in jsonTranslateBlobToPrettyText ends with an explicit top-level ""break;"" at line 2469",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2471,FP,"case JSONB_OBJECT in jsonTranslateBlobToPrettyText ends with an explicit top-level ""break;"" at line 2496",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2572,FP,"the default: label in jsonBlobOverwrite ends with an explicit top-level ""break;"" at line 2576",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2578,FP,"case 12 ends with an explicit top-level ""break;"" at line 2582",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2584,FP,"case 13 ends with an explicit top-level ""break;"" at line 2588",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2590,FP,"case 14 ends with an explicit top-level ""break;"" at line 2594",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2712,FP,"case 'u' in jsonUnescapeOneChar ends in an if/else where both branches return (lines 2726 and 2729); every path terminates even though the outer node is an if-statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2732,FP,"case 'b' body is ""{ *piOut='\b'; return 2; }"", always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2733,FP,"case 'f' body is ""{ *piOut='\f'; return 2; }"", always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2734,FP,"case 'n' body is ""{ *piOut='\n'; return 2; }"", always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2735,FP,"case 'r' body is ""{ *piOut='\r'; return 2; }"", always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2736,FP,"case 't' body is ""{ *piOut='\t'; return 2; }"", always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2737,FP,"case 'v' body is ""{ *piOut='\v'; return 2; }"", always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2738,FP,"case '0' ends with ""return 2;"" at line 2751 (after ifdef-guarded assignment)",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2756,FP,"case '\\' (shared with '\'', '\"', '/') body is ""{ *piOut=z[1]; return 2; }"", always returning",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2757,FP,"case 'x' ends with ""return 4;"" at line 2763",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,2767,FP,"case '\n' (shared with 0xe2, '\r') ends in an if/elseif/else chain where every branch returns (lines 2771, 2774, 2776, 2779); every path terminates even though the outer node is an if-statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3204,FP,"case JSONB_NULL in jsonReturnFromBlob ends with an explicit top-level ""break;"" at line 3207",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3209,FP,"case JSONB_TRUE ends with an explicit top-level ""break;"" at line 3212",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3214,FP,"case JSONB_FALSE ends with an explicit top-level ""break;"" at line 3217",delta_msc17_task534,high

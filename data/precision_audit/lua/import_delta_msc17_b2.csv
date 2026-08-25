@@ -1,0 +1,128 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,lua,llex.c,433,FP,"case 'z' block ends with `goto no_save;` at line 440 inside the braced compound body; sqc's checker sees the wrapping compound_statement as the last top-level statement and misses the inner goto",delta_msc17_task534,high
+MSC17-C,lua,llex.c,471,FP,"case '\n': case '\r': body ends with `break;` at line 473 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,llex.c,475,FP,"stacked space-case labels' body ends with `break;` at line 477 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,llex.c,479,FP,"case '-' body ends with `break;` at line 496 after the comment-skip loop, inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,llex.c,498,FP,"case '[' body ends with `return '[';` at line 506, inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,llex.c,508,FP,"case '=' body's if/else both return (lines 510-511), fully terminating inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,llex.c,513,FP,"case '<' body's if/else-if/else chain all return (lines 515-517), fully terminating",delta_msc17_task534,high
+MSC17-C,lua,llex.c,519,FP,"case '>' body's if/else-if/else chain all return (lines 521-523), fully terminating",delta_msc17_task534,high
+MSC17-C,lua,llex.c,525,FP,"case '/' body's if/else both return (lines 527-528), fully terminating",delta_msc17_task534,high
+MSC17-C,lua,llex.c,530,FP,"case '~' body's if/else both return (lines 532-533), fully terminating",delta_msc17_task534,high
+MSC17-C,lua,llex.c,535,FP,"case ':' body's if/else both return (lines 537-538), fully terminating",delta_msc17_task534,high
+MSC17-C,lua,llex.c,540,FP,"case '\"'/'\'' body ends with `return TK_STRING;` at line 542",delta_msc17_task534,high
+MSC17-C,lua,llex.c,544,FP,"case '.' body's if/else-if/else chain all return (lines 546-552), fully terminating",delta_msc17_task534,high
+MSC17-C,lua,llex.c,555,FP,"case '0'-'9' body is a single `return read_numeral(ls, seminfo);` at line 556, wrapped in braces",delta_msc17_task534,high
+MSC17-C,lua,llex.c,558,FP,"case EOZ body is a single `return TK_EOS;` at line 559, wrapped in braces",delta_msc17_task534,high
+MSC17-C,lua,lmathlib.c,588,FP,"case 0 body ends with `return 1;` at line 591 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lmathlib.c,592,FP,"case 1 body ends with `break;` at line 599 after the inner if returns, inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lmathlib.c,601,FP,"case 2 body ends with `break;` at line 604 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,156,FP,"stacked bitwise-op case labels' body has if/else both returning (lines 158-162), fully terminating inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,164,FP,"case LUA_OPDIV/LUA_OPPOW body's if/else both return (lines 166-170), fully terminating",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,603,FP,"case 's' body ends with `break;` at line 607 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,609,FP,"case 'c' body ends with `break;` at line 612 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,614,FP,"case 'd' body ends with `break;` at line 618 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,620,FP,"case 'I' body ends with `break;` at line 624 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,626,FP,"case 'f' body ends with `break;` at line 630 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,632,FP,"case 'p' body ends with `break;` at line 637 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,639,FP,"case 'U' body ends with `break;` at line 644 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lobject.c,646,FP,"case '%' body ends with `break;` at line 648 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,290,FP,"case VCONST body ends with `break;` at line 292 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,294,FP,"case VLOCAL/VVARGVAR body ends with `break;` at line 298 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,300,FP,"case VUPVAL body ends with `break;` at line 304 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,310,FP,"case VINDEXUP/VINDEXSTR/VINDEXED body ends with `break;` at line 313 inside the braced block (the actual intentional fallthrough into this label from case VVARGIND at line 309 is already marked with a '/* FALLTHROUGH */' comment sqc correctly honors)",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,995,FP,"case TK_NAME (field) body ends with `break;` at line 1000 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1002,FP,"case '[' body ends with `break;` at line 1004 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1076,FP,"case TK_NAME (parlist) body ends with `break;` at line 1079 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1081,FP,"case TK_DOTS body ends with `break;` at line 1088 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1146,FP,"case '(' body ends with `break;` at line 1156 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1158,FP,"case '{' body ends with `break;` at line 1160 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1162,FP,"case TK_STRING body ends with `break;` at line 1165 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1201,FP,"case '(' body ends with `return;` at line 1207 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1209,FP,"case TK_NAME body ends with `return;` at line 1211 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1227,FP,"case '.' body ends with `break;` at line 1229 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1231,FP,"case '[' body ends with `break;` at line 1236 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1238,FP,"case ':' body ends with `break;` at line 1244 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1246,FP,"case '('/TK_STRING/'{' body ends with `break;` at line 1249 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1261,FP,"case TK_FLT body ends with `break;` at line 1264 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1266,FP,"case TK_INT body ends with `break;` at line 1269 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1271,FP,"case TK_STRING body ends with `break;` at line 1273 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1275,FP,"case TK_NIL body ends with `break;` at line 1277 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1279,FP,"case TK_TRUE body ends with `break;` at line 1281 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1283,FP,"case TK_FALSE body ends with `break;` at line 1285 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1287,FP,"case TK_DOTS body ends with `break;` at line 1292 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1294,FP,"case '{' body ends with `return;` at line 1296 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,1298,FP,"case TK_FUNCTION body ends with `return;` at line 1301 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2065,FP,"case ';' body ends with `break;` at line 2067 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2069,FP,"case TK_IF body ends with `break;` at line 2071 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2073,FP,"case TK_WHILE body ends with `break;` at line 2075 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2077,FP,"case TK_DO body ends with `break;` at line 2081 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2083,FP,"case TK_FOR body ends with `break;` at line 2085 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2087,FP,"case TK_REPEAT body ends with `break;` at line 2089 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2091,FP,"case TK_FUNCTION body ends with `break;` at line 2093 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2095,FP,"case TK_LOCAL body ends with `break;` at line 2101 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2103,FP,"case TK_GLOBAL body ends with `break;` at line 2105 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2107,FP,"case TK_DBCOLON body ends with `break;` at line 2110 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2112,FP,"case TK_RETURN body ends with `break;` at line 2115 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lparser.c,2117,FP,"case TK_BREAK body ends with `break;` at line 2119 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,407,FP,"case L_ESC (classend) body ends with `return p+1;` at line 410 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,412,FP,"case '[' body ends with `return p+1;` at line 420 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,578,FP,"case '(' body ends with `break;` at line 583 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,585,FP,"case ')' body ends with `break;` at line 587 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,589,FP,"case '$' body ends with `break;` at line 593 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,595,FP,"case L_ESC (match) body ends with `break;` at line 629 after the nested switch, inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,597,FP,"case 'b' body ends with `break;` at line 602 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,604,FP,"case 'f' body ends with `break;` at line 616 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,620,FP,"stacked digit-case labels' body ends with `break;` at line 625 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,643,FP,"case '?' body ends with `break;` at line 650 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,919,FP,"case LUA_TFUNCTION body ends with `break;` at line 924 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,926,FP,"case LUA_TTABLE body ends with `break;` at line 929 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1187,FP,"case LUA_TSTRING body ends with `break;` at line 1191 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1193,FP,"case LUA_TNUMBER body ends with `break;` at line 1206 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1208,FP,"case LUA_TNIL/LUA_TBOOLEAN body ends with `break;` at line 1211 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1306,FP,"case 'c' body ends with `break;` at line 1309 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1317,FP,"case 'o'/'x'/'X' sets flags then falls into the `intcase:` label at line 1319, which is the same shared entry point explicitly reached via `goto intcase;` from case 'd'/'i' (line 1313) and case 'u' (line 1316); this is a deliberate shared-code convergence, not an accidental bug",delta_msc17_task534,medium
+MSC17-C,lua,lstrlib.c,1336,FP,"case 'e'/'E'/'g'/'G' body ends with `break;` at line 1341 inside the braced block (the preceding case 'f' already carries its own '/* FALLTHROUGH */' comment that sqc correctly honors separately)",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1343,FP,"case 'p' body ends with `break;` at line 1351 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1353,FP,"case 'q' body ends with `break;` at line 1357 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1359,FP,"case 's' body ends with `break;` at line 1376 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1531,FP,"case '!' body ends with `break;` at line 1534 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1637,FP,"case Kint body ends with `break;` at line 1644 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1646,FP,"case Kuint body ends with `break;` at line 1652 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1654,FP,"case Kfloat body ends with `break;` at line 1660 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1662,FP,"case Knumber body ends with `break;` at line 1668 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1670,FP,"case Kdouble body ends with `break;` at line 1676 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1678,FP,"case Kchar body ends with `break;` at line 1689 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1691,FP,"case Kstring body ends with `break;` at line 1701 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1703,FP,"case Kzstr body ends with `break;` at line 1710 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1799,FP,"case Kint/Kuint (unpack) body ends with `break;` at line 1803 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1805,FP,"case Kfloat (unpack) body ends with `break;` at line 1809 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1811,FP,"case Knumber (unpack) body ends with `break;` at line 1815 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1817,FP,"case Kdouble (unpack) body ends with `break;` at line 1821 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1823,FP,"case Kchar (unpack) body ends with `break;` at line 1825 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1827,FP,"case Kstring (unpack) body ends with `break;` at line 1833 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lstrlib.c,1835,FP,"case Kzstr (unpack) body ends with `break;` at line 1841 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltable.c,190,FP,"case LUA_VNUMINT body ends with `return hashint(t, i);` at line 192 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltable.c,194,FP,"case LUA_VNUMFLT body ends with `return hashmod(...)` at line 196 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltable.c,198,FP,"case LUA_VSHRSTR body ends with `return hashstr(t, ts);` at line 200 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltable.c,202,FP,"case LUA_VLNGSTR body ends with `return hashpow2(...)` at line 204 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltable.c,210,FP,"case LUA_VLIGHTUSERDATA body ends with `return hashpointer(t, p);` at line 212 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltable.c,214,FP,"case LUA_VLCF body ends with `return hashpointer(t, f);` at line 216 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltablib.c,79,FP,"case 2 body ends with `break;` at line 81 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,ltablib.c,83,FP,"case 3 body ends with `break;` at line 93 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lua.c,363,FP,"case 'e'/'l' body ends with `break;` at line 372 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lundump.c,232,FP,"case LUA_VSHRSTR/LUA_VLNGSTR body ends with `break;` at line 239 inside the braced block (adjacent non-braced cases at lines 220-230 with a plain trailing `break;` are correctly not flagged, confirming the checker only misses braced-block bodies)",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,588,FP,"case LUA_VNUMINT body ends with a `return (...)` expression at line 592-593 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,595,FP,"case LUA_VNUMFLT body ends with a `return (...)` expression at line 597-598 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,600,FP,"case LUA_VSHRSTR/LUA_VLNGSTR body ends with `return luaS_eqstr(...)` at line 604 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,625,FP,"case LUA_VUSERDATA body ends with `break;  /* will try TM */` at line 631, exiting the switch to shared post-switch metamethod-call code rather than falling into the next case",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,633,FP,"case LUA_VTABLE body ends with `break;` at line 639, exiting the switch to shared post-switch metamethod-call code rather than falling into the next case",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,734,FP,"case LUA_VTABLE (objlen) body ends with `return;` at line 739 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,741,FP,"case LUA_VSHRSTR body ends with `return;` at line 743 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,745,FP,"case LUA_VLNGSTR body ends with `return;` at line 747 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,861,FP,"case OP_MMBIN/OP_MMBINI/OP_MMBINK body ends with `break;` at line 863 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,867,FP,"stacked opcode-case labels' body ends with `break;` at line 869 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,874,FP,"case OP_EQ (stacked with OP_LT/LE/LTI/LEI/GTI/GEI) body ends with `break;` at line 880 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,882,FP,"case OP_CONCAT body ends with `break;` at line 889 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,891,FP,"case OP_CLOSE body ends with `break;` at line 893 inside the braced block",delta_msc17_task534,high
+MSC17-C,lua,lvm.c,895,FP,"case OP_RETURN body ends with `break;` at line 902 inside the braced block",delta_msc17_task534,high

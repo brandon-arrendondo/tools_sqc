@@ -1,0 +1,131 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,sqlite,ext/misc/regexp.c,530,FP,"Case '?' body ends with break; at line 533 before the next case label, so control never falls through despite the flag",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/regexp.c,535,FP,"Case '$' body is just re_append(...); break; at lines 537-538, no fallthrough",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/regexp.c,539,FP,"Case '^' body is re_append(...); break; at lines 540-541, no fallthrough",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/regexp.c,543,FP,"Case '{' body's last top-level statement is break; at line 581, all earlier code is inside the same block",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/regexp.c,583,FP,"Case '[' body's last top-level statement is break; at line 609",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/regexp.c,611,FP,"Case '\\' contains a nested inner switch (613-621) but the outer case's own last statement is break; at line 629",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/series.c,761,FP,"Grouped label case IS shares body with case EQ and ends in break; at line 769; the #ifndef block doesn't remove the trailing break",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/series.c,771,FP,"Case GE body ends in break; at line 779 after the early-exit if(idxNum&0x0080) break;",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/series.c,781,FP,"Case GT body ends in break; at line 789, same early-exit-then-break pattern as GE",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/series.c,791,FP,"Case LE body ends in break; at line 796",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/sha1.c,332,FP,"Case SQLITE_NULL body is hash_step(...); break; at lines 333-334",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/sha1.c,336,FP,"Case SQLITE_INTEGER body ends in break; at line 348 after building/hashing the int64 bytes",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/sha1.c,350,FP,"Case SQLITE_FLOAT body ends in break; at line 362",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/sha1.c,364,FP,"Case SQLITE_TEXT body ends in break; at line 369",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/shathree.c,629,FP,"Case SQLITE_NULL body is SHA3Update(...); break; at lines 630-631",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/shathree.c,633,FP,"Case SQLITE_INTEGER body ends in break; at line 645",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/shathree.c,647,FP,"Case SQLITE_FLOAT body ends in break; at line 659",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/shathree.c,661,FP,"Case SQLITE_TEXT body ends in break; at line 666",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2742,FP,"Case body is a braced block { ...; break; }; the nested break terminating the case is inside the compound statement, missed by a last-top-level-statement check",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2746,FP,"Same braced-block-with-break pattern as line 2742; body ends break; inside braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2750,FP,"Body is { sqlite3_result_int(...); break; }; case terminates via nested break",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2754,FP,"Body is { sqlite3_result_int(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2758,FP,"Body is { sqlite3_result_int(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2762,FP,"Body has an if/else computing iMatchlen followed by sqlite3_result_int(...); break; at line 2784 inside the braces; every path reaches the final break",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2786,FP,"Body is { sqlite3_result_text(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2790,FP,"Body is { sqlite3_result_int(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2794,FP,"Body is { sqlite3_result_int(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/spellfix.c,2798,FP,"Body is { sqlite3_result_int(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/tmstmpvfs.c,715,FP,"Body is { if(...){...} break; }; the case ends in a nested break; inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/tmstmpvfs.c,721,FP,"Body ends rc = SQLITE_OK; break; inside braces; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,380,FP,"Body computes iVal then ends break; inside braces at line 386; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,388,FP,"Body is { sqlite3_result_int64(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,392,FP,"Blob-handling body ends break; at line 411 inside the outer braces; nested break terminates the case regardless of inner if-nesting",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,413,FP,"Text-handling body ends break; at line 424 inside the outer braces; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,450,FP,"Body is { sqlite3_result_double(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,454,FP,"Body ends break; at line 460 inside braces after the integer-to-double conversion; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,462,FP,"Blob-handling body ends break; at line 481 inside the outer braces; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/totype.c,483,FP,"Text-handling body's control-flow terminates within the block (inner return/end of block) before any code could execute into the next case; no unmarked fallthrough occurs",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/misc/uuid.c,147,FP,"Every path in the SQLITE_TEXT case body ends in return 0; or return pBuf;; control never falls through",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/uuid.c,152,FP,"The SQLITE_BLOB case body is a single return n==16 ? ... : 0; statement; control always returns",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfsstat.c,672,FP,"Body is { sqlite3_result_text(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfsstat.c,676,FP,"Body is { az = ...; sqlite3_result_text(...); break; }; nested break terminates the case",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,559,FP,"case SQLITE_FCNTL_SIZE_HINT: { ...; break; } ends in an unconditional break nested inside the wrapping compound statement",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,565,FP,"case SQLITE_FCNTL_CHUNK_SIZE: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,572,FP,"case SQLITE_FCNTL_PERSIST_WAL: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,580,FP,"case SQLITE_FCNTL_PRAGMA: { ...; break; } (break at line 658) terminates via break nested inside the wrapping block despite the large body",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,662,FP,"case SQLITE_FCNTL_MMAP_SIZE: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,682,FP,"case SQLITE_FCNTL_ROLLBACK_ATOMIC_WRITE: { zOp=...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,686,FP,"case SQLITE_FCNTL_LOCK_TIMEOUT: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,711,FP,"case SQLITE_FCNTL_VFSNAME: { ...; break; } (inner switch at 710) terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,717,FP,"case SQLITE_FCNTL_MMAP_SIZE: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vfstrace.c,723,FP,"case SQLITE_FCNTL_HAS_MOVED: is an empty case label stacked directly above case SQLITE_FCNTL_PERSIST_WAL: with no statements between them, the standard intentional case-grouping idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vtablog.c,406,FP,"case SQLITE_NULL: { printf(...); break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vtablog.c,410,FP,"case SQLITE_INTEGER: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vtablog.c,415,FP,"case SQLITE_FLOAT: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/vtablog.c,420,FP,"case SQLITE_BLOB: { ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/zipfile.c,1095,FP,"case 2: { /* mtime */ ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/zipfile.c,1099,FP,"case 3: { /* sz */ ...; break; } terminates via break inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/zipfile.c,1105,TP,"case 4: /* rawdata */ if( sqlite3_vtab_nochange(ctx) ) break; only breaks when the if is true; otherwise it silently falls into case 5's body with no comment or attribute marking it intentional",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/zipfile.c,1107,FP,"case 5: { /* data */ ...; break; } (break at line 1151) terminates via break nested inside the compound statement",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/zipfile.c,1738,FP,"case SQLITE_IGNORE: { goto zipfile_update_done; } terminates via goto nested inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/misc/zipfile.c,1741,FP,"case SQLITE_REPLACE: { pOld2 = p; break; } terminates via break nested inside the braces",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,874,FP,"Custom deliberate_fall_through; /* FALLTHRU */ marker statement explicitly signals the intentional fallthrough into QRF_TEXT_Sql",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,882,FP,"Case body ends with an explicit break; at line 895 before the closing brace",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,897,FP,"Case body ends with an explicit break; at line 920 before the closing brace; the nested switch at 910-917 is fully contained and doesn't affect the outer break",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,923,FP,"Case body ends with an explicit break; at line 953 before the closing brace; no fallthrough to default",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,1100,FP,"Case SQLITE_INTEGER ends with break; at line 1102",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,1104,FP,"Case SQLITE_FLOAT ends with break; at line 1107",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,1109,FP,"Case SQLITE_BLOB ends with an outer break; at line 1192 after its nested switch completes",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,1125,FP,"Case QRF_BLOB_Hex/Sql ends with break; at line 1147",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,1150,FP,"Case QRF_BLOB_Tcl/Json ends with break; at line 1180",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,1182,FP,"Case QRF_BLOB_Size ends with break; at line 1185",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,1194,FP,"Case SQLITE_NULL ends with break; at line 1196",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2106,FP,"Case QRF_STYLE_Column ends with break; at line 2117",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2212,FP,"Case QRF_STYLE_Table ends with break; at line 2216",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2218,FP,"Case QRF_STYLE_Box ends with break; at line 2224",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2226,FP,"Case QRF_STYLE_Markdown ends with break; at line 2230",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2524,FP,"Case QRF_STYLE_Off/Count ends with break; at line 2526",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2528,FP,"Case QRF_STYLE_Json ends with break; at line 2535",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2537,FP,"Case QRF_STYLE_JObject ends with break; at line 2544",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2546,FP,"Case QRF_STYLE_Html ends with break; at line 2563",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2565,FP,"Case QRF_STYLE_Insert ends with break; at line 2591",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2593,FP,"Case QRF_STYLE_Line ends with break; at line 2648",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2650,FP,"Case QRF_STYLE_Eqp ends with break; at line 2657",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2726,FP,"Case QRF_Auto ends with goto qrf_reinit; at line 2732, a valid terminator sqc's message wrongly claims is absent",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2734,FP,"Case QRF_STYLE_List ends with break; at line 2737",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2740,FP,"Case QRF_STYLE_JObject/Json ends with break; at line 2743",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2745,FP,"Case QRF_STYLE_Html ends with break; at line 2748",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2750,FP,"Case QRF_STYLE_Insert ends with break; at line 2756",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2758,FP,"Case QRF_STYLE_Line ends with break; at line 2762",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2764,FP,"Case QRF_STYLE_Csv ends with break; at line 2770",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2772,FP,"Case QRF_STYLE_Quote ends with break; at line 2777",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2779,FP,"Case QRF_STYLE_Eqp ends with break; at line 2785",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2852,FP,"Case QRF_STYLE_Count ends with break; at line 2855",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2857,FP,"Case QRF_STYLE_Json ends with break; at line 2862",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2864,FP,"Case QRF_STYLE_JObject ends with break; at line 2869",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2871,FP,"Case QRF_STYLE_Line ends with break; at line 2877",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2880,FP,"Case QRF_STYLE_Stats/StatsEst ends with break; at line 2888",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2952,FP,"Case QRF_STYLE_Box/Column/Markdown/Table ends with break; at line 2956",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2958,FP,"Case QRF_STYLE_Explain ends with break; at line 2960",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2962,FP,"Case QRF_STYLE_StatsVm ends with break; at line 2964",delta_msc17_task534,high
+MSC17-C,sqlite,ext/qrf/qrf.c,2967,FP,"Case QRF_STYLE_Stats/StatsEst ends with break; at line 2969",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,561,TP,"case 3 accumulates z[2]<<8 into sum3 and unmarked-falls into case 2/case 1 in the checksum tail, a real unmarked fallthrough",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,562,TP,"case 2 adds z[1]<<16 and falls unmarked into case 1 with no break or comment",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,563,TP,"case 1 adds z[0]<<24 and falls unmarked into the empty default; no break/comment present",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,613,FP,"case '@' body is a compound block whose actual last statement is break; (line 632), so control does not reach case ':'",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,634,FP,"case ':' body is a compound block ending in break; (line 649-650) before case ';'",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,651,FP,"case ';' body is a compound block whose last statement is return total; (line 664), so it never reaches default",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,3331,FP,"case SQLITE_INTEGER body is a compound block ending in break; (line 3340) before case SQLITE_TEXT",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,3343,FP,"case SQLITE_TEXT body is a compound block ending in break; (line 3352) before default",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,3697,FP,"case RBU_STAGE_OAL body is a compound block ending in break; (line 3750)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,3753,FP,"case RBU_STAGE_MOVE body is a compound block ending in break; (line 3758)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/rbu/sqlite3rbu.c,3761,FP,"case RBU_STAGE_CKPT body is a compound block ending in break; (line 3806) before default",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/dbdata.c,486,FP,"case 1 through case 7 are stacked empty labels sharing one body, the standard intentional-grouping idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/dbdata.c,491,TP,"case 6 computes v with pData[0]/pData[1] and falls unmarked into case 5's identical accumulation, a real unmarked multi-byte-int decode fallthrough",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/dbdata.c,492,TP,"case 5 executes its own shift/add and falls unmarked into case 4 with no break or fallthrough comment",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/dbdata.c,493,TP,"case 4 executes and falls unmarked into case 3, same unmarked-decode-chain pattern",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/dbdata.c,494,TP,"case 3 executes and falls unmarked into case 2, completing the unmarked accumulation chain with no break",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/sqlite3recover.c,2590,FP,"case RECOVER_STATE_INIT body is a compound block ending in break; (line 2635)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/sqlite3recover.c,2638,FP,"case RECOVER_STATE_WRITING body is a compound block ending in break; (line 2650)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/sqlite3recover.c,2653,FP,"case RECOVER_STATE_LOSTANDFOUND1 body is a compound block ending in break; (line 2660)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/sqlite3recover.c,2662,FP,"case RECOVER_STATE_LOSTANDFOUND2 body is a compound block ending in break; (line 2669)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/sqlite3recover.c,2672,FP,"case RECOVER_STATE_LOSTANDFOUND3 body is a compound block ending in break; (line 2679)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/sqlite3recover.c,2682,FP,"case RECOVER_STATE_SCHEMA2 body is a compound block ending in break; (line 2699)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/recover/sqlite3recover.c,2815,FP,"case SQLITE_RECOVER_LOST_AND_FOUND body is a compound block ending in break; (line 2823)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/repair/checkindex.c,375,FP,"case '\"', case '\'', case '`' are stacked empty labels sharing one quoted-string-skip body ending in break; (line 385-386), the intentional-grouping idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/repair/checkindex.c,840,FP,"case IIC_ERRMSG body is a compound block ending in break; (line 850)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/repair/checkindex.c,852,FP,"case IIC_CURRENT_KEY body is a compound block ending in break; (line 854)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/repair/checkindex.c,856,FP,"case IIC_INDEX_NAME body is a compound block ending in break; (line 858)",delta_msc17_task534,high
+MSC17-C,sqlite,ext/repair/checkindex.c,860,FP,"case IIC_AFTER_KEY body is a compound block ending in break; (line 862)",delta_msc17_task534,high

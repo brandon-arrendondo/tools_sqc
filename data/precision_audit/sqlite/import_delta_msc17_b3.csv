@@ -1,0 +1,131 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,sqlite,ext/rtree/rtree.c,1248,TP,"switch(nCoord) cumulatively assigns aCoord via case 10/8/6/4/default with no break, an intentional cascading-decode idiom but undocumented by any comment or marker",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,1250,TP,"same cumulative-decode switch as case 10, case 8 falls into case 6 with no break or comment",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,1252,TP,"case 6 falls into case 4 with no break or comment in the same cumulative-decode switch",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,1254,TP,"case 4 falls into default with no break or comment in the same cumulative-decode switch",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,1263,TP,"integer-coordinate mirror of the same switch(nCoord) cascade, case 10 falls into case 8 undocumented",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,1265,TP,"case 8 falls into case 6 undocumented in the integer-coordinate cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,1267,TP,"case 6 falls into case 4 undocumented in the integer-coordinate cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,1269,TP,"case 4 falls into default undocumented in the integer-coordinate cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2136,TP,"cellArea's switch(nDim) float branch cumulatively multiplies area across case 5/4/3/2/default with no break or comment",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2137,TP,"case 4 falls into case 3 undocumented in the same cumulative-area cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2138,TP,"case 3 falls into case 2 undocumented in the same cumulative-area cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2139,TP,"case 2 falls into default undocumented in the same cumulative-area cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2146,TP,"integer-coordinate mirror of cellArea's cascade, case 5 falls into case 4 undocumented",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2147,TP,"case 4 falls into case 3 undocumented in the integer-area cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2148,TP,"case 3 falls into case 2 undocumented in the integer-area cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/rtree/rtree.c,2149,TP,"case 2 falls into default undocumented in the integer-area cascade",delta_msc17_task534,medium
+MSC17-C,sqlite,ext/session/changeset.c,91,FP,"case SQLITE_FLOAT body is a brace-wrapped block whose last statement is break at line 97; sqc's checker only inspects the block's own node kind (compound_statement) and misses the nested break",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changeset.c,99,FP,"case SQLITE_INTEGER body block ends in break at line 101, same nested-break-inside-compound-block miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changeset.c,103,FP,"case SQLITE_BLOB body block ends in break at line 113, same nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changeset.c,115,FP,"case SQLITE_TEXT body block ends in break at line 124, same nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changeset.c,403,FP,"case SQLITE_DELETE body block ends in break at line 418, same nested-break-inside-compound-block miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changeset.c,420,FP,"case SQLITE_UPDATE body block ends in break, same nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,491,FP,"case 0x00 has no statements and falls into case 0x05, a standard empty grouped-case-label idiom sharing one body, not a real fallthrough bug",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,496,FP,"case 0x01 has no statements and falls into case 0x02, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,501,FP,"case 0x03 has no statements and falls into case 0x04's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,502,FP,"case 0x04 body block ends in break at line 507, nested-break-inside-compound-block miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,678,FP,"case 0x01 body block ends in break at line 683, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,686,FP,"case 0x02 body block ends in break at line 693, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,696,FP,"case 0x03 has no statements and falls into case 0x04's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,697,FP,"case 0x04 body block ends in break at line 714, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,843,FP,"case 0x01 body block ends in break at line 846, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,849,FP,"case 0x02 body block ends in break at line 855, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,858,FP,"case 0x03 has no statements and falls into case 0x04's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/changesetfuzz.c,884,FP,"case 0x03 has no statements and falls into case 0x04's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,1363,FP,"case SQLITE_INTEGER body block ends in break at line 1367, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,1370,FP,"case SQLITE_FLOAT body block ends in break at line 1376, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,1379,FP,"case SQLITE_TEXT body block ends in break at line 1385, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,1388,FP,"case SQLITE_BLOB body block ends in break at line 1394, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,1653,FP,"case SQLITE_FLOAT has no statements and falls into case SQLITE_INTEGER's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,2713,FP,"case SQLITE_FLOAT has no statements and falls into case SQLITE_INTEGER's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,2988,FP,"case SQLITE_INTEGER body block ends in break at line 2994, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,2997,FP,"case SQLITE_FLOAT body block ends in break at line 3005, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,3008,FP,"case SQLITE_TEXT body block ends in break at line 3015, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,3306,FP,"case SQLITE_SESSION_OBJCONFIG_SIZE body block ends in break at line 3316, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,3319,FP,"case SQLITE_SESSION_OBJCONFIG_ROWID body block ends in break at line 3329, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,4145,FP,"case 'T' body block ends in break at line 4170, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,4174,FP,"case SQLITE_INSERT has no statements and falls into case SQLITE_DELETE's block (which ends in break), empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,4189,FP,"case SQLITE_UPDATE body block ends in break at line 4236, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,5929,FP,"case SQLITE_FLOAT has no statements and falls into case SQLITE_INTEGER's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,5945,FP,"case SQLITE_BLOB has no statements and falls into case SQLITE_TEXT's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,ext/session/sqlite3session.c,6775,FP,"case SQLITE_SESSION_CONFIG_STRMSIZE body block ends in break at line 4781 (within-block), nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/bitvec.c,441,FP,"case 5 has no preceding statements (grouped with case 1 and case 2) and the shared block ends in break at line 445, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,src/carray.c,190,FP,"case CARRAY_COLUMN_CTYPE body block ends in return SQLITE_OK at line 192, sqc's checker only recognizes a literal return/break as the case body's last statement kind and misses it nested in the block",delta_msc17_task534,high
+MSC17-C,sqlite,src/carray.c,196,FP,"case CARRAY_INT32 body block ends in return SQLITE_OK at line 199, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/carray.c,201,FP,"case CARRAY_INT64 body block ends in return SQLITE_OK at line 204, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/carray.c,206,FP,"case CARRAY_DOUBLE body block ends in return SQLITE_OK at line 209, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/carray.c,211,FP,"case CARRAY_TEXT body block ends in return SQLITE_OK at line 214, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/carray.c,262,FP,"case 1 body block in carrayFilter ends in break at line 268, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,146,FP,"case ';' body block ends in break at line 148, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,154,FP,"case '\f' body block ends in break at line 156, nested-break miss (grouped with several empty whitespace cases above it, none of which are themselves flagged)",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,158,FP,"case '/' body block ends in break at line 168, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,170,FP,"case '-' body block ends in break at line 178, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,180,FP,"case '[' body block ends in break at line 185, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,187,FP,"case backtick has no statements and falls into case doublequote then case singlequote's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,188,FP,"case doublequote has no statements and falls into case singlequote's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,189,FP,"case '\'' body block ends in break at line 195, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,209,FP,"case 'c'/'C' shared body block ends in break at line 215, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,217,FP,"case 't'/'T' shared body block ends in break at line 227, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/complete.c,229,FP,"case 'e'/'E' shared body block ends in break at line 241, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,740,FP,"case 'a' body block in parseModifier ends in break at line 752, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,754,FP,"case 'c' body block ends in break at line 768, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,770,FP,"case 'f' body block ends in break at line 783, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,785,FP,"case 'j' body block ends in break at line 801, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,818,FP,"case 'u' body block ends in break at line 867, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,869,FP,"case 'w' body block ends in break at line 891, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,893,FP,"case 's' body block ends in break at line 934, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,947,FP,"grouped numeric-literal cases body block ends in break at line 1089, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1058,FP,"nested switch case 4 (add months) body block ends in break at line 1068, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1439,FP,"case 'e' (grouped with 'd', marked '/* Fall thru */') body block ends in break at line 1441, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1443,FP,"case 'f' body block ends in break at line 1447, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1449,FP,"case 'F' body block ends in break at line 1451, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1454,FP,"case 'g' (grouped with 'G', marked '/* Fall thru */') body block ends in break at line 1466, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1469,FP,"case 'k' (grouped with 'H') body block ends in break at line 1471, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1474,FP,"case 'l' (grouped with 'I', marked '/* Fall thru */') body block ends in break at line 1479, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1481,FP,"case 'j' body block ends in break at line 1483, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1485,FP,"case 'J' body block ends in break at line 1487, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1489,FP,"case 'm' body block ends in break at line 1491, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1493,FP,"case 'M' body block ends in break at line 1495, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1498,FP,"case 'P' (grouped with 'p', marked '/* Fall thru */') body block ends in break at line 1504, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1506,FP,"case 'R' body block ends in break at line 1508, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1510,FP,"case 's' body block ends in break at line 1518, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1520,FP,"case 'S' body block ends in break at line 1522, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1524,FP,"case 'T' body block ends in break at line 1526, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1528,FP,"case 'u' has no statements (only a descriptive comment) and falls into case 'w' 's block; this is the same grouped-case idiom used throughout this switch, the comment simply doesn't happen to contain the word fall",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1529,FP,"case 'w' body block ends in break at line 1533, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1535,FP,"case 'U' body block ends in break at line 1538, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1540,FP,"case 'V' body block ends in break at line 1548, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1550,FP,"case 'W' body block ends in break at line 1553, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1555,FP,"case 'Y' body block ends in break at line 1557, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/date.c,1559,FP,"case '%' body block ends in break, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/dbpage.c,286,FP,"case 0 (pgno) body block ends in break at line 288, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/dbpage.c,290,FP,"case 1 (data) body block ends in break at line 304, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/dbstat.c,234,FP,"case 0 (name) body block ends in break at line 236, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/dbstat.c,238,FP,"case 10 (schema) body block ends in break at line 240, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/dbstat.c,691,FP,"case 0x05 (table internal) has no statements and falls into case 0x02's block that sets zPagetype and breaks, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,src/dbstat.c,695,FP,"case 0x0D (table leaf) has no statements and falls into case 0x0A's block, empty grouped-case-label idiom",delta_msc17_task534,high
+MSC17-C,sqlite,src/dbstat.c,851,FP,"case 10 (schema) body block ends in break at line 855, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,112,FP,"case TK_UPLUS (grouped with two empty cases) body block ends in break at line 114, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,116,FP,"case TK_NULL body block ends in break at line 118, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,120,FP,"case TK_STRING body block ends in return 0x02 at line 121, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,123,FP,"case TK_BLOB body block ends in return 0x04 at line 124, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,126,FP,"case TK_CONCAT body block ends in return 0x06 at line 127, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,131,FP,"case TK_FUNCTION (grouped with two empty cases) body block ends in return 0x07 at line 132, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,139,FP,"case TK_VECTOR (grouped with several empty cases) body block's last statement is return 0x07 at line 143, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,145,FP,"case TK_CASE body block ends in return res at line 157, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,2556,FP,"case TK_FUNCTION's body is a single if/else-if/else where every branch ends in return (WRC_Continue, exprNodeIsConstantFunction's return, or WRC_Abort), so control never falls through even though the outer if-statement's node kind isn't literally return",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,2568,FP,"case TK_ID ends with the explicit `/* no break */ deliberate_fall_through` marker at line 2574, a project-specific fallthrough annotation sqc's comment scan for the substring fall doesn't recognize as a marker token outside a comment",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,2577,FP,"case TK_AGG_COLUMN (grouped with TK_COLUMN/TK_AGG_FUNCTION) shares a body ending in the explicit `/* no break */ deliberate_fall_through` marker at line 2588",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,2913,FP,"case TK_UPLUS body block ends in break at line 2915, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,2917,FP,"case TK_UMINUS body block ends in break at line 2924, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,2926,FP,"case TK_VARIABLE body block ends in break (via several early breaks and a final break), nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,3017,FP,"case TK_INTEGER body block ends in return aff>=SQLITE_AFF_NUMERIC at line 3018, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,3020,FP,"case TK_FLOAT body block ends in a return statement, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,3023,FP,"case TK_STRING body block ends in a return statement, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,3026,FP,"case TK_BLOB body block ends in a return statement, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,3029,FP,"case TK_COLUMN body block ends in a return statement, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,4583,FP,"case INLINEFUNC_coalesce body block ends in break at line 4599, nested-break miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,4601,FP,"case INLINEFUNC_iif body block ends in a return statement at line 4606, nested-return miss",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,4957,FP,"case TK_AGG_COLUMN ends with the explicit '/* Otherwise, fall thru into the TK_COLUMN case */ /* no break */ deliberate_fall_through' marker at line 4999-5000",delta_msc17_task534,high
+MSC17-C,sqlite,src/expr.c,5002,FP,"case TK_COLUMN body block's last statement is return iReg at line 5087, nested-return miss",delta_msc17_task534,high

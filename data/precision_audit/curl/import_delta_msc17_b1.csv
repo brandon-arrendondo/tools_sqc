@@ -1,0 +1,131 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,curl,lib/cf-h1-proxy.c,157,FP,"case body ends with FALLTHROUGH() which expands to __attribute__((fallthrough))",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h1-proxy.c,579,FP,"case H1_TUNNEL_INIT ends with h1_tunnel_go_state() then FALLTHROUGH() attribute marker",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h1-proxy.c,588,FP,"case H1_TUNNEL_CONNECT ends with h1_tunnel_go_state() then FALLTHROUGH() attribute marker",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h1-proxy.c,597,FP,"case H1_TUNNEL_RECEIVE ends with h1_tunnel_go_state() then FALLTHROUGH() attribute marker",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h2-proxy.c,147,FP,"case H2_TUNNEL_ESTABLISHED ends with FALLTHROUGH() attribute marker before H2_TUNNEL_FAILED",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h2-proxy.c,828,FP,"case H2_TUNNEL_INIT ends with h2_tunnel_go_state() then FALLTHROUGH() attribute marker",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h2-proxy.c,837,FP,"case H2_TUNNEL_CONNECT if/else sets result and either breaks or goto out, and the reachable path ends in explicit FALLTHROUGH() attribute marker before H2_TUNNEL_RESPONSE",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h2-proxy.c,1416,FP,"case CF_QUERY_NEED_FLUSH's compound body ends in an explicit break (checker only inspected the outer block, not the nested break inside braces)",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-h2-proxy.c,1425,FP,"case CF_QUERY_ALPN_NEGOTIATED's compound body ends in return CURLE_OK inside braces, so control never reaches default",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-haproxy.c,118,FP,"case HAPROXY_INIT ends with FALLTHROUGH() attribute marker before HAPROXY_SEND",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-haproxy.c,124,FP,"case HAPROXY_SEND ends with ctx->state assignment then FALLTHROUGH() attribute marker before default",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-https-connect.c,308,FP,"case CF_HC_INIT ends with FALLTHROUGH() attribute marker before CF_HC_CONNECT",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-https-connect.c,489,FP,"case CF_QUERY_TIMER_CONNECT's compound body ends in return CURLE_OK inside braces, so control never reaches the next case",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-https-connect.c,494,FP,"case CF_QUERY_TIMER_APPCONNECT's compound body ends in return CURLE_OK inside braces, so control never reaches default",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-https-connect.c,499,FP,"case CF_QUERY_NEED_FLUSH's compound body ends in an explicit break inside braces after a for-loop, so control never falls into default",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-ip-happy.c,778,FP,"case SCFST_INIT ends with ctx->state assignment then FALLTHROUGH() attribute marker before SCFST_WAITING",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-ip-happy.c,863,FP,"case CF_QUERY_CONNECT_REPLY_MS's compound body ends in return CURLE_OK inside braces, so control never reaches the next case",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-ip-happy.c,868,FP,"case CF_QUERY_TIMER_CONNECT's compound body ends in return CURLE_OK inside braces, so control never reaches the next case",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-ip-happy.c,874,FP,"case CF_QUERY_TIMER_APPCONNECT's compound body ends in return CURLE_OK inside braces, so control never reaches default",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-socket.c,1648,FP,"case CF_QUERY_TIMER_CONNECT's braced body contains a nested switch (with its own FALLTHROUGH() marker) and the outer block ends in return CURLE_OK, so control never reaches the next outer case",delta_msc17_task534,high
+MSC17-C,curl,lib/cf-socket.c,1652,FP,"nested case TRNSPRT_QUIC ends with an explicit FALLTHROUGH() attribute marker into default",delta_msc17_task534,high
+MSC17-C,curl,lib/connect.c,225,FP,"case AF_INET body actually ends in an explicit break statement at line 231, so it does not fall through to AF_INET6 at all",delta_msc17_task534,high
+MSC17-C,curl,lib/content_encoding.c,375,FP,"BROTLI_DECODER_ERROR_FORMAT_PADDING_2 is one of a long chain of empty case labels stacked to share the same return CURLE_BAD_CONTENT_ENCODING body, a standard multi-value case grouping with no statements to skip, not an unintentional fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/cookie.c,708,FP,"case 2's path-parsing branch ends with fields++ and an explicit FALLTHROUGH() attribute marker (also accompanied by a comment saying 'fall down to secure') before case 3",delta_msc17_task534,high
+MSC17-C,curl,lib/curl_gssapi.c,181,FP,"case STUB_GSS_KRB5 is an if/else where the if-branch ends in break and the else-branch ends in return GSS_S_FAILURE, so every path terminates before the next case",delta_msc17_task534,high
+MSC17-C,curl,lib/curl_sasl.c,647,FP,"case SASL_EXTERNAL body actually ends in an explicit break statement at line 649, so it does not fall through to SASL_GSASL at all",delta_msc17_task534,high
+MSC17-C,curl,lib/curl_sasl.c,779,FP,"if/else-if/else branches end in return, break, and return respectively so no branch falls through",delta_msc17_task534,high
+MSC17-C,curl,lib/doh.c,675,FP,case CURL_DNS_TYPE_AAAA body ends in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/doh.c,1016,FP,case CURL_DNS_TYPE_AAAA body is a single return \"AAAA\" statement,delta_msc17_task534,high
+MSC17-C,curl,lib/formdata.c,370,FP,case CURLFORM_PTRNAME ends with the FALLTHROUGH() attribute macro marking the fallthrough intentional,delta_msc17_task534,high
+MSC17-C,curl,lib/formdata.c,394,FP,case CURLFORM_PTRCONTENTS ends with the FALLTHROUGH() attribute macro marking the fallthrough intentional,delta_msc17_task534,high
+MSC17-C,curl,lib/formdata.c,542,FP,case CURLFORM_CONTENTHEADER body is a compound block whose last statement is break; the checker missed it because the top-level statement is the block not the break,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,262,FP,default: label is immediately followed by case FTPFILE_MULTICWD with no statements in between (stacked empty case labels),delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,1258,FP,case AF_INET body ends in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,3665,FP,case CURLE_WRITE_ERROR is an empty stacked label immediately followed by case CURLE_OK with no statements in between,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,3667,FP,case CURLE_OK falls to default only via the explicit FALLTHROUGH() attribute macro after the premature check,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,4035,FP,case CURLWC_MATCHING body is a compound block whose every path ends in continue or return,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,4058,FP,case CURLWC_DOWNLOADING body is a compound block whose every path ends in return,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,4114,FP,case CURLWC_SKIP body is a compound block that ends in continue;,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,4126,FP,case CURLWC_CLEAN body is a compound block that ends in return result;,delta_msc17_task534,high
+MSC17-C,curl,lib/ftp.c,4386,FP,case 'I' is an empty stacked label immediately followed by default: with no statements in between,delta_msc17_task534,high
+MSC17-C,curl,lib/ftplistparser.c,838,FP,case PL_UNIX_TOTALSIZE falls to PL_UNIX_FILETYPE only via the explicit FALLTHROUGH() attribute macro,delta_msc17_task534,high
+MSC17-C,curl,lib/getinfo.c,112,FP,default: label is immediately followed by case HTTPREQ_GET with no statements in between (stacked empty case labels),delta_msc17_task534,high
+MSC17-C,curl,lib/getinfo.c,320,FP,case CURLINFO_CONDITION_UNMET body ends in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/hostip.c,210,FP,case AF_INET body is a compound block ending in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,1496,FP,case EXP100_AWAITING_CONTINUE falls to default only via the explicit FALLTHROUGH() attribute macro,delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,1959,FP,default: label is immediately followed by case HTTPREQ_GET with no statements in between (stacked empty case labels),delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,2279,FP,case HTTPREQ_PUT body is a single ternary return statement,delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,2881,FP,case H1_HD_HOST body ends in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,2933,FP,case H1_HD_REFERER body ends in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,2951,FP,case H1_HD_TRANSFER_ENCODING body ends in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,2994,FP,case H1_HD_CONNECTION body is a compound block ending in an explicit break statement,delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,3775,FP,"case 304 ends with FALLTHROUGH() macro before case 204, an explicit fallthrough marker",delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,3928,FP,"case 101 body ends with a comment and break; after the nested switch(upgr101_requested) closes, no fallthrough occurs",delta_msc17_task534,high
+MSC17-C,curl,lib/http.c,3946,FP,"case UPGR101_H2 ends with *pconsumed += blen; break;, a real break statement",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1053,FP,"case NGHTTP2_DATA body is a single return curl_msnprintf(...) statement, control cannot fall through",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1060,FP,"case NGHTTP2_HEADERS body is a single return curl_msnprintf(...) statement",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1067,FP,"case NGHTTP2_PRIORITY body is a single return curl_msnprintf(...) statement",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1072,FP,"case NGHTTP2_RST_STREAM body is a single return curl_msnprintf(...) statement",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1078,FP,"case NGHTTP2_SETTINGS: if(ACK) branch returns and the fallthrough path also ends in return curl_msnprintf(...), both paths return",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1095,FP,"case NGHTTP2_GOAWAY body ends with return curl_msnprintf(...) after building the scratch buffer",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1108,FP,"case NGHTTP2_WINDOW_UPDATE body is a single return curl_msnprintf(...) statement",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,1170,FP,"case NGHTTP2_SETTINGS in on_frame_recv ends with break; after the inner if blocks, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,2748,FP,"case CF_QUERY_STREAM_ERROR body ends with return CURLE_OK;",delta_msc17_task534,high
+MSC17-C,curl,lib/http2.c,2753,FP,"case CF_QUERY_NEED_FLUSH: the if block may return CURLE_OK, and otherwise falls to a break; at the end, both paths terminate the case",delta_msc17_task534,high
+MSC17-C,curl,lib/http_chunks.c,332,FP,"case CHUNK_STOP is an if/else where the if branch returns CURLE_OK and the else branch returns CURLE_RECV_ERROR, every path terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/http_proxy.c,363,FP,"case CF_QUERY_ALPN_NEGOTIATED body ends with return CURLE_OK;",delta_msc17_task534,high
+MSC17-C,curl,lib/mime.c,718,FP,"case MIMEKIND_FILE ends with FALLTHROUGH() macro before default, an explicit fallthrough marker",delta_msc17_task534,high
+MSC17-C,curl,lib/mime.c,831,FP,"case MIMESTATE_USERHEADERS ends with FALLTHROUGH() macro before case MIMESTATE_CURLHEADERS",delta_msc17_task534,high
+MSC17-C,curl,lib/mime.c,867,FP,"case 0 (sz) ends with FALLTHROUGH() macro before case CURL_READFUNC_ABORT",delta_msc17_task534,high
+MSC17-C,curl,lib/mime.c,2063,FP,"case CURL_CRCNTRL_REWIND body ends with return result;",delta_msc17_task534,high
+MSC17-C,curl,lib/mprintf.c,285,FP,"case 'h' body is flags |= FLAGS_SHORT; break; ending in a real break",delta_msc17_task534,high
+MSC17-C,curl,lib/mprintf.c,336,FP,"case '0' ends with FALLTHROUGH() macro before the '1'..'9' cluster, an explicit fallthrough marker",delta_msc17_task534,high
+MSC17-C,curl,lib/mprintf.c,348,FP,"case '9' body is a braced block ending in break; before it closes, no fallthrough occurs",delta_msc17_task534,high
+MSC17-C,curl,lib/mprintf.c,377,FP,"case 'S' ends with FALLTHROUGH() macro before case 's'",delta_msc17_task534,high
+MSC17-C,curl,lib/mqtt.c,687,FP,"case MQTT_PUBWAIT ends with FALLTHROUGH() macro before case MQTT_PUB_REMAIN",delta_msc17_task534,high
+MSC17-C,curl,lib/mqtt.c,720,FP,"case MQTT_PUB_REMAIN is a braced block ending in break; before the closing brace and default label",delta_msc17_task534,high
+MSC17-C,curl,lib/mqtt.c,854,FP,"case MQTT_FIRST ends with FALLTHROUGH() macro before case MQTT_REMAINING_LENGTH",delta_msc17_task534,high
+MSC17-C,curl,lib/multi.c,693,FP,"case CURLE_WRITE_ERROR falls into default via explicit FALLTHROUGH() macro statement at line 699",delta_msc17_task534,high
+MSC17-C,curl,lib/multi.c,1142,FP,"case MSTATE_DID is a grouped label with no statements before MSTATE_PERFORMING, and the combined body ends in break at line 1145",delta_msc17_task534,high
+MSC17-C,curl,lib/multi.c,2489,FP,"case MSTATE_INIT falls into MSTATE_SETUP via explicit FALLTHROUGH() macro statement at line 2499",delta_msc17_task534,high
+MSC17-C,curl,lib/multi.c,2501,FP,"case MSTATE_SETUP falls into MSTATE_CONNECT via explicit FALLTHROUGH() macro statement at line 2514",delta_msc17_task534,high
+MSC17-C,curl,lib/multi.c,3247,FP,"case body is a braced block whose last statement is break at line 3252; checker only inspected the outer compound-statement node and missed the break inside it",delta_msc17_task534,high
+MSC17-C,curl,lib/multi.c,3254,FP,"case body is a braced block whose last statement is break at line 3262; checker only inspected the outer compound-statement node and missed the break inside it",delta_msc17_task534,high
+MSC17-C,curl,lib/openldap.c,741,FP,"case LDAP_SIZELIMIT_EXCEEDED falls into LDAP_SUCCESS/LDAP_NO_RESULTS_RETURNED via explicit FALLTHROUGH() macro statement at line 743",delta_msc17_task534,high
+MSC17-C,curl,lib/openldap.c,1128,FP,"case LDAP_SIZELIMIT_EXCEEDED falls into LDAP_SUCCESS via explicit FALLTHROUGH() macro statement at line 1130",delta_msc17_task534,high
+MSC17-C,curl,lib/pop3.c,1324,FP,"case POP3_AUTH body ends with break at line 1326, so control does not actually reach the next case",delta_msc17_task534,high
+MSC17-C,curl,lib/progress.c,284,FP,"case TIMER_STARTTRANSFER's last statement is an if/else where the if-branch returns (line 293) and the else-branch sets a flag then breaks (line 297), so every branch terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/rtsp.c,680,FP,"case RTP_PARSE_SKIP body is a braced block whose last statement is break at line 720; checker only inspected the outer block node",delta_msc17_task534,high
+MSC17-C,curl,lib/rtsp.c,723,FP,"case RTP_PARSE_CHANNEL body is a braced block whose last statement is break at line 759; checker only inspected the outer block node",delta_msc17_task534,high
+MSC17-C,curl,lib/rtsp.c,762,FP,"case RTP_PARSE_LEN body is a braced block whose last statement is break at line 778; checker only inspected the outer block node",delta_msc17_task534,high
+MSC17-C,curl,lib/rtsp.c,781,FP,"case RTP_PARSE_DATA body is a braced block whose last statement is break at line 813; checker only inspected the outer block node",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,294,FP,"case CURL_HTTP_VERSION_1_1 is the last of a grouped label pair and its comment+break body ends with break at line 296, so it does not fall through",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,504,FP,"case CURLOPT_FILETIME body ends in break at line 510",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,630,FP,"case CURLOPT_APPEND body ends in break at line 636",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,658,FP,"case CURLOPT_CRLF body ends in break at line 663",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,682,FP,"case CURLOPT_SSL_VERIFYPEER body ends in break at line 690 after the ssl config update call",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,767,FP,"case CURLOPT_SSL_SESSIONID_CACHE body ends in break at line 772",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,791,FP,"case CURLOPT_TCP_FASTOPEN's #if branch ends in break at line 795 and the #else branch returns CURLE_NOT_BUILT_IN at line 797, so every compiled configuration terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,808,FP,"case CURLOPT_SUPPRESS_CONNECT_HEADERS body ends in break at line 810",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,887,FP,"case CURLOPT_CONNECTTIMEOUT_MS body is a single return statement at line 888",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,923,FP,"case CURLOPT_CONNECT_ONLY body ends in break at line 930 after the if/else that sets connect_only fields",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1003,FP,"case CURLOPT_SSL_OPTIONS body ends in break at line 1005",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1105,FP,"case CURLOPT_STREAM_WEIGHT's #if branch ends in break at line 1109 and the #else branch sets result then breaks at line 1112, so every compiled configuration terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1212,FP,"case CURLOPT_REDIR_PROTOCOLS body ends in break at line 1214, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1261,FP,"case CURLOPT_UPLOAD_FLAGS body ends in break at line 1263, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1371,FP,"case CURLOPT_RESOLVE body ends in break at line 1387, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1490,FP,"case CURLOPT_SHARE braced block ends in break at line 1554, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1673,FP,"case CURLOPT_PROXYUSERPWD braced block ends in break at line 1694, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1738,FP,"case CURLOPT_PROXY_SSL_CIPHER_LIST if returns and else returns CURLE_NOT_BUILT_IN, every branch terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1745,FP,"case CURLOPT_PROXY_TLS13_CIPHERS if returns and else returns CURLE_NOT_BUILT_IN, every branch terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1916,FP,"case CURLOPT_SSL_CIPHER_LIST if returns and else returns CURLE_NOT_BUILT_IN, every branch terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1922,FP,"case CURLOPT_TLS13_CIPHERS if returns and else returns CURLE_NOT_BUILT_IN, every branch terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,1933,FP,"case CURLOPT_REQUEST_TARGET body is a single return statement, no fallthrough possible",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2108,FP,"case CURLOPT_SSL_CTX_DATA: if-branch ends in break and else-branch returns CURLE_NOT_BUILT_IN, every path terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2147,FP,"case CURLOPT_ERRORBUFFER body ends in break at line 2153, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2283,FP,"case CURLOPT_PRIVATE body ends in break at line 2288, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2382,FP,"case CURLOPT_DEFAULT_PROTOCOL body is a single return statement, no fallthrough possible",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2393,FP,"case CURLOPT_SASL_AUTHZID body is a single return statement, no fallthrough possible",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2663,FP,"case CURLOPT_SSL_CTX_FUNCTION: if-branch ends in break and else-branch returns CURLE_NOT_BUILT_IN, every path terminates",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2699,FP,"case CURLOPT_RESOLVER_START_FUNCTION body ends in break at line 2705, no fallthrough",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2851,FP,"case CURLOPT_SSLCERT_BLOB body is a single return statement, no fallthrough possible",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2937,FP,"stacked case labels (HTTPPOST/MIMEPOST/STDERR/SHARE/STREAM_DEPENDS/STREAM_DEPENDS_E) sharing one shared return statement, intentional label grouping not a fallthrough bug",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2938,FP,"stacked case label sharing the same body ending in return setopt_pointers(...), intentional label grouping",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2939,FP,"stacked case label sharing the same body ending in return setopt_pointers(...), intentional label grouping",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2940,FP,"stacked case label sharing the same body ending in return setopt_pointers(...), intentional label grouping",delta_msc17_task534,high
+MSC17-C,curl,lib/setopt.c,2941,FP,"stacked case label sharing the same body ending in return setopt_pointers(...), intentional label grouping",delta_msc17_task534,high
+MSC17-C,curl,lib/socks.c,481,FP,"case SOCKS_ST_INIT ends with the FALLTHROUGH() attribute macro at line 484, explicit intentional-fallthrough marker not caught by a comment substring scan",delta_msc17_task534,high
+MSC17-C,curl,lib/socks.c,486,FP,"case SOCKS4_ST_START ends with the FALLTHROUGH() attribute macro at line 540, explicit intentional-fallthrough marker",delta_msc17_task534,high
+MSC17-C,curl,lib/socks.c,542,FP,"case SOCKS4_ST_RESOLVING ends with the FALLTHROUGH() attribute macro at line 553, explicit intentional-fallthrough marker",delta_msc17_task534,high

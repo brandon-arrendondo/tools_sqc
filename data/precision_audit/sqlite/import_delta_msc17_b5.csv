@@ -1,0 +1,131 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,sqlite,src/json.c,3220,FP,"case JSONB_INT5 is an empty stacked label falling into case JSONB_INT: { ... break; }, the shared-code idiom, and the block itself ends in break; the checker misses the break because it is nested inside the case's own compound-statement block",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3262,FP,"case JSONB_FLOAT5 stacks empty into case JSONB_FLOAT: { ... break; } at line 3273; block-wrapped break missed by the checker's top-level-statement-kind scan",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3276,FP,"case JSONB_TEXTRAW stacks empty into case JSONB_TEXT: { ...; break; } at line 3279; block-wrapped break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3282,FP,"case JSONB_TEXT5 stacks empty into case JSONB_TEXTJ: { ... break; } at line 3324; block-wrapped break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3327,FP,"case JSONB_ARRAY stacks empty into case JSONB_OBJECT: { ... break; } at line 3340; block-wrapped break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3384,FP,"default case body is a single block ending in return at line 3387, which terminates the switch; the return is nested in the case's compound statement so the checker's last-top-level-statement check misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3389,FP,"case SQLITE_BLOB: { ... break; } at line 3394 is block-wrapped, break not seen by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3396,FP,"case SQLITE_TEXT: { ... break; } at line 3412 is block-wrapped, break not seen by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3414,FP,"case SQLITE_FLOAT: { ... break; } at line 3430 is block-wrapped, break not seen by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3818,FP,"case JSONB_ARRAY: { ...; break; } at line 3822 is a self-contained block ending in break, not a fallthrough; checker misses the nested break",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,3824,FP,"case JSONB_OBJECT: { ...; break; } at line 3828 ends in break inside its own block; checker misses the nested break",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,4673,FP,"case SQLITE_NULL: { #ifdef ... return; } ends in a return statement nested in the case block; checker's last-top-level-statement check misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,4680,FP,"case SQLITE_BLOB: { ... break; } at line 4693 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5254,FP,"case JEACH_KEY: { ... break; } at line 5279 ends in break nested inside the block (with several early breaks/returns inside too); checker misses the nested terminator",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5281,FP,"case JEACH_VALUE: { ...; break; } at line 5287 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5289,FP,"case JEACH_TYPE: { ...; break; } at line 5293 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5295,FP,"case JEACH_ATOM: { ...; break; } at line 5300 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5302,FP,"case JEACH_ID: { ...; break; } at line 5304 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5306,FP,"case JEACH_PARENT: { ...; break; } at line 5310 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5312,FP,"case JEACH_FULLKEY: { ...; break; } at line 5318 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5320,FP,"case JEACH_PATH: { ...; break; } at line 5324 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/json.c,5326,FP,"the default case (before JEACH_JSON) ends with a break at line 5328 nested inside the block; also note JEACH_JSON is placed textually after default but is a separate labeled case, not something default falls into",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,494,FP,"case SQLITE_CONFIG_MALLOC: { ...; break; } at line 501 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,503,FP,"case SQLITE_CONFIG_GETMALLOC: { ...; break; } at line 510 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,512,FP,"case SQLITE_CONFIG_MEMSTATUS: { ...; break; } at line 518 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,520,FP,"case SQLITE_CONFIG_SMALL_MALLOC: { ...; break; } at line 522 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,524,FP,"case SQLITE_CONFIG_PAGECACHE: { ...; break; } at line 532 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,534,FP,"case SQLITE_CONFIG_PCACHE_HDRSZ: { ...; break; } at line 543 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,546,FP,"case SQLITE_CONFIG_PCACHE: { /* no-op */ break; } at line 548 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,550,FP,"case SQLITE_CONFIG_GETPCACHE: { ...; break; } at line 553 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,556,FP,"case SQLITE_CONFIG_PCACHE2: { ...; break; } at line 562 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,564,FP,"case SQLITE_CONFIG_GETPCACHE2: { ...; break; } at line 573 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,621,FP,"case SQLITE_CONFIG_LOOKASIDE: { ...; break; } at line 624 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,631,FP,"case SQLITE_CONFIG_LOG: { ...; break; } at line 641 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,649,FP,"case SQLITE_CONFIG_URI: { ...; break; } at line 656 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,659,FP,"case SQLITE_CONFIG_COVERING_INDEX_SCAN: { ...; break; } at line 665 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,677,FP,"case SQLITE_CONFIG_MMAP_SIZE: { ...; break; } at line 699 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,712,FP,"case SQLITE_CONFIG_PMASZ: { ...; break; } at line 714 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,717,FP,"case SQLITE_CONFIG_STMTJRNL_SPILL: { ...; break; } at line 719 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,740,FP,"case SQLITE_CONFIG_ROWID_IN_VIEW: { ...; break; } at line 749 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,960,FP,"case SQLITE_DBCONFIG_MAINDBNAME: { ...; break; } at line 965 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,967,FP,"case SQLITE_DBCONFIG_LOOKASIDE: { ...; break; } at line 972 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,974,FP,"case SQLITE_DBCONFIG_FP_DIGITS: { ...; break; } at line 980 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,1686,FP,"case SQLITE_ABORT_ROLLBACK: { ...; break; } at line 1688 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,1690,FP,"case SQLITE_ROW: { ...; break; } at line 1692 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,1694,FP,"case SQLITE_DONE: { ...; break; } at line 1696 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,1984,FP,"case SQLITE_ANY: { ...; break; } at line 1998 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4218,FP,"case SQLITE_TESTCTRL_PRNG_SAVE: { ...; break; } at line 4220 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4228,FP,"case SQLITE_TESTCTRL_PRNG_RESTORE: { ...; break; } at line 4230 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4277,FP,"case SQLITE_TESTCTRL_FK_NO_ACTION: { ...; break; } at line 4285 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4296,FP,"case SQLITE_TESTCTRL_BITVEC_TEST: { ...; break; } at line 4300 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4314,FP,"case SQLITE_TESTCTRL_FAULT_INSTALL: { ...; break; } at line 4326 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4335,FP,"case SQLITE_TESTCTRL_BENIGN_MALLOC_HOOKS: { ...; break; } ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4357,FP,"case SQLITE_TESTCTRL_PENDING_BYTE: { ...; break; } at line 4365 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4379,FP,"case SQLITE_TESTCTRL_ASSERT: { ...; break; } at line 4406 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4437,FP,"case SQLITE_TESTCTRL_ALWAYS: { ...; break; } at line 4440 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4454,FP,"case SQLITE_TESTCTRL_BYTEORDER: { ...; break; } at line 4456 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4468,FP,"case SQLITE_TESTCTRL_OPTIMIZATIONS: { ...; break; } at line 4471 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4479,FP,"case SQLITE_TESTCTRL_GETOPT: { ...; break; } at line 4483 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4499,FP,"case SQLITE_TESTCTRL_LOCALTIME_FAULT: { ...; break; } at line 4507 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4515,FP,"case SQLITE_TESTCTRL_INTERNAL_FUNCTIONS: { ...; break; } at line 4518 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4529,FP,"case SQLITE_TESTCTRL_NEVER_CORRUPT: { ...; break; } at line 4531 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4546,FP,"case SQLITE_TESTCTRL_EXTRA_SCHEMA_CHECKS: { ...; break; } at line 4548 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4556,FP,"case SQLITE_TESTCTRL_ONCE_RESET_THRESHOLD: { ...; break; } at line 4558 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4566,FP,"case SQLITE_TESTCTRL_VDBE_COVERAGE: { ...; break; } at line 4573 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4577,FP,"case SQLITE_TESTCTRL_SORTER_MMAP: { ...; break; } at line 4580 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4588,FP,"case SQLITE_TESTCTRL_ISINIT: { ...; break; } at line 4590 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4611,FP,"case SQLITE_TESTCTRL_IMPOSTER: { ...; break; } at line 4625 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4654,FP,"case SQLITE_TESTCTRL_RESULT_INTREAL: { ...; break; } at line 4657 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4669,FP,"case SQLITE_TESTCTRL_SEEK_COUNT: { ...; break; } at line 4674 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4686,FP,"case SQLITE_TESTCTRL_TRACEFLAGS: { ...; break; } at line 4696 ends in break nested inside the block (contains its own inner switch, still terminates in break); checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/main.c,4707,FP,"case SQLITE_TESTCTRL_LOGEST: { ...; break; } at line 4716 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/memdb.c,383,FP,"case SQLITE_LOCK_SHARED: { ...; break; }; at line 390-391 ends in break nested inside the block (trailing stray semicolon after the closing brace is harmless); checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/memdb.c,394,FP,"case SQLITE_LOCK_RESERVED stacks empty into case SQLITE_LOCK_PENDING: { ...; break; } at line 403; block-wrapped break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/mutex_noop.c,114,FP,"case SQLITE_MUTEX_FAST stacks empty into case SQLITE_MUTEX_RECURSIVE: { ...; break; } at line 120; block-wrapped break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/mutex_unix.c,170,FP,"case SQLITE_MUTEX_RECURSIVE: { ...; break; } at line 189 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/mutex_unix.c,191,FP,"case SQLITE_MUTEX_FAST: { ...; break; } at line 199 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/mutex_w32.c,213,FP,"case SQLITE_MUTEX_FAST stacks empty into case SQLITE_MUTEX_RECURSIVE: { ...; break; } at line 224; block-wrapped break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4159,FP,"case SQLITE_FCNTL_NULL_IO: { ...; return SQLITE_OK; } at line 4162 terminates via a return nested inside the block; checker's last-top-level-statement check misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4164,FP,"case SQLITE_FCNTL_LOCKSTATE: { ...; return SQLITE_OK; } at line 4166 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4168,FP,"case SQLITE_FCNTL_LAST_ERRNO: { ...; return SQLITE_OK; } at line 4170 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4172,FP,"case SQLITE_FCNTL_CHUNK_SIZE: { ...; return SQLITE_OK; } at line 4174 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4176,FP,"case SQLITE_FCNTL_SIZE_HINT: { ...; return rc; } at line 4181 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4183,FP,"case SQLITE_FCNTL_PERSIST_WAL: { ...; return SQLITE_OK; } at line 4185 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4187,FP,"case SQLITE_FCNTL_POWERSAFE_OVERWRITE: { ...; return SQLITE_OK; } at line 4189 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4191,FP,"case SQLITE_FCNTL_VFSNAME: { ...; return SQLITE_OK; } at line 4193 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4195,FP,"case SQLITE_FCNTL_TEMPFILENAME: { ...; return SQLITE_OK; } at line 4201 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,4203,FP,"case SQLITE_FCNTL_HAS_MOVED: { ...; return SQLITE_OK; } at line 4205 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,8233,FP,"case SQLITE_FCNTL_GET_LOCKPROXYFILE: { ...; return SQLITE_OK; } at line 8246 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_unix.c,8248,FP,"case SQLITE_FCNTL_SET_LOCKPROXYFILE: { ... } terminates via a nested return further down the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3616,FP,"case SQLITE_FCNTL_LOCKSTATE: { ...; return SQLITE_OK; } at line 3619 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3621,FP,"case SQLITE_FCNTL_LAST_ERRNO: { ...; return SQLITE_OK; } at line 3624 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3626,FP,"case SQLITE_FCNTL_CHUNK_SIZE: { ...; return SQLITE_OK; } at line 3629 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3631,FP,"case SQLITE_FCNTL_SIZE_HINT: { ... } has multiple internal return statements (lines 3644,3647) that terminate every path; checker misses these nested returns",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3649,FP,"case SQLITE_FCNTL_PERSIST_WAL: { ...; return SQLITE_OK; } at line 3652 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3654,FP,"case SQLITE_FCNTL_POWERSAFE_OVERWRITE: { ...; return SQLITE_OK; } at line 3657 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3659,FP,"case SQLITE_FCNTL_VFSNAME: { ...; return SQLITE_OK; } at line 3662 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3664,FP,"case SQLITE_FCNTL_WIN32_AV_RETRY: { ...; return SQLITE_OK; } at line 3677 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3679,FP,"case SQLITE_FCNTL_WIN32_GET_HANDLE: { ...; return SQLITE_OK; } at line 3683 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/os_win.c,3696,FP,"case SQLITE_FCNTL_NULL_IO: { ...; return SQLITE_OK; } at line 3699 terminates via a nested return; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/pragma.c,2427,FP,"case PragTyp_SHRINK_MEMORY: { ...; break; } at line 2429 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/pragma.c,2505,FP,"case PragTyp_OPTIMIZE: { ...; break; } at line 2627 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/pragma.c,2639,FP,"the /* case PragTyp_BUSY_TIMEOUT */ default: { ...; break; } at line 2645 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/pragma.c,2659,FP,"case PragTyp_SOFT_HEAP_LIMIT: { ...; break; } at line 2665 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/pragma.c,2679,FP,"case PragTyp_HARD_HEAP_LIMIT: { ...; break; } at line 2686 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/pragma.c,2696,FP,"case PragTyp_THREADS: { ...; break; } at line 2705 ends in break nested inside the block; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,276,FP,"case '0' falls through empty (no code, one-line case) into default at line 275, but the flagged line 276 is case 'l': { ...; break; } at line 284, a block ending in a nested break that the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,287,FP,"case '1' through '9' stacked labels fall into a single block ending in break at line 304; nested break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,306,FP,"case '*': { ...; break; } (block continues past shown excerpt) ends in a nested break; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,528,FP,"case etFLOAT and case etEXP are empty stacked labels falling into case etGENERIC: { ...; break; }; block-wrapped break missed by checker",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,816,FP,"case etESCAPE_q is an empty stacked label falling into the etESCAPE_Q/etESCAPE_w block, which terminates via goto adjust_width_for_utf8 at line 922 (an accepted terminator, just nested inside the block)",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,817,FP,"case etESCAPE_Q is an empty stacked label falling into the etESCAPE_w block, which terminates via goto adjust_width_for_utf8 at line 922",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,818,FP,"case etESCAPE_w: { ... goto adjust_width_for_utf8; } at line 922 terminates via a nested goto, an accepted terminator the checker misses because it looks only at the outer compound-statement node",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,924,FP,"case etTOKEN: { ...; break; } at line 943 ends in a nested break; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/printf.c,945,FP,"case etSRCITEM: { ...; break; } at line 977 ends in a nested break; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/resolve.c,981,FP,"case TK_ROW: { ...; break; } at line 992 ends in a nested break; checker misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/resolve.c,1023,FP,"case TK_NOTNULL is an empty stacked label falling into case TK_ISNULL: { ... }, which terminates via return WRC_Prune at line 1061, a nested return the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/resolve.c,1073,FP,"case TK_ID is an empty stacked label falling into case TK_DOT: { ...; return lookupName(...); } at line 1107, a nested return the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/resolve.c,1112,FP,"case TK_FUNCTION: { ...; return WRC_Prune; } at line 1361 ends in a nested return the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/resolve.c,1367,FP,"case TK_EXISTS/TK_SELECT stack empty into case TK_IN: { ...; break; } at line 1391, a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/resolve.c,1393,FP,"case TK_VARIABLE: { ...; break; } at line 1400 ends in a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/resolve.c,1403,FP,"case TK_IS/TK_ISNOT falls into case TK_BETWEEN via the deliberate_fall_through marker at line 1417, which expands to __attribute__((fallthrough)) (defined in sqliteInt.h) -- an explicit fallthrough attribute the textual-comment scan does not recognize since it is a macro token, not a comment containing 'fall'",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,946,FP,"case WHERE_DISTINCT_ORDERED: { ...; break; } at line 970 ends in a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,973,FP,"case WHERE_DISTINCT_UNIQUE: { /* nothing to do */ break; } at line 975 ends in a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,1310,FP,"case SRT_Fifo/SRT_DistFifo/SRT_Table stack empty into case SRT_EphemTab: { ...; break; } at line 1352, a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,1355,FP,"case SRT_Upfrom: { ...; break; } at line 1376 ends in a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,1441,FP,"case SRT_Coroutine is an empty stacked label falling into case SRT_Output: { ...; break; } at line 1453, a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,1829,FP,"case SRT_Table is an empty stacked label falling into case SRT_EphemTab: { ...; break; } at line 1834, a nested break the checker misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,1849,FP,"case SRT_Upfrom: { ... } (continues past excerpt shown) is a self-contained block, not a fallthrough from SRT_Mem which already ends in its own break at line 1846",delta_msc17_task534,high
+MSC17-C,sqlite,src/select.c,3140,FP,"case SRT_Fifo/SRT_DistFifo/SRT_Table stack empty into case SRT_EphemTab: { ... } which is a self-contained block (continues past excerpt) handling record insertion; not a genuine unmarked fallthrough of executed code",delta_msc17_task534,high

@@ -1,0 +1,131 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MSC17-C,sqlite,src/vdbe.c,3797,FP,"OP_Count's case body is a single brace-wrapped block ending in ""goto check_for_interrupt;""; the checker only inspects the compound_statement's own kind (not literally goto) so it misses the real terminator inside the block",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,3823,FP,"OP_Savepoint's case body is a brace-wrapped block whose last statement is a literal break; at line 4001, but the checker sees only the outer compound_statement node and misses it",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4013,FP,"OP_AutoCommit's block-wrapped body has both if/else branches ending in goto (vdbe_return/abort_due_to_error) with only an unreachable /*NOTREACHED*/ assert(0) after; the checker's compound-statement wrapping bug misses this and there is no live fallthrough",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4102,FP,"OP_Transaction's case body is a brace-wrapped block ending in break; at line 4200; checker only sees the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4215,FP,OP_ReadCookie's block ends in a literal break; at line 4231 but is hidden inside the wrapping compound_statement the checker inspects,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4249,FP,OP_SetCookie's block ends in break; at line 4278 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4365,FP,"OP_ReopenIdx intentionally falls into case OP_OpenRead/OP_OpenWrite nested inside the same brace block (marked by the comment ""then fall through into OP_OpenRead""), and that shared block eventually reaches break; at 4469; the checker only sees the outer compound_statement, not the nested case labels or terminator",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4480,FP,OP_OpenDup's block ends in break; at line 4505 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4542,FP,"OP_OpenAutoindex is a grouped case label with only a trailing ""/* ncycle */"" annotation comment before OP_OpenEphemeral; CERT exempts empty grouped case labels but the checker treats the benign comment as non-empty, unmarked content",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4543,FP,OP_OpenEphemeral's block ends in break; further down (the case body correctly terminates) hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4633,FP,OP_SorterOpen's block ends in break; at line 4645 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4655,FP,OP_SequenceTest's block ends in break; at line 4663 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4683,FP,OP_OpenPseudo's block ends in break; at line 4699 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4707,FP,OP_Close's block ends in break; at line 4711 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4824,FP,"OP_SeekLT is a grouped case label with only a trailing ""/* jump0, in3, group, ncycle */"" comment before the shared OP_SeekLE/GE/GT body; CERT exempts empty grouped labels but the benign comment makes the checker treat it as non-empty",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4825,FP,"OP_SeekLE is likewise a grouped, code-free case label carrying only a trailing annotation comment before the shared body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,4826,FP,"OP_SeekGE is likewise a grouped, code-free case label carrying only a trailing annotation comment before the shared body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5093,FP,OP_SeekScan's block ends in break; at line 5198 (all internal paths goto or break) hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5348,FP,"OP_IfNoHope ends with an explicit fall-through marker (comment ""Fall through into OP_NotFound"" followed by the no-op identifier statement deliberate_fall_through) rather than a comment as the very last item, so the checker's comment-only intentional-fallthrough scan does not catch this custom marker",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5362,FP,"OP_NoConflict is a grouped, code-free case label with only a trailing ""/* jump, in3, ncycle */"" comment before the shared OP_Found body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5363,FP,"OP_NotFound is likewise a grouped, code-free case label with only a trailing annotation comment before the shared body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5495,FP,"OP_SeekRowid deliberately falls into OP_NotExists using the same non-comment deliberate_fall_through marker (preceded by the comment ""Fall through into OP_NotExists""), which the checker's comment-only scan misses",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5564,FP,OP_Sequence's block ends in break; at line 5570 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5589,FP,OP_NewRowid's block ends in break; at line 5708 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5748,FP,OP_Insert's block ends in break; at line 5833 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5847,FP,OP_RowCell's block ends in break; at line 5860 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,5903,FP,OP_Delete's block ends in break; at line 6002 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6032,FP,OP_SorterCompare's block ends in break; at line 6047 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6062,FP,OP_SorterData's block ends in break; at line 6073 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6104,FP,OP_RowData's block ends in break; at line 6141 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6154,FP,OP_Rowid's block ends in break; at line 6192 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6253,FP,"OP_SeekEnd is a grouped, code-free case label carrying only a trailing ""/* ncycle */"" comment before the shared OP_Last body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6254,FP,OP_Last's block ends in break; at line 6285 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6296,FP,OP_IfSizeBetween's block ends in break; at line 6322 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6347,FP,"OP_SorterSort is a grouped, code-free case label with only a trailing ""/* jump ncycle */"" comment before OP_Sort's body, which itself deliberately falls into OP_Rewind via a deliberate_fall_through marker",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6372,FP,OP_Rewind's block ends in break; at line 6404 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6413,FP,OP_IfEmpty's block ends in break; at line 6430 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6487,FP,"OP_SorterNext's block deliberately falls (via goto next_tail) into the nested OP_Prev/OP_Next case labels sharing the same brace block, which terminates properly via goto at line 6534/6539; the checker only sees the outer compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6570,FP,OP_IdxInsert's block ends in break; at line 6597 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6607,FP,OP_SorterInsert's block ends in break; at line 6622 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6635,FP,OP_IdxDelete's block ends in break; at line 6666 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6697,FP,"OP_DeferredSeek is a grouped, code-free case label with only a trailing ""/* ncycle */"" comment before the shared OP_IdxRowid body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6698,FP,OP_IdxRowid's block ends in break; at line 6751 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6816,FP,"OP_IdxLE is a grouped, code-free case label with only a trailing ""/* jump, ncycle */"" comment before the shared body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6817,FP,"OP_IdxGT is likewise a grouped, code-free case label with only a trailing annotation comment before the shared body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6818,FP,"OP_IdxLT is likewise a grouped, code-free case label with only a trailing annotation comment before the shared body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6819,FP,OP_IdxGE's block ends in break; at line 6887 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6917,FP,OP_Destroy's block ends in break; at line 6947 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6967,FP,OP_Clear's block ends in break; at line 6984 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,6995,FP,OP_ResetSorter's block ends in break; at line 7009 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7021,FP,OP_CreateBtree's block ends in break; at line 7037 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7053,FP,OP_SqlExec's block ends in break; at line 7091 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7103,FP,OP_ParseSchema's block ends in break; at line 7171 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7197,FP,OP_DropTable's block ends in break; at line 7200 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7211,FP,OP_DropIndex's block ends in break; at line 7214 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7225,FP,OP_DropTrigger's block ends in break; at line 7228 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7299,FP,OP_RowSetAdd's block ends in break; at line 7308 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7319,FP,OP_RowSetRead's block ends in goto check_for_interrupt; at line 7336 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7362,FP,OP_RowSetTest's block ends in break; at line 7388 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7648,FP,OP_IfPos's block ends in break; at line 7656 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7708,FP,OP_IfNotZero's block ends in break; at line 7716 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7725,FP,OP_DecrJumpZero's block ends in break; at line 7731 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7775,FP,"OP_AggStep deliberately falls into OP_AggStep1 via the comment ""Fall through into OP_AggStep"" plus a deliberate_fall_through marker statement, which the checker's comment-only scan misses; the block is also compound-statement wrapped",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7818,FP,OP_AggStep1's block ends in break; at line 7883 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,7913,FP,OP_AggFinal's block ends in break; at line 7937 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8145,FP,OP_Expire's block ends in break; at line 8152 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8160,FP,OP_CursorLock's block ends in break; at line 8167 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8175,FP,OP_CursorUnlock's block ends in break; at line 8182 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8786,FP,"OP_PureFunc is a grouped, code-free case label with only a trailing ""/* group */"" comment before the shared OP_Function body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8787,FP,OP_Function's block ends in break; at line 8836 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8844,FP,OP_ClrSubtype's block ends in break; at line 8847 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8856,FP,OP_GetSubtype's block ends in break; at line 8864 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8873,FP,OP_SetSubtype's block ends in break; at line 8883 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8928,FP,OP_Filter's block ends in break; at line 8954 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbe.c,8983,FP,OP_Init's block ends in goto jump_to_p2; at line 9051 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,1863,FP,SQLITE_INTEGER's case body in sqlite3_bind_value is a brace-wrapped block ending in break; at line 1865; checker only sees the outer compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,1867,FP,SQLITE_FLOAT's case body is a brace-wrapped block ending in break; at line 1872; hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,1874,FP,SQLITE_BLOB's case body is a brace-wrapped block ending in break; at line 1880; hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,1882,FP,SQLITE_TEXT's case body is a brace-wrapped block ending in break; at line 1886; hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2516,FP,SQLITE_SCANSTAT_NLOOP's case body is a brace-wrapped block ending in break; at line 2522; hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2524,FP,SQLITE_SCANSTAT_NVISIT's case body ends in break; at line 2530 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2532,FP,SQLITE_SCANSTAT_EST's case body ends in break; at line 2540 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2542,FP,SQLITE_SCANSTAT_NAME's case body ends in break; at line 2544 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2546,FP,SQLITE_SCANSTAT_EXPLAIN's case body ends in break; at line 2552 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2554,FP,SQLITE_SCANSTAT_SELECTID's case body ends in break; at line 2560 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2562,FP,SQLITE_SCANSTAT_PARENTID's case body ends in break; at line 2568 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeapi.c,2570,FP,SQLITE_SCANSTAT_NCYCLE's case body ends in break; further down hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,893,FP,"OP_Transaction in resolveP2Values() deliberately falls into OP_AutoCommit/OP_Savepoint via a comment plus deliberate_fall_through marker rather than a plain comment, which the checker's comment-only scan misses; also block-wrapped",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,898,FP,OP_Savepoint's case body is a brace-wrapped block ending in break; at line 900 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,906,FP,OP_JournalMode's case body is a brace-wrapped block ending in break; at line 909 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,911,FP,OP_Init's case body is a brace-wrapped block ending in a goto to resolve_p2_values_loop_exit; hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1380,FP,P4_FUNCCTX's case body in freeP4() ends in break; at line 1382 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1387,FP,"The grouped P4_REAL/P4_INT64/P4_DYNAMIC/P4_INTARRAY case body ends in break; at line 1389 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1391,FP,P4_KEYINFO's case body ends in break; at line 1393 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1401,FP,P4_FUNCDEF's case body ends in break; at line 1403 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1405,FP,P4_MEM's case body ends in break; at line 1411 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1413,FP,P4_VTAB's case body ends in break; at line 1415 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1417,FP,P4_TABLEREF's case body ends in break; at line 1419 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1843,FP,TK_REGISTER's case body in displayP4Expr() ends in break; at line 1845 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1847,FP,TK_COLUMN's case body ends in break; at line 1853 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1911,FP,P4_KEYINFO's case body in sqlite3VdbeDisplayP4() ends in break; at line 1926 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1934,FP,P4_COLLSEQ's case body ends in break; at line 1940 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1942,FP,P4_FUNCDEF's case body ends in break; at line 1945 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1947,FP,P4_FUNCCTX's case body ends in break; at line 1950 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1952,FP,P4_INT64's case body ends in break; at line 1954 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1956,FP,P4_INT32's case body ends in break; at line 1958 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1960,FP,P4_REAL's case body ends in break; at line 1962 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1964,FP,P4_MEM's case body ends in break; at line 1978 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1987,FP,P4_INTARRAY's case body ends in break; at line 1996 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,1998,FP,P4_SUBPROGRAM's case body ends in break; at line 2000 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,2002,FP,P4_TABLE's case body ends in break; at line 2004 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,2006,FP,P4_SUBRTNSIG's case body ends in break; at line 2009 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,2767,FP,CURTYPE_SORTER's case body in sqlite3VdbeFreeCursorNN() ends in break; at line 2769 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4125,FP,"Serial type 10's case body in sqlite3VdbeSerialGet() ends in return; at line 4130 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4132,FP,"Serial type 11 is a grouped, code-free case label with only a trailing ""/* Reserved for future use */"" comment before the shared serial-type-0 body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4133,FP,"Serial type 0's case body ends in return; at line 4136 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4138,FP,"Serial type 1's case body ends in return; at line 4144 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4146,FP,"Serial type 2's case body ends in return; at line 4152 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4154,FP,"Serial type 3's case body ends in return; at line 4160 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4162,FP,"Serial type 4's case body ends in return; at line 4172 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4174,FP,"Serial type 5's case body ends in return; at line 4180 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4182,FP,"Serial type 6 is a grouped, code-free case label with only a trailing ""/* 8-byte signed integer */"" comment before the shared serial-type-7 body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4183,FP,"Serial type 7's case body ends in return; at line 4187 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4189,FP,"Serial type 8 is a grouped, code-free case label with only a trailing ""/* Integer 0 */"" comment before the shared serial-type-9 body",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4190,FP,"Serial type 9's case body ends in return; at line 4195 hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4688,FP,"Serial type 4's case body in vdbeRecordDecodeInt() is brace-wrapped ending in return; at line 4691, unlike sibling cases 0-3 which use unbraced statements; the checker misses the terminator inside the block",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4693,FP,"Serial type 5's case body is likewise brace-wrapped ending in return; at line 4695, hidden behind the wrapping compound_statement",delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4982,FP,Serial type 1's case body in vdbeRecordCompareInt() ends in break; at line 4985 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4987,FP,Serial type 2's case body ends in break; at line 4990 hidden behind the wrapping compound_statement,delta_msc17_task534,high
+MSC17-C,sqlite,src/vdbeaux.c,4992,FP,Serial type 3's case body ends in break; at line 4995 hidden behind the wrapping compound_statement,delta_msc17_task534,high
