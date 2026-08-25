@@ -1,0 +1,2 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,hostap,hostapd/hostapd_cli.c,178,FP,"ctrl_conn is a file-scope static handle; hostapd_cli_reconnect() (line 178) always calls hostapd_cli_close_connection() at line 167 immediately before reassigning it, and the program's exit path (hostapd_cli_cleanup -> hostapd_cli_close_connection) unconditionally calls wpa_ctrl_close(ctrl_conn) -- the checker's ownership tracking loses the free that happens across the reconnect call and at program exit.",delta_mem31_task536,high
