@@ -1,0 +1,37 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+CON03-C,sqlite,ext/fts5/fts5_tcl.c,1703,FP,"aCmd is a static command-registration table initialized once in Fts5tcl_Init and only read afterward to call Tcl_CreateObjCommand in a loop; it is never mutated after its initializer, in the single-threaded Tcl test extension.",delta_con03_task547,high
+CON03-C,sqlite,ext/fts5/fts5_tcl.c,573,FP,"iCmd is a function-local static counter inside xF5tFunction, part of the SQLITE_TEST-only Tcl test-harness extension driven by a single Tcl interpreter with no worker threads.",delta_con03_task547,high
+DCL19-C,sqlite,src/backup.c,314,FP,sqlite3_backup_step is public API referenced from other .c files (10 cross-file hits incl. test/loadext),delta_dcl19_task547,high
+DCL19-C,sqlite,src/backup.c,571,FP,sqlite3_backup_finish is public API referenced from other .c files (12 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,1351,FP,sqlite3_close is public API referenced from other .c files (127 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,1786,FP,sqlite3_busy_handler is public API referenced from other .c files (16 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,190,FP,sqlite3_initialize is public API referenced from other .c files (51 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,2130,FP,sqlite3_create_function_v2 is public API referenced from other .c files (13 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,2496,FP,sqlite3_wal_autocheckpoint is public API referenced from other .c files (6 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,2547,FP,sqlite3_wal_checkpoint_v2 is public API referenced from other .c files (7 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,2617,FP,sqlite3_wal_checkpoint is public API referenced from other .c files (10 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,2817,FP,sqlite3_errcode is public API referenced from other .c files (34 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,3758,FP,sqlite3_create_collation_v2 is public API referenced from other .c files (11 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/main.c,4846,FP,sqlite3_free_filename is public API referenced from other .c files (attach.c/func.c/loadext.c/test_multiplex.c),delta_dcl19_task547,high
+DCL19-C,sqlite,src/malloc.c,23,FP,sqlite3_release_memory is public API referenced from other .c files (11 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,128,FP,sqlite3_reset is public API referenced from other .c files (207 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,195,FP,sqlite3_value_bytes is public API referenced from other .c files (173 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,198,FP,sqlite3_value_bytes16 is public API referenced from other .c files (12 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,201,FP,sqlite3_value_double is public API referenced from other .c files (82 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,204,FP,sqlite3_value_int is public API referenced from other .c files (124 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,245,FP,sqlite3_value_type is public API referenced from other .c files (186 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,334,FP,sqlite3_value_nochange is public API referenced from other .c files (14 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,494,FP,sqlite3_result_error is public API referenced from other .c files (158 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,526,FP,sqlite3_result_null is public API referenced from other .c files (27 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,665,FP,sqlite3_result_zeroblob64 is public API referenced from other .c files (6 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,699,FP,sqlite3_result_error_toobig is public API referenced from other .c files (11 cross-file hits),delta_dcl19_task547,high
+DCL19-C,sqlite,src/vdbeapi.c,710,FP,sqlite3_result_error_nomem is public API referenced from other .c files (104 cross-file hits),delta_dcl19_task547,high
+INT10-C,sqlite,src/bitvec.c,457,FP,"The dividend (i & 0x7fffffff) is masked to always be in [0, 0x7fffffff], and per C99 the remainder's sign follows the dividend, so the result is nonnegative even though sz (the divisor) can be negative in this self-test-only function.",delta_int10_task547,high
+INT10-C,sqlite,src/mem3.c,178,FP,"size is declared u32 (unsigned), so size % N_HASH is unsigned modulo.",delta_int10_task547,high
+INT10-C,sqlite,src/mem3.c,212,FP,"size is declared u32 (unsigned) in memsys3Link, identical pattern to line 178, so the modulo is unsigned.",delta_int10_task547,high
+INT10-C,sqlite,src/mem3.c,380,FP,"nBlock is declared u32 (unsigned), so nBlock % N_HASH is unsigned modulo.",delta_int10_task547,high
+INT10-C,sqlite,src/os_kv.c,760,FP,"n is initialized from pFile->nJrnl only after an early return guards nJrnl<=0, so n starts strictly positive and only shrinks via division by 26, staying nonnegative through the loop.",delta_int10_task547,high
+INT10-C,sqlite,src/os_unix.c,3198,FP,"lk & mask masks off the sign bit (mask is LARGEST_INT64 or 0x7fffffff), forcing the dividend nonnegative, so (lk & mask) % (SHARED_SIZE - 1) is always nonnegative.",delta_int10_task547,high
+INT10-C,sqlite,src/util.c,1228,FP,"v is declared u64 (unsigned, asserted v>0), so v%100 is unsigned modulo.",delta_int10_task547,high
+INT10-C,sqlite,src/util.c,580,FP,"p is negative here, but the code immediately checks if(n) and corrects it (g--; n += 27) before n is used anywhere, so the transient negative remainder is explicitly guarded/normalized.",delta_int10_task547,medium
+INT10-C,sqlite,src/util.c,589,FP,"This branch is only reached when p>=27, so p/27 and p%27 are computed on a nonnegative dividend and are always nonnegative.",delta_int10_task547,high

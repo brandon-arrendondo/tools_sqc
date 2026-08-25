@@ -1,0 +1,18 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+INT10-C,hostap,src/ap/gas_query_ap.c,664,FP,"next_start and dialog_token are both nonnegative int loop counters bounded to [0,256) by the for-loop and prior assignments, so (next_start+dialog_token)%256 can never be negative.",delta_int10_task547,high
+INT10-C,hostap,src/ap/gas_query_ap.c,669,FP,"dialog_token is reassigned from the same bounded nonnegative expression as line 664, so %256 here is always nonnegative.",delta_int10_task547,high
+INT10-C,hostap,src/ap/gas_query_ap.c,670,FP,"next_start = (dialog_token + 1) % 256 with dialog_token in [0,255], so the dividend and result are always nonnegative.",delta_int10_task547,high
+INT10-C,hostap,src/ap/ieee802_11_eht.c,729,FP,"sta_prof_len and len are both size_t (unsigned), so the checker misflagged an inherently unsigned modulo as signed.",delta_int10_task547,high
+INT10-C,hostap,src/ap/sta_info.c,1665,FP,"timeout is declared unsigned int and only assigned from an int config field before the modulo, so the % operates on an unsigned operand at this use site.",delta_int10_task547,high
+INT10-C,hostap,src/ap/wnm_ap.c,903,FP,"disassoc_timer is validated to be in [0,65535] at both ctrl-iface call sites into set_disassoc_timer, and beacon_int is floored to >=1, so timeout stays nonnegative before the %1000.",delta_int10_task547,high
+INT10-C,hostap,src/common/nan_de.c,1973,FP,"wpabuf_len() returns size_t (unsigned) and the % result is only tested for nonzero (if (...)), which is sign-independent.",delta_int10_task547,high
+INT10-C,hostap,src/common/sae.c,170,FP,"bits is declared size_t (unsigned), so bits % 8 is an unsigned modulo, not signed.",delta_int10_task547,high
+INT10-C,hostap,src/common/sae.c,171,FP,"Same bits (size_t, unsigned) used in 8 - bits % 8, an unsigned modulo whose result is always in [0,7].",delta_int10_task547,high
+INT10-C,hostap,src/common/sae_pk.c,161,FP,"pw_len is declared size_t (unsigned) and the modulo result is only compared with != 4, an equality/inequality check that is sign-independent.",delta_int10_task547,high
+INT10-C,hostap,src/drivers/driver_nl80211_event.c,1253,FP,"abs(freq - freq1) is forced nonnegative by abs(), and the %2 result is only compared with ==0, sign-independent.",delta_int10_task547,high
+INT10-C,hostap,src/eap_common/ikev2_common.c,598,FP,"iv_len and pad_len are both declared size_t (unsigned), so the modulo and subtraction are unsigned arithmetic.",delta_int10_task547,high
+INT10-C,hostap,wpa_supplicant/dpp_supplicant.c,254,FP,"wait_time is declared unsigned int (assigned from unsigned int dpp_resp_retry_time or the literal 1000), so %1000 is unsigned.",delta_int10_task547,high
+INT10-C,hostap,wpa_supplicant/dpp_supplicant.c,690,FP,"wait_time and diff_ms are both unsigned int, and the function already returns earlier when diff_ms >= wait_time, so the subtraction and modulo stay nonnegative unsigned arithmetic.",delta_int10_task547,high
+INT10-C,hostap,wpa_supplicant/dpp_supplicant.c,791,FP,"wait_time is unsigned int and is explicitly clamped to 0 when used > wait_time before the subtraction, so the value feeding %1000 is always a nonnegative unsigned quantity.",delta_int10_task547,high
+INT10-C,hostap,wpa_supplicant/dpp_supplicant.c,813,FP,"wait_time is declared unsigned int (from wpa_s->max_remain_on_chan, clamped to max_wait_time, +10), so the %1000 here is unsigned arithmetic.",delta_int10_task547,high
+INT10-C,hostap,wpa_supplicant/sme.c,3631,FP,"_rand is u32 and usec is unsigned int, so _rand % (sa_query_ch_switch_max_delay + 1) is unsigned modulo.",delta_int10_task547,high
