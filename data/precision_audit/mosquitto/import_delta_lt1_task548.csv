@@ -1,0 +1,187 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+API02-C,mosquitto,broker.h,798,FP,"Flagged ""pointer"" is a callback/function-pointer parameter, not a caller-supplied write buffer.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_base64.h,31,FP,"Output is an internally-allocated char**/void** (caller doesn't supply the buffer), so no size argument is needed.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_file.h,44,FP,buflen (int*) already serves as the accompanying size/capacity argument for buf.,delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_file.h,49,FP,"Flagged ""pointer"" is a callback/function-pointer parameter, not a caller-supplied write buffer.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_file.h,63,FP,Function only shrinks an existing NUL-terminated string in place; it cannot write past the original bounds.,delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_properties.h,302,FP,"Function reads into a fixed-size scalar or internally-allocated out-pointer (value/len set by the function itself), not an unbounded caller buffer needing a size arg.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_properties.h,327,FP,"Function reads into a fixed-size scalar or internally-allocated out-pointer (value/len set by the function itself), not an unbounded caller buffer needing a size arg.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_properties.h,352,FP,"Function reads into a fixed-size scalar or internally-allocated out-pointer (value/len set by the function itself), not an unbounded caller buffer needing a size arg.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_properties.h,377,FP,"Function reads into a fixed-size scalar or internally-allocated out-pointer (value/len set by the function itself), not an unbounded caller buffer needing a size arg.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_properties.h,405,FP,"Function reads into a fixed-size scalar or internally-allocated out-pointer (value/len set by the function itself), not an unbounded caller buffer needing a size arg.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_properties.h,435,FP,"Function reads into a fixed-size scalar or internally-allocated out-pointer (value/len set by the function itself), not an unbounded caller buffer needing a size arg.",delta_lt1_task548,medium
+API02-C,mosquitto,libcommon_properties.h,467,FP,"Function reads into a fixed-size scalar or internally-allocated out-pointer (value/len set by the function itself), not an unbounded caller buffer needing a size arg.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_helpers.h,150,FP,"The flagged pointer is the callback function pointer, not a write buffer.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_publish.h,130,FP,"payloadlen already accompanies payload as its size argument; mid is a single int out-param, not an unbounded buffer.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_publish.h,75,FP,"payloadlen already accompanies payload as its size argument; mid is a single int out-param, not an unbounded buffer.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_subscribe.h,100,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_subscribe.h,58,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_unsubscribe.h,129,FP,sub_count is already present as the size argument for the sub array.,delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_unsubscribe.h,53,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquitto_unsubscribe.h,97,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquittopp.h,112,FP,"payloadlen already accompanies payload as its size argument; mid is a single int out-param, not an unbounded buffer.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquittopp.h,113,FP,"payloadlen already accompanies payload as its size argument; mid is a single int out-param, not an unbounded buffer.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquittopp.h,114,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquittopp.h,115,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquittopp.h,116,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquittopp.h,117,FP,"sub is a read-only, NUL-terminated input string (not written into); mid is a single int out-param.",delta_lt1_task548,medium
+API02-C,mosquitto,libmosquittopp.h,66,FP,"The flagged pointer is the callback function pointer, not a write buffer.",delta_lt1_task548,medium
+ARR38-C,mosquitto,src/persist_read.c,109,FP,"fread(&i16temp,1,sizeof(uint16_t),db_fptr) is the standard (size=1,nmemb=N) byte-read idiom reading exactly the 2-byte destination buffer; not a bug.",delta_lt1_task548,high
+ARR38-C,mosquitto,src/subs.c,224,FP,"strncpy(shared->name, sharename, slen+1) writes into a buffer allocated as sizeof(struct)+slen+1, sized to match exactly.",delta_lt1_task548,high
+ARR38-C,mosquitto,src/subs.c,556,FP,"strncpy(child->topic, topic, len+1) writes into a buffer calloc(1,sizeof(struct)+len+1), sized to match exactly.",delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,101,FP,int will_clear(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,108,FP,int reconnect(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,109,FP,int reconnect_async(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,110,FP,int disconnect(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,133,FP,int loop_misc(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,137,FP,int loop_start(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,139,FP,bool want_write(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,43,FP,"File is a C++ header (namespace mosqpp, class mosquittopp, default args); in C++ bare () unambiguously means zero parameters so the C/C++ ambiguity DCL20-C exists to catch does not exist here.",delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,44,FP,Same C++ header as line 43 (lib_cleanup()); () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,95,FP,virtual ~mosquittopp(); is C++ destructor syntax; () is unambiguous in C++.,delta_lt1_task548,high
+DCL20-C,mosquitto,include/mosquitto/libmosquittopp.h,98,FP,int socket(); is a C++ class method; () is unambiguous zero-arg in C++.,delta_lt1_task548,high
+DCL37-C,mosquitto,config.h,12,FP,"This is a standard, POSIX-documented feature-test macro that applications are expected to #define before including system headers, not a naming mistake.",delta_lt1_task548,medium
+DCL37-C,mosquitto,config.h,13,FP,"This is a standard, POSIX-documented feature-test macro that applications are expected to #define before including system headers, not a naming mistake.",delta_lt1_task548,medium
+DCL37-C,mosquitto,config.h,66,TP,"config.h unconditionally #defines the reserved standard type names as a Coverity workaround (comment admits ""these are wrong""), a genuine user redefinition of reserved identifiers.",delta_lt1_task548,high
+DCL37-C,mosquitto,config.h,67,TP,"config.h unconditionally #defines the reserved standard type names as a Coverity workaround (comment admits ""these are wrong""), a genuine user redefinition of reserved identifiers.",delta_lt1_task548,high
+DCL37-C,mosquitto,config.h,68,TP,"config.h unconditionally #defines the reserved standard type names as a Coverity workaround (comment admits ""these are wrong""), a genuine user redefinition of reserved identifiers.",delta_lt1_task548,high
+DCL37-C,mosquitto,config.h,69,TP,"config.h unconditionally #defines the reserved standard type names as a Coverity workaround (comment admits ""these are wrong""), a genuine user redefinition of reserved identifiers.",delta_lt1_task548,high
+DCL37-C,mosquitto,config.h,70,TP,"config.h unconditionally #defines the reserved standard type names as a Coverity workaround (comment admits ""these are wrong""), a genuine user redefinition of reserved identifiers.",delta_lt1_task548,high
+DCL37-C,mosquitto,config.h,8,FP,"This is a standard, POSIX-documented feature-test macro that applications are expected to #define before including system headers, not a naming mistake.",delta_lt1_task548,medium
+DCL37-C,mosquitto,config.h,96,FP,"This is a standard, POSIX-documented feature-test macro that applications are expected to #define before including system headers, not a naming mistake.",delta_lt1_task548,medium
+DCL37-C,mosquitto,libmosquitto.h,48,FP,"bool/true/false do not start with an underscore, and the guarded MSVC<1900 #define is a standard stdbool.h portability shim, not a reserved-identifier violation.",delta_lt1_task548,medium
+DCL37-C,mosquitto,libmosquitto.h,49,FP,"bool/true/false do not start with an underscore, and the guarded MSVC<1900 #define is a standard stdbool.h portability shim, not a reserved-identifier violation.",delta_lt1_task548,medium
+DCL37-C,mosquitto,libmosquitto.h,50,FP,"bool/true/false do not start with an underscore, and the guarded MSVC<1900 #define is a standard stdbool.h portability shim, not a reserved-identifier violation.",delta_lt1_task548,medium
+DCL40-C,mosquitto,src/database.c,1476,TP,'db__message_write_inflight_out_latest' and 'db__message_write_inflight_out_all' share identical first 31 chars ('db__message_write_inflight_out_').,delta_lt1_task548,high
+DCL40-C,mosquitto,src/mosquitto_broker_internal.h,734,TP,Same pair as database.c:1476; first 31 chars identical.,delta_lt1_task548,high
+DCL40-C,mosquitto,src/mosquitto_broker_internal.h,864,TP,'plugin_persist__handle_subscription_delete' vs '...subscription_add' share identical first 31 chars ('plugin_persist__handle_subscrip').,delta_lt1_task548,high
+DCL40-C,mosquitto,src/mosquitto_broker_internal.h,866,TP,'plugin_persist__handle_client_msg_delete' vs '...client_msg_add' share identical first 31 chars ('plugin_persist__handle_client_m').,delta_lt1_task548,high
+DCL40-C,mosquitto,src/mosquitto_broker_internal.h,867,TP,'plugin_persist__handle_client_msg_update' vs '...client_msg_add' share identical first 31 chars ('plugin_persist__handle_client_m').,delta_lt1_task548,high
+DCL40-C,mosquitto,src/mosquitto_broker_internal.h,869,TP,'plugin_persist__handle_base_msg_delete' vs '...base_msg_add' share identical first 31 chars ('plugin_persist__handle_base_msg').,delta_lt1_task548,high
+DCL40-C,mosquitto,src/mosquitto_broker_internal.h,871,TP,'plugin_persist__handle_retain_msg_delete' vs '...retain_msg_set' share identical first 31 chars ('plugin_persist__handle_retain_m').,delta_lt1_task548,high
+DCL40-C,mosquitto,src/persist.h,164,TP,'persist__chunk_client_msg_read_v56' vs '...v234' share identical first 31 chars ('persist__chunk_client_msg_read_').,delta_lt1_task548,high
+DCL40-C,mosquitto,src/plugin_persist.c,184,TP,Same identifier pair as mosquitto_broker_internal.h:864; first 31 chars identical.,delta_lt1_task548,high
+DCL40-C,mosquitto,src/plugin_persist.c,247,TP,Same identifier pair as mosquitto_broker_internal.h:866; first 31 chars identical.,delta_lt1_task548,high
+DCL40-C,mosquitto,src/plugin_persist.c,271,TP,Same identifier pair as mosquitto_broker_internal.h:867; first 31 chars identical.,delta_lt1_task548,high
+DCL40-C,mosquitto,src/plugin_persist.c,332,TP,Same identifier pair as mosquitto_broker_internal.h:869; first 31 chars identical.,delta_lt1_task548,high
+DCL40-C,mosquitto,src/plugin_persist.c,376,TP,Same identifier pair as mosquitto_broker_internal.h:871; first 31 chars identical.,delta_lt1_task548,high
+ERR00-C,mosquitto,src/net.c,389,FP,"fclose(fptr) here runs on the permission-check-failed branch before any fprintf write occurs on this fd, so a close failure has no data-loss consequence to check.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/net.c,394,TP,"fclose(fptr) here follows fprintf(fptr,...) (an actual write) on line 393 and its return value is genuinely unchecked, risking silent data loss on flush failure.",delta_lt1_task548,high
+ERR00-C,mosquitto,src/persist_read.c,450,FP,"fptr was opened via mosquitto_fopen(...,\rb\""","true) (read-only); this fclose on the empty-file early-return path is a read-only close with no write-flush consequence.""",delta_lt1_task548
+ERR00-C,mosquitto,src/persist_read.c,473,FP,"Same read-only fptr (opened \rb\"" at line 444); close on unsupported-version error path"," no data written.""",delta_lt1_task548
+ERR00-C,mosquitto,src/persist_read.c,485,FP,"Same read-only fptr; close on cfg-chunk-v56 read-error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,491,FP,"Same read-only fptr; close on cfg-chunk-v234 read-error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,498,FP,"Same read-only fptr; close on dbid-size-mismatch error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,507,FP,"Same read-only fptr; close on base-msg-chunk restore error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,515,FP,"Same read-only fptr; close on client-msg-chunk restore error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,523,FP,"Same read-only fptr; close on retain-chunk restore error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,531,FP,"Same read-only fptr; close on sub-chunk restore error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,539,FP,"Same read-only fptr; close on client-chunk restore error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,547,FP,"Same read-only fptr; close on fseek-error path, no data written.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,558,FP,"Same read-only fptr; normal-completion close at end of persist__restore, no data ever written to this fd.",delta_lt1_task548,medium
+ERR00-C,mosquitto,src/persist_read.c,571,FP,"Same read-only fptr; close in the error: label cleanup path, no data written.",delta_lt1_task548,medium
+EXP20-C,mosquitto,lib/net_mosq.c,735,TP,"}else if(!strcmp(mosq->tls_version, \tlsv1.3\"")){ is the standard implicit-boolean strcmp idiom.""",delta_lt1_task548,medium
+EXP20-C,mosquitto,lib/net_mosq.c,738,TP,"}else if(!strcmp(mosq->tls_version, \tlsv1.2\"")){ is the standard implicit-boolean strcmp idiom.""",delta_lt1_task548,medium
+EXP20-C,mosquitto,src/handle_connect.c,387,TP,"if(!strncmp(will_struct->msg.topic, \$CONTROL/\"""," strlen(\""$CONTROL/\""))){ is the standard implicit-boolean strncmp idiom.""",delta_lt1_task548
+EXP20-C,mosquitto,src/handle_connect.c,525,TP,"if(!strcmp(protocol_name, PROTOCOL_NAME_v31)){ is the standard implicit-boolean strcmp idiom.",delta_lt1_task548,medium
+EXP20-C,mosquitto,src/handle_connect.c,538,TP,"}else if(!strcmp(protocol_name, PROTOCOL_NAME)){ is the standard implicit-boolean strcmp idiom.",delta_lt1_task548,medium
+EXP20-C,mosquitto,src/handle_publish.c,388,TP,"if(!strncmp(base_msg->data.topic, \$CONTROL/\"""," 9)){ is the standard implicit-boolean strncmp idiom.""",delta_lt1_task548
+EXP20-C,mosquitto,src/net.c,448,TP,"}else if(!strcmp(listener->tls_version, \tlsv1.3\"")){ is the standard implicit-boolean strcmp idiom.""",delta_lt1_task548,medium
+EXP20-C,mosquitto,src/net.c,451,TP,"}else if(!strcmp(listener->tls_version, \tlsv1.2\"")){ is the standard implicit-boolean strcmp idiom.""",delta_lt1_task548,medium
+EXP20-C,mosquitto,src/net.c,453,TP,"}else if(!strcmp(listener->tls_version, \tlsv1.1\"")){ is the standard implicit-boolean strcmp idiom.""",delta_lt1_task548,medium
+EXP20-C,mosquitto,src/subs.c,101,TP,"db__message_insert_outgoing(...) == 1 tests specifically for MOSQ_ERR_NOMEM (defs.h: MOSQ_ERR_NOMEM=1) among many other nonzero mosquitto error codes (2..33+), so any other nonzero error return falls through and is silently treated as success at return 0 below -- a genuinely confusing/risky implicit-equality test matching the rule's exact concern.",delta_lt1_task548,high
+EXP20-C,mosquitto,src/subs.c,143,TP,"!strcmp(leaf->context->id, source_id) is the standard implicit-boolean strcmp idiom.",delta_lt1_task548,medium
+EXP20-C,mosquitto,src/subs.c,169,TP,"!strcmp(leaf->context->id, context->id) is the standard implicit-boolean strcmp idiom.",delta_lt1_task548,medium
+EXP37-C,mosquitto,include/mosquitto/broker.h,595,FP,"mosquitto_log_printf(int level, const char *fmt, ...) is only a prototype declaration with no va_list usage at this site; a variadic prototype does not require <stdarg.h> -- only a definition that uses va_list/va_start does.",delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,101,FP,int will_clear(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,108,FP,int reconnect(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,109,FP,int reconnect_async(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,110,FP,int disconnect(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,133,FP,int loop_misc(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,137,FP,int loop_start(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,139,FP,bool want_write(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,43,FP,"int lib_init(); has no ellipsis and is not variadic at all; EXP37-C's variadic-header rationale does not apply, and this is C++ code besides.",delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,44,FP,int lib_cleanup(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,95,FP,virtual ~mosquittopp(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP37-C,mosquitto,include/mosquitto/libmosquittopp.h,98,FP,int socket(); is not variadic; rule misapplied.,delta_lt1_task548,high
+EXP43-C,mosquitto,src/signals.c,90,FP,"CreateThread(NULL, 0, SigThreadProc, NULL, 0, NULL) has no pointer shared between an output and input parameter — all arguments are NULL/0/a function pointer; no aliasing exists.",delta_lt1_task548,high
+FIO24-C,mosquitto,src/net.c,394,FP,"Line 389's fclose(fptr) is inside the fstat-permission-failure branch which returns immediately (line 390); execution only reaches line 394's fclose on the mutually exclusive success path, so the same fptr is never closed twice on one reachable path.",delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,473,FP,"Line 450's fclose is on the rlen==0 early-return branch, which returns at line 452; the version-mismatch fclose at 473 is on a disjoint later path, not reachable after line 450's close.",delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,485,FP,"Line 450's fclose returns immediately; line 485's fclose is inside the while-loop chunk-processing switch, an unreachable-after-450 disjoint path.",delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,491,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,498,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,507,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,515,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,523,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,531,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,539,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,547,FP,Same reasoning as line 485: disjoint path from line 450's return-terminated close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,558,FP,Line 558's fclose is the normal-completion close reached only when the while loop finishes without hitting any earlier return+fclose; disjoint from line 450's early-return close.,delta_lt1_task548,high
+FIO24-C,mosquitto,src/persist_read.c,571,FP,"Line 571's fclose is in the error: label cleanup path (reached via goto after a read-size mismatch), disjoint from line 450's early-return close on a different failure branch.",delta_lt1_task548,high
+INT31-C,mosquitto,lib/net_ws.c,205,FP,"len is bounded by construction: net__read(mosq, hbuf, mosq->wsd.payloadlen_bytes) can return at most payloadlen_bytes (a uint8_t, max 255), so payloadlen_bytes-len always fits in uint8_t after the len<=0 guard.",delta_lt1_task548,high
+INT31-C,mosquitto,lib/net_ws.c,219,FP,"len is bounded to at most mosq->wsd.mask_bytes (a uint8_t, max 4) by the preceding net__read call, so mask_bytes-len is always in range.",delta_lt1_task548,high
+INT31-C,mosquitto,src/handle_connect.c,1283,FP,"rc in this switch branch is restricted to the listed MOSQ_ERR_* MQTT-v5 equivalents (defs.h enum values 128-162), all well within uint8_t range.",delta_lt1_task548,high
+INT31-C,mosquitto,src/proxy_v2.c,256,FP,"rc is bytes actually read, bounded by `context->proxy.len - context->proxy.pos` where proxy.len <= PROXY_PACKET_LIMIT (500), well within uint16_t.",delta_lt1_task548,high
+MEM05-C,mosquitto,src/subs.c,446,TP,"sub__remove_recurse calls itself at line 460 (`sub__remove_recurse(context, branch, &(topics[1]), reason, sharename);`) — genuine recursion over topic segments.",delta_lt1_task548,high
+MEM05-C,mosquitto,src/subs.c,470,TP,sub__search calls itself at lines 482 and 502 while descending the topic hierarchy — genuine recursion.,delta_lt1_task548,high
+MEM05-C,mosquitto,src/subs.c,803,TP,"sub__tree_print calls itself at line 827 (`sub__tree_print(branch->children, level+1);`) while iterating children — genuine recursion.",delta_lt1_task548,high
+MSC05-C,mosquitto,lib/loop.c,117,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,lib/loop.c,118,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,lib/loop.c,128,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,lib/loop.c,130,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,lib/loop.c,132,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,lib/util_mosq.c,76,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,lib/util_mosq.c,88,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,lib/util_mosq.c,96,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,src/conf.c,2402,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,src/database.c,964,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,src/database.c,970,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,src/keepalive.c,160,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,src/keepalive.c,193,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,src/sys_tree.c,236,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC05-C,mosquitto,src/watchdog.c,62,FP,"Standard, overflow-checked time_t arithmetic idiom on POSIX/glibc-class targets where time_t is a well-known linear integer count; no genuine non-POSIX portability concern evident.",delta_lt1_task548,medium
+MSC09-C,mosquitto,src/conf.c,541,TP,"Genuine human-readable copyright text containing a literal '©' byte, printed to the user -- a real locale/encoding portability concern.",delta_lt1_task548,high
+MSC09-C,mosquitto,src/plugin_v4.c,217,TP,"Box-drawing characters (├──/└──) embedded in human-readable log-output strings, a real locale/terminal-encoding portability concern.",delta_lt1_task548,high
+MSC09-C,mosquitto,src/plugin_v4.c,220,TP,"Box-drawing characters (├──/└──) embedded in human-readable log-output strings, a real locale/terminal-encoding portability concern.",delta_lt1_task548,high
+MSC09-C,mosquitto,src/plugin_v4.c,226,TP,"Box-drawing characters (├──/└──) embedded in human-readable log-output strings, a real locale/terminal-encoding portability concern.",delta_lt1_task548,high
+MSC09-C,mosquitto,src/plugin_v4.c,229,TP,"Box-drawing characters (├──/└──) embedded in human-readable log-output strings, a real locale/terminal-encoding portability concern.",delta_lt1_task548,high
+MSC09-C,mosquitto,src/plugin_v4.c,238,TP,"Box-drawing characters (├──/└──) embedded in human-readable log-output strings, a real locale/terminal-encoding portability concern.",delta_lt1_task548,high
+MSC09-C,mosquitto,src/plugin_v4.c,246,TP,"Box-drawing characters (├──/└──) embedded in human-readable log-output strings, a real locale/terminal-encoding portability concern.",delta_lt1_task548,high
+PRE00-C,mosquitto,broker_plugin.h,137,TP,MOSQUITTO_PLUGIN_DECLARE_VERSION(A) expands A twice: `supported_versions[i] == (A)` and `return (A);`.,delta_lt1_task548,high
+PRE00-C,mosquitto,libcommon_memory.h,75,TP,mosquitto_FREE(A) expands to `mosquitto_free(A); (A) = NULL;` — A is referenced twice.,delta_lt1_task548,high
+PRE00-C,mosquitto,mqtt_protocol.h,291,TP,"MQTT_SUB_OPT_SET_QOS(opt,qos) expands to `(opt) = ((opt) & 0xFC) | ((qos) & 0x03)` — opt is referenced twice (read then written).",delta_lt1_task548,high
+PRE00-C,mosquitto,mqtt_protocol.h,292,TP,"MQTT_SUB_OPT_SET_NO_LOCAL(opt,qos) expands to `(opt) = ((opt) & 0xFC) | ((qos) & 0x03)` — opt referenced twice.",delta_lt1_task548,high
+PRE00-C,mosquitto,mqtt_protocol.h,293,TP,"MQTT_SUB_OPT_SET_RETAIN_HANDLING(opt,rh) expands to `(opt) = ((opt) & 0xCF) | ((rh) & 0x30)` — opt referenced twice.",delta_lt1_task548,high
+PRE00-C,mosquitto,mqtt_protocol.h,296,TP,"MQTT_SUB_OPT_CLEAR(opt,val) expands to `(opt) = (opt) & !val` — opt referenced twice.",delta_lt1_task548,high
+PRE06-C,mosquitto,include/mosquitto_broker.h,1,TP,File is only '#include <mosquitto/broker.h>' plus a #warning pragma; no #ifndef/#define or #pragma once guard exists anywhere in the file.,delta_lt1_task548,high
+PRE06-C,mosquitto,include/mosquitto_plugin.h,1,TP,File is only '#include <mosquitto/broker_plugin.h>' plus a #warning pragma; no include guard exists.,delta_lt1_task548,high
+PRE06-C,mosquitto,include/mosquittopp.h,1,TP,File is only '#include <mosquitto/libmosquittopp.h>' plus a #warning pragma; no include guard exists.,delta_lt1_task548,high
+PRE06-C,mosquitto,include/mqtt_protocol.h,1,TP,File is only '#include <mosquitto/mqtt_protocol.h>' plus a #warning pragma; no include guard exists.,delta_lt1_task548,high
+PRE12-C,mosquitto,broker_plugin.h,137,TP,Same MOSQUITTO_PLUGIN_DECLARE_VERSION(A) macro; A evaluated twice.,delta_lt1_task548,high
+PRE12-C,mosquitto,libcommon_memory.h,75,TP,Same mosquitto_FREE(A) macro; A evaluated twice.,delta_lt1_task548,high
+PRE12-C,mosquitto,mqtt_protocol.h,291,TP,"Same MQTT_SUB_OPT_SET_QOS(opt,qos); opt evaluated twice.",delta_lt1_task548,high
+PRE12-C,mosquitto,mqtt_protocol.h,292,TP,"Same MQTT_SUB_OPT_SET_NO_LOCAL(opt,qos); opt evaluated twice.",delta_lt1_task548,high
+PRE12-C,mosquitto,mqtt_protocol.h,293,TP,"Same MQTT_SUB_OPT_SET_RETAIN_HANDLING(opt,rh); opt evaluated twice.",delta_lt1_task548,high
+PRE12-C,mosquitto,mqtt_protocol.h,296,TP,"Same MQTT_SUB_OPT_CLEAR(opt,val); opt evaluated twice.",delta_lt1_task548,high
+SIG00-C,mosquitto,src/signals.c,76,TP,"signal(SIGINT, handle_signal) is a genuine signal() call.",delta_lt1_task548,high
+SIG00-C,mosquitto,src/signals.c,77,TP,"signal(SIGTERM, handle_signal) is a genuine signal() call.",delta_lt1_task548,high
+SIG00-C,mosquitto,src/signals.c,79,TP,"signal(SIGHUP, handle_signal) is a genuine signal() call.",delta_lt1_task548,high
+SIG00-C,mosquitto,src/signals.c,82,TP,"signal(SIGUSR1, handle_signal) is a genuine signal() call.",delta_lt1_task548,high
+SIG00-C,mosquitto,src/signals.c,83,TP,"signal(SIGUSR2, handle_signal) is a genuine signal() call.",delta_lt1_task548,high
+SIG00-C,mosquitto,src/signals.c,84,TP,"signal(SIGPIPE, SIG_IGN) is a genuine signal() call.",delta_lt1_task548,high
+SIG00-C,mosquitto,src/signals.c,87,TP,"signal(SIGRTMIN, handle_signal) is a genuine signal() call.",delta_lt1_task548,high
+SIG01-C,mosquitto,src/signals.c,76,TP,"signal(SIGINT, handle_signal) is a genuine signal() call (SIG01 companion finding).",delta_lt1_task548,high
+SIG01-C,mosquitto,src/signals.c,77,TP,"signal(SIGTERM, handle_signal) is a genuine signal() call (SIG01 companion finding).",delta_lt1_task548,high
+SIG01-C,mosquitto,src/signals.c,79,TP,"signal(SIGHUP, handle_signal) is a genuine signal() call (SIG01 companion finding).",delta_lt1_task548,high
+SIG01-C,mosquitto,src/signals.c,82,TP,"signal(SIGUSR1, handle_signal) is a genuine signal() call (SIG01 companion finding).",delta_lt1_task548,high
+SIG01-C,mosquitto,src/signals.c,83,TP,"signal(SIGUSR2, handle_signal) is a genuine signal() call (SIG01 companion finding).",delta_lt1_task548,high
+SIG01-C,mosquitto,src/signals.c,87,TP,"signal(SIGRTMIN, handle_signal) is a genuine signal() call (SIG01 companion finding).",delta_lt1_task548,high
+STR03-C,mosquitto,lib/net_mosq.c,304,TP,"snprintf(identity, max_identity_len, ""%s"", mosq->tls_psk_identity) has no return-value check and no prior length validation of tls_psk_identity against max_identity_len, so a long configured PSK identity is silently truncated.",delta_lt1_task548,medium
+STR03-C,mosquitto,src/handle_connect.c,380,FP,"slen = strlen(mount_point)+strlen(topic)+1 is exactly the concatenated content length plus one; snprintf(dest, slen, ""%s%s"", ...) is given exactly enough room for the content plus NUL, so no truncation occurs (the extra [slen]=NUL write is redundant, into the extra malloc(slen+1) byte).",delta_lt1_task548,medium
+STR03-C,mosquitto,src/handle_publish.c,344,FP,"Same off-by-design pattern as handle_connect.c:380 — len is exactly content-length+1, sized to exactly fit snprintf, so truncation is not actually possible.",delta_lt1_task548,medium
+STR03-C,mosquitto,src/net.c,1102,FP,"buf/len for this snprintf come from net__socket_get_address callers, all of which pass 1024-byte (or sizeof(address)==1024) buffers in this codebase, far exceeding sun_path (max 108 bytes) — truncation is not reachable in practice.",delta_lt1_task548,medium
+STR03-C,mosquitto,src/net.c,1104,FP,"Same net__socket_get_address call sites all use 1024-byte buffers, far exceeding the ""unix-socket"" literal (12 bytes) — truncation is not reachable in practice.",delta_lt1_task548,medium
+STR03-C,mosquitto,src/net.c,495,FP,"snprintf(buf, 256, ""mosquitto-%d"", listener->port) — port is at most 5 digits, total output well under 256; truncation is provably impossible.",delta_lt1_task548,high
+STR03-C,mosquitto,src/net.c,822,FP,"snprintf(service, 10, ""%d"", listener->port) — port (uint16_t) is at most 5 digits + NUL = 6 bytes, well within the 10-byte buffer.",delta_lt1_task548,high
+STR03-C,mosquitto,src/subs.c,224,FP,"strncpy(shared->name, sharename, slen+1) writes into a buffer allocated exactly sizeof(struct)+slen+1; no truncation occurs.",delta_lt1_task548,high
+STR03-C,mosquitto,src/subs.c,556,FP,"strncpy(child->topic, topic, len+1) writes into a buffer calloc(1,sizeof(struct)+len+1) sized to match exactly; no truncation occurs.",delta_lt1_task548,high

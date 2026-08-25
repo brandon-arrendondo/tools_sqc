@@ -1,0 +1,13 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+DCL37-C,hostap,src/ap/drv_callbacks.c,1769,FP,"__maybe_unused is a reference to a compiler-supplied attribute macro (used on a local variable declaration), not a user-declared file-scope identifier.",delta_lt1_task548,high
+DCL37-C,hostap,src/ap/ieee802_11.c,6740,FP,"__maybe_unused is a reference to a compiler-supplied attribute macro (used on a local variable declaration), not a user-declared file-scope identifier.",delta_lt1_task548,high
+EXP05-C,hostap,src/rsn_supp/wpa_ft.c,474,FP,"mdie is declared as a non-const `struct rsn_mdie *mdie` (assigned from non-const `pos`), so `(u8 *) mdie` is not actually casting away const; the checker misidentified the pointer as const-qualified.",delta_lt1_task548,high
+INT13-C,hostap,src/ap/wpa_auth_ft.c,3032,FP,"key_mgmt is `int` but derives from `parse->key_mgmt & sm->wpa_auth->conf.wpa_key_mgmt`, both WPA_KEY_MGMT_* bitflag fields that are always non-negative in practice; ordinary positive-bitmask idiom.",delta_lt1_task548,medium
+INT13-C,hostap,src/ap/wpa_auth_ft.c,3035,FP,"Same key_mgmt bitmask variable, ordinary flag-testing idiom, always non-negative.",delta_lt1_task548,medium
+INT13-C,hostap,src/ap/wpa_auth_ft.c,3038,FP,"Same key_mgmt bitmask variable, ordinary flag-testing idiom, always non-negative.",delta_lt1_task548,medium
+INT13-C,hostap,src/ap/wpa_auth_ft.c,3040,FP,"Same key_mgmt bitmask variable, ordinary flag-testing idiom, always non-negative.",delta_lt1_task548,medium
+INT14-C,hostap,src/tls/libtommath.c,650,FP,mp_reduce_is_2k(P) returns MP_YES(1)/MP_NO(0) per libtommath convention; shifting 0 or 1 left by 1 cannot touch the sign bit.,delta_lt1_task548,medium
+MEM05-C,hostap,src/tls/libtommath.c,583,TP,"mp_exptmod calls itself directly at line 621 (`err = mp_exptmod(&tmpG, &tmpX, P, Y);`) when the exponent is negative — genuine recursion.",delta_lt1_task548,high
+SIG00-C,hostap,src/utils/eloop.c,189,TP,"signal(SIGSEGV, eloop_sigsegv_handler) is a genuine signal() call.",delta_lt1_task548,high
+SIG01-C,hostap,src/utils/eloop.c,189,TP,"signal(SIGSEGV, eloop_sigsegv_handler) is a genuine signal() call (SIG01 companion finding).",delta_lt1_task548,high
+STR34-C,hostap,src/common/wpa_common.c,3378,FP,"`*end = '\0';` is a literal-constant write terminating a token in-place, not a read of a byte value anywhere sign-sensitive.",delta_lt1_task548,high

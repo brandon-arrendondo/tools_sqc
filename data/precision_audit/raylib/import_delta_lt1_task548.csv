@@ -1,0 +1,6 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP05-C,raylib,src/raudio.c,838,TP,fileData is `const unsigned char *fileData`; `(unsigned char *)fileData` genuinely casts away const to pass to stb_vorbis_open_memory.,delta_lt1_task548,medium
+EXP43-C,raylib,src/rmodels.c,1970,FP,"snprintf(NULL, 0, ...) passes a NULL buffer with size 0 purely to compute the needed length; there is no output buffer to alias with the format arguments.",delta_lt1_task548,high
+PRE06-C,raylib,src/rcamera.h,1,FP,File has a proper guard: #ifndef RCAMERA_H / #define RCAMERA_H at lines 42-43 wrapping the whole header.,delta_lt1_task548,high
+PRE06-C,raylib,src/rgestures.h,1,FP,File has a proper guard: #ifndef RGESTURES_H at line 43 wrapping the whole header.,delta_lt1_task548,high
+PRE06-C,raylib,src/rlgl.h,1,FP,File has a proper guard: #ifndef RLGL_H / #define RLGL_H at lines 107-108 wrapping the whole header.,delta_lt1_task548,high
