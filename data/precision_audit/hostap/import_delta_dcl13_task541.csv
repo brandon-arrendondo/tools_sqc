@@ -1,0 +1,5 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,126,TP,"sm is not referenced anywhere in eap_tnc_build's body (unused parameter, trivially never modified), so the pointer can be declared const.",delta_dcl13_task541,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,127,TP,"data is only read via data->tncs (passed to tncs_total_send_len/tncs_if_tnccs_start/tncs_copy_send_buf, never assigned through) throughout eap_tnc_build, never itself reassigned or written, so it can be declared const.",delta_dcl13_task541,high
+DCL13-C,hostap,src/pae/ieee802_1x_secy_ops.c,108,TP,"kay is only read (kay->ctx) in secy_cp_control_current_cipher_suite, never reassigned or written to, so it can be declared const.",delta_dcl13_task541,high
+DCL13-C,hostap,wpa_supplicant/config.c,920,TP,"wpa_config_write_key_mgmt only reads ssid->key_mgmt via bitwise checks throughout the function body, never writes to *ssid, so it can be declared const struct wpa_ssid *ssid.",delta_dcl13_task541,high
