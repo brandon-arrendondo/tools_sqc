@@ -1,0 +1,40 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+CON07-C,raylib,src/platforms/rcore_desktop_glfw.c,1053,FP,GetClipboardImage touches only main-thread-only window/clipboard state; raylib's platform layer is called exclusively from the application's main thread by design.,delta_con07_task546,high
+CON07-C,raylib,src/platforms/rcore_desktop_rgfw.c,2063,FP,"GetTimeSeconds' lazy-init statics (freq/freqInitialized) are populated via the classic once-only pattern but are only ever called from raylib's single main thread, never from a worker thread.",delta_con07_task546,high
+CON07-C,raylib,src/platforms/rcore_drm.c,2286,FP,"PollMouseEvents' isMultitouch static is read/set only inside the main-thread input-polling loop of the DRM platform backend, not shared with any other thread.",delta_con07_task546,high
+CON07-C,raylib,src/rlgl.h,1432,FP,rlSetClipPlanes performs plain (non-compound) assignments to rlCullDistanceNear/Far as part of the main-thread-only rlgl rendering-state API; raylib's rendering globals are not touched from other threads by design.,delta_con07_task546,high
+CON07-C,raylib,src/rshapes.c,93,FP,SetShapesTexture writes texShapes/texShapesRec as simple assignments from the main-thread rendering API; no other thread accesses these shapes-drawing globals.,delta_con07_task546,high
+EXP39-C,raylib,src/rtextures.c,5228,FP,srcPtr is a const void* parameter cast to unsigned short* inside a switch(format) branch guarded by PIXELFORMAT_UNCOMPRESSED_R5G6B5; the rule's type-inference heuristic defaults unmatched parameter names to 'int' (no union or actual incompatible type involved).,delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5229,FP,Same GetPixelColor() switch branch (PIXELFORMAT_UNCOMPRESSED_R5G6B5) casting void* srcPtr to unsigned short*; flagged only because infer_type_from_name defaults to int for the 'srcPtr' identifier.,delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5230,FP,"Same GetPixelColor() switch branch (PIXELFORMAT_UNCOMPRESSED_R5G6B5) casting void* srcPtr to unsigned short*; not a union access, just the void* parameter type-inference heuristic misfiring.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5236,FP,"PIXELFORMAT_UNCOMPRESSED_R5G5B5A1 branch casts srcPtr (const void*) to unsigned short*; heuristic misidentifies srcPtr as int by name default, no real union type-punning occurs.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5237,FP,"Same R5G5B5A1 branch, same srcPtr void* cast to unsigned short*; false positive from the name-based type-inference fallback ('int'), not an actual incompatible access.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5238,FP,"Same R5G5B5A1 branch, srcPtr cast to unsigned short* to extract blue channel; same type-inference heuristic bug, no union involved.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5239,FP,"Same R5G5B5A1 branch, srcPtr cast to unsigned short* to extract alpha bit; same type-inference heuristic bug (defaults srcPtr to int), no genuine incompatible pointer access.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5244,FP,"PIXELFORMAT_UNCOMPRESSED_R4G4B4A4 branch casts void* srcPtr to unsigned short*; flagged solely by the 'int' default in infer_type_from_name, not a real violation.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5245,FP,"Same R4G4B4A4 branch, srcPtr cast to unsigned short* for green channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5246,FP,"Same R4G4B4A4 branch, srcPtr cast to unsigned short* for blue channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5247,FP,"Same R4G4B4A4 branch, srcPtr cast to unsigned short* for alpha channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5255,FP,"PIXELFORMAT_UNCOMPRESSED_R32 branch casts const void* srcPtr to float* to read a normalized float pixel; srcPtr's void* parameter type isn't tracked, heuristic defaults to int, producing a spurious incompatible-type finding.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5256,FP,"Same R32 branch, srcPtr cast to float* (duplicate read of index 0 for g channel); same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5257,FP,"Same R32 branch, srcPtr cast to float* (duplicate read of index 0 for b channel); same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5264,FP,PIXELFORMAT_UNCOMPRESSED_R32G32B32 branch casts srcPtr to float* to read r channel; same void*-as-int naming heuristic false positive.,delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5265,FP,"Same R32G32B32 branch, srcPtr cast to float* for g channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5266,FP,"Same R32G32B32 branch, srcPtr cast to float* for b channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5273,FP,PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 branch casts srcPtr to float* for r channel; same heuristic false positive.,delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5274,FP,"Same R32G32B32A32 branch, srcPtr cast to float* for g channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5275,FP,"Same R32G32B32A32 branch, srcPtr cast to float* for b channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5276,FP,"Same R32G32B32A32 branch, srcPtr cast to float* for a channel; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5282,FP,PIXELFORMAT_UNCOMPRESSED_R16 branch casts srcPtr to unsigned short* inside HalfToFloat() call; same void*-as-int naming heuristic false positive.,delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5283,FP,"Same R16 branch, srcPtr cast to unsigned short* (duplicate read of index 0); same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5284,FP,"Same R16 branch, srcPtr cast to unsigned short* (duplicate read of index 0); same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5291,FP,PIXELFORMAT_UNCOMPRESSED_R16G16B16 branch casts srcPtr to unsigned short* index 0 via HalfToFloat(); same heuristic false positive.,delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5292,FP,"Same R16G16B16 branch, srcPtr cast to unsigned short* index 1; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5293,FP,"Same R16G16B16 branch, srcPtr cast to unsigned short* index 2; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5300,FP,PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 branch casts srcPtr to unsigned short* index 0; same heuristic false positive.,delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5301,FP,"Same R16G16B16A16 branch, srcPtr cast to unsigned short* index 1; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5302,FP,"Same R16G16B16A16 branch, srcPtr cast to unsigned short* index 2; same heuristic false positive.",delta_exp39_task546,high
+EXP39-C,raylib,src/rtextures.c,5303,FP,"Same R16G16B16A16 branch, srcPtr cast to unsigned short* index 3; same heuristic false positive.",delta_exp39_task546,high
+MSC21-C,raylib,src/raudio.c,2571,FP,"for(AudioBuffer *audioBuffer=AUDIO.Buffer.first; audioBuffer!=NULL; audioBuffer=audioBuffer->next) is a linked-list pointer traversal to NULL, not a numeric-step skip risk.",delta_msc21_task546,high
+MSC21-C,raylib,src/rtextures.c,3532,FP,"sgnInc is initialized to 1 and only ever reassigned to -1 (when longLen<0), so i+=sgnInc is provably a +/-1 unit step even though it is a variable rather than a literal; checker misdetected the non-literal step as non-unit.",delta_msc21_task546,high
+MSC21-C,raylib,src/rtextures.c,3541,FP,"Same sgnInc variable as line 3532 (always +1 or -1 by construction), so this second loop over the same increment is also a provable unit step.",delta_msc21_task546,high

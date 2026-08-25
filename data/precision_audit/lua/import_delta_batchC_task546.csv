@@ -1,0 +1,21 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+CON07-C,lua,ldebug.c,550,FP,"strlocal/strupval are only compared (what != strlocal && what != strupval) inside isEnv, a read-only equality check against function return values; nothing writes to these identifiers here.",delta_con07_task546,high
+CON07-C,lua,lua.c,621,FP,"space and szloc in checklocal are static const initializers (array literal and sizeof constant) that are only read via strspn/strncmp/strchr, never mutated.",delta_con07_task546,high
+MSC21-C,lua,lcode.c,280,FP,"removevalues loops `for (; list != NO_JUMP; list = getjump(fs, list))` walking a jump chain via getjump(); the 'step' is a chain-link lookup not integer arithmetic, so it cannot skip over the NO_JUMP sentinel.",delta_msc21_task546,high
+MSC21-C,lua,lcode.c,956,FP,"need_value loops `for (; list != NO_JUMP; list = getjump(fs, list))`, the same jump-chain traversal as removevalues; not an arithmetic-step counter.",delta_msc21_task546,high
+MSC21-C,lua,ldebug.c,117,FP,"settraps loops `for (; ci != NULL; ci = ci->previous)`, a linked-list pointer walk over CallInfo, not an integer stepped counter that could skip NULL.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,265,FP,"relstack loops `for (up = L->openupval; up != NULL; up = up->u.open.next)`, a linked-list pointer walk over UpVal, terminates exactly at NULL.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,267,FP,"relstack loops `for (ci = L->ci; ci != NULL; ci = ci->previous)`, a CallInfo linked-list pointer walk, not arithmetic stepping.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,283,FP,"correctstack loops `for (up = L->openupval; up != NULL; up = up->u.open.next)`, same UpVal linked-list traversal as line 265.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,285,FP,"correctstack loops `for (ci = L->ci; ci != NULL; ci = ci->previous)`, same CallInfo linked-list traversal as line 267.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,313,FP,"correctstack's #else branch loops `for (up = L->openupval; up != NULL; up = up->u.open.next)`, same UpVal pointer-walk pattern.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,315,FP,"correctstack's #else branch loops `for (ci = L->ci; ci != NULL; ci = ci->previous)`, same CallInfo pointer-walk pattern.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,399,FP,"stackinuse loops `for (ci = L->ci; ci != NULL; ci = ci->previous)` computing max top across call frames; a CallInfo linked-list walk, not an arithmetic step.",delta_msc21_task546,high
+MSC21-C,lua,ldo.c,888,FP,findpcall loops `for (ci = L->ci; ci != NULL; ci = ci->previous)` searching for a pending pcall; CallInfo linked-list walk.,delta_msc21_task546,high
+MSC21-C,lua,lgc.c,1278,FP,markold loops `for (p = from; p != to; p = p->next)` over a GCObject linked list bounded by an explicit end pointer 'to'.,delta_msc21_task546,high
+MSC21-C,lua,lgc.c,390,FP,"markbeingfnz loops `for (o = g->tobefnz; o != NULL; o = o->next)` over a GCObject linked list, not an arithmetic-step counter.",delta_msc21_task546,high
+MSC21-C,lua,lgc.c,417,FP,"remarkupvals loops `for (uv = thread->openupval; uv != NULL; uv = uv->u.open.next)`, an UpVal linked-list walk.",delta_msc21_task546,high
+MSC21-C,lua,lgc.c,706,FP,"traversethread loops `for (uv = th->openupval; uv != NULL; uv = uv->u.open.next)`, an UpVal linked-list walk over a thread's open upvalues.",delta_msc21_task546,high
+MSC21-C,lua,lgc.c,809,FP,"clearbyvalues loops `for (; l != f; l = gco2t(l)->gclist)` walking the weak-table gclist chain to a known end pointer f, not an arithmetic step.",delta_msc21_task546,high
+MSC21-C,lua,lparser.c,1552,FP,breakstat loops `for (bl = ls->fs->bl; bl != NULL; bl = bl->previous)` over the BlockCnt linked list of enclosing blocks.,delta_msc21_task546,high
+MSC21-C,lua,lstring.c,221,FP,"internshrstr loops `for (ts = *list; ts != NULL; ts = ts->u.hnext)` over a hash-bucket TString linked list, not an arithmetic-step counter.",delta_msc21_task546,high
