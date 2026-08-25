@@ -1,0 +1,11 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+ARR00-C,sqlite,ext/fts5/fts5_tcl.c,1476,FP,"iStart/iEnd in xOriginToken are byte offsets the tokenizer itself computed while scanning p->pText, consistent with nText, not an unbounded index.",delta_arr00_02_task545,medium
+ARR00-C,sqlite,ext/fts5/fts5_tcl.c,1489,FP,"p->aBuf is resized via the nReq>p->nBuf check just above (lines 1480-1486) before nToken/iEnd-iStart are used to index into it, so the write is bounds-checked.",delta_arr00_02_task545,high
+ARR00-C,sqlite,ext/fts5/fts5_tcl.c,1490,FP,"Same nReq/p->nBuf realloc guard immediately above covers this memcpy into p->aBuf, so the index is not unchecked.",delta_arr00_02_task545,high
+ARR00-C,sqlite,ext/fts5/fts5_tcl.c,1647,FP,"ckfree(&x[-8]) recovers the original ckalloc(nText+8) pointer after f5tStrFunc advanced zCopy by 8 bytes for a header; x[-8] is the well-defined start of the allocation, not an out-of-bounds negative index.",delta_arr00_02_task545,high
+ARR00-C,sqlite,ext/fts5/fts5_tcl.c,711,FP,"iStart/iEnd are byte offsets produced by the same tokenizer's scan of p->zInput passed into xTokenizeCb2, not an unchecked externally-controlled index into an unrelated array.",delta_arr00_02_task545,medium
+ARR02-C,sqlite,ext/fts5/fts5_tcl.c,1176,FP,"const char *azOpt[] = { \-v2\"""," \""-parent\"""," \""-version\"""
+ARR02-C,sqlite,ext/fts5/fts5_tcl.c,167,FP,"`Tcl_Obj *CONST []` at line 167 is the 4th parameter of a function prototype (xF5tApi), and an array-type function parameter is always adjusted to a pointer in C, not an ARR02-C array object declaration.",delta_arr00_02_task545,high
+ARR02-C,sqlite,ext/fts5/fts5_tcl.c,1707,FP,"struct Cmd aCmd[] = {...} is a local array sized by its initializer list, the standard explicit-size-via-initializer idiom, not a genuinely unbounded declaration.",delta_arr00_02_task545,high
+ARR02-C,sqlite,ext/fts5/fts5_tcl.c,222,FP,"struct Sub aSub[] = {...} is a local array whose size is determined by its initializer list, an unambiguous explicit-size-by-initializer declaration.",delta_arr00_02_task545,high
+ARR02-C,sqlite,ext/fts5/fts5_tcl.c,67,FP,"struct ErrorCode aErr[] = {...} is a local array whose size (4) is fully determined by its initializer list, the idiomatic explicit-size-via-initializer pattern, not a genuinely unspecified bound.",delta_arr00_02_task545,high
