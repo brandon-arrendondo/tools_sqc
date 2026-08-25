@@ -1,0 +1,141 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP34-C,sqlite,ext/expert/expert.c,57,TP,"pBuf = sqlite3_malloc64(nIn+1) is used directly in fread(pBuf,...) at line 57 with no NULL check for OOM failure",delta_exp34_task539,high
+EXP34-C,sqlite,ext/expert/sqlite3expert.c,2120,FP,"z=sqlite3_sql(pStmt) is only reached inside an explicit 'if(pStmt)' guard, and a non-NULL pStmt from prepare_v2 guarantees a non-empty/non-comment statement so sqlite3_sql cannot return NULL here",delta_exp34_task539,medium
+EXP34-C,sqlite,ext/fts3/fts3.c,1128,TP,"zCol=sqlite3_column_name(pStmt,i) can return NULL on OOM and strlen(zCol) is called immediately afterward with no NULL check",delta_exp34_task539,medium
+EXP34-C,sqlite,ext/fts3/fts3.c,2039,FP,assert(piLeaf||piLeaf2) plus the 'piLeaf?*piLeaf:*piLeaf2' ternary guarantee only a non-NULL of the pair is ever dereferenced,delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts3/fts3.c,648,FP,"sqlite3_mprintf's %s conversion substitutes an empty string for a NULL argument (printf.c: bufpt==0 -> bufpt=""""), so a NULL zCols never causes a dereference",delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_aux.c,723,FP,"aFreq=pData->aFreq is only used inside the rc==SQLITE_OK branch, and fts5Bm25GetData only returns SQLITE_OK after successfully allocating pData (and therefore aFreq)",delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_expr.c,1774,FP,"sqlite3_realloc64(pPhrase,...) is valid with pPhrase==NULL, behaving as malloc per the standard realloc contract",delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_index.c,7052,FP,"sqlite3_realloc(pIn,...) is valid with pIn==NULL, behaving as malloc per the standard realloc contract",delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_index.c,8486,FP,"pStmt is only used inside a loop gated on p->rc==SQLITE_OK && sqlite3_step(pStmt)==SQLITE_ROW, and sqlite3_column_blob is documented NULL-safe regardless",delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_index.c,8487,FP,same guarded loop as line 8486; sqlite3_column_bytes is documented NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_index.c,8488,FP,same guarded loop as line 8486; sqlite3_column_int is documented NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_index.c,8489,FP,same guarded loop as line 8486; sqlite3_column_int is documented NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_tcl.c,103,FP,pStmt was just set by a successful sqlite3_prepare_v2 (rc checked at line 99) and sqlite3_bind_pointer is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_tcl.c,104,FP,sqlite3_step is documented NULL-safe (vdbeSafetyNotNull returns SQLITE_MISUSE_BKPT for NULL) and pStmt is non-NULL here anyway,delta_exp34_task539,high
+EXP34-C,sqlite,ext/fts5/fts5_tcl.c,770,FP,azArg[0] is only reached after Tcl_SplitList succeeded and an explicit 'nArg==0' early-return already excludes the empty case,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/amatch.c,1201,TP,"zW=sqlite3_column_text(p->pVCheck,0) can return NULL if the user-supplied vocabulary table's word column holds SQL NULL, and zW is indexed/compared with no NULL check before this line",delta_exp34_task539,medium
+EXP34-C,sqlite,ext/misc/btreeinfo.c,288,FP,"pStmt is checked via 'if(rc) return rc' immediately after prepare_v2 succeeds, and sqlite3_bind_int is NULL-safe regardless",delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/btreeinfo.c,294,FP,same guaranteed non-NULL pStmt as line 288; sqlite3_column_bytes is also NULL-safe,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/btreeinfo.c,295,FP,same guaranteed non-NULL pStmt as line 288; sqlite3_column_blob is also NULL-safe,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/compress.c,67,TP,pOut=sqlite3_malloc64(nOut+5) at line 62 is written to (pOut[j]) at line 67 with no NULL check for OOM,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/dbdump.c,203,FP,azCol is always allocated/checked via the 'if(azNew==0) goto col_oom' resize path before this index is written,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/dbdump.c,205,FP,same guaranteed non-NULL pStmt as line 203; sqlite3_column_int is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/dbdump.c,208,FP,same guaranteed non-NULL pStmt as line 203; sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/fileio.c,1142,TP,"zCopy=sqlite3_mprintf(""%s"",zPath) at line 1141 is passed to strlen at line 1142 with no OOM check",delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/fossildelta.c,361,TP,collide=sqlite3_malloc64(...) at line 360 is memset at line 361 with no NULL check for OOM,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/fuzzer.c,737,FP,pRule is checked non-NULL by the enclosing 'while((pRule=pStem->pRule)!=0)' before this member access,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/memstat.c,152,FP,pStmt is guaranteed valid (prepare_v2 rc checked at line 140) and sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,314,FP,pStmt is guaranteed non-NULL (prepare_v2 rc checked at line 306) and sqlite3_stmt_readonly is documented NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,315,FP,same guaranteed non-NULL pStmt as line 314; sqlite3_sql is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,322,FP,"same guaranteed non-NULL pStmt as line 314; sqlite3_sql is NULL-safe regardless (the resulting z is what actually risks being NULL, flagged separately at line 323)",delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,323,TP,"z=sqlite3_sql(pStmt) at line 322 can legitimately return NULL when the remaining SQL fragment compiles to a comment/whitespace-only statement (pStmt left NULL by prepare_v2 with rc==SQLITE_OK), and strlen(z) here has no NULL check -- contrast with the equivalent code in shathree.c which does check 'if(z)' before use",delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,331,FP,pStmt guaranteed non-NULL as at line 314; sqlite3_column_type is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,340,FP,pStmt guaranteed non-NULL as at line 314; sqlite3_column_int64 is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,354,FP,pStmt guaranteed non-NULL as at line 314; sqlite3_column_double is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,365,FP,pStmt guaranteed non-NULL as at line 314; sqlite3_column_bytes is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,366,FP,pStmt guaranteed non-NULL as at line 314; sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,372,FP,pStmt guaranteed non-NULL as at line 314; sqlite3_column_bytes is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sha1.c,373,FP,pStmt guaranteed non-NULL as at line 314; sqlite3_column_blob is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/shathree.c,748,FP,pStmt is guaranteed non-NULL (prepare_v2 rc checked at line 740) and sqlite3_stmt_readonly is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/shathree.c,749,FP,same guaranteed non-NULL pStmt as line 748; sqlite3_sql is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/shathree.c,756,FP,"z=sqlite3_sql(pStmt) result is explicitly checked with 'if(z)' at line 757 before any use, unlike the equivalent sha1.c code",delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/shathree.c,767,FP,pStmt is guaranteed non-NULL as at line 748; sqlite3_column_value is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sqlite3_stdio.c,276,TP,"z=sqlite3_vmprintf(zFormat,ap) at line 273 is passed to sqlite3_fputs and strlen at lines 275-276 with no OOM check",delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/sqlite3_stdio.c,297,TP,"z=sqlite3_vmprintf(zFormat,ap) at line 295 is passed to sqlite3_fputs and strlen at lines 296-297 with no OOM check",delta_exp34_task539,high
+EXP34-C,sqlite,ext/misc/vtablog.c,425,FP,z=sqlite3_value_blob(p) is only indexed up to n=sqlite3_value_bytes(p); when n>0 the blob bytes are already materialized internally so sqlite3_value_blob cannot return NULL in that case,delta_exp34_task539,medium
+EXP34-C,sqlite,ext/qrf/qrf.c,1144,FP,zVal=sqlite3_str_value(pOut) is only used after 'if(sqlite3_str_errcode(pOut)) return;' at line 1140 guards against the prior OOM-prone appends,delta_exp34_task539,high
+EXP34-C,sqlite,ext/qrf/qrf.c,1248,FP,"zOut is only indexed when nByte>0 (short-circuit && at line 1248), and nByte>0 implies the sqlite3_str accumulator's buffer was actually allocated",delta_exp34_task539,high
+EXP34-C,sqlite,ext/qrf/qrf.c,374,TP,"z is set to NULL by sqlite3_stmt_scanstatus_v2's SQLITE_SCANSTAT_EXPLAIN case whenever pScan->addrExplain==0 (a successful, non-error return per vdbeapi.c), and strlen(z) at this line has no NULL check",delta_exp34_task539,high
+EXP34-C,sqlite,ext/qrf/qrf.c,435,FP,"zo can be NULL from the same scanstatus API as line 374, but here is only ever passed as a %s argument to sqlite3_str_appendf, whose printf engine substitutes an empty string for a NULL %s argument",delta_exp34_task539,high
+EXP34-C,sqlite,ext/rbu/sqlite3rbu.c,2226,FP,"p=sqlite3_user_data(pCtx) is an internal invariant always set correctly when this SQL function is registered by the RBU implementation itself, not user-facing input",delta_exp34_task539,medium
+EXP34-C,sqlite,ext/recover/sqlite3recover.c,1106,FP,"n=sqlite3_column_bytes(pStmt,1) and z=sqlite3_column_text(pStmt,1) come from the same schema 'name' column (never NULL in a valid schema); even in a theoretical NULL case n would be 0, making memcpy(csr,z,0) a no-op",delta_exp34_task539,medium
+EXP34-C,sqlite,ext/recover/sqlite3recover.c,1132,FP,"pNew->aCol[iPk] is only reached under 'if(p->errCode==SQLITE_OK)' at line 1130, and recoverMalloc() always sets p->errCode=SQLITE_NOMEM on the allocation failure that would have left pNew unset (0)",delta_exp34_task539,high
+EXP34-C,sqlite,ext/repair/checkfreelist.c,175,FP,pTrunk is guaranteed valid ('if(rc!=SQLITE_OK) return rc' at line 174 immediately after prepare_v2) and sqlite3_bind_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,ext/session/changeset.c,400,TP,"zSQLTabName=sqlite3_mprintf(...) at lines 396/398 can return NULL on OOM and is passed to plain libc printf's %s at line 400 with no NULL check, unlike SQLite's own mprintf which handles NULL %s safely",delta_exp34_task539,medium
+EXP34-C,sqlite,ext/session/sqlite3session.c,1383,FP,"z=sqlite3_column_text(pDflt,iField) and n=sqlite3_column_bytes(pDflt,iField) are read from the same SQLITE_TEXT-typed column at line 1380-1381; even if z were NULL, n would be 0 making the memcpy a no-op",delta_exp34_task539,medium
+EXP34-C,sqlite,ext/session/sqlite3session.c,3172,FP,sqlite3session_changeset() checks 'if(pnChangeset==0||ppChangeset==0) return SQLITE_MISUSE' before calling into sessionGenerateChangeset where this line lives,delta_exp34_task539,high
+EXP34-C,sqlite,ext/session/sqlite3session.c,3173,FP,same public-API misuse guard as line 3172 covers ppChangeset,delta_exp34_task539,high
+EXP34-C,sqlite,ext/session/sqlite3session.c,4216,FP,"abPK and nCol are only ever updated together in the case 'T' branch (line 4159-4169), so nCol stays 0 whenever abPK is still its initial NULL, and the 'for(iCol=0;iCol<nCol;...)' loop never executes in that state",delta_exp34_task539,medium
+EXP34-C,sqlite,src/analyze.c,1235,FP,"pPk=sqlite3PrimaryKeyIndex(pIdx->pTable) is taken inside the '!HasRowid(pTab)' branch, and WITHOUT ROWID tables always have a PRIMARY KEY index by construction",delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1799,FP,pStmt is guaranteed valid (prepare rc checked at line 1786) and sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1801,FP,same guaranteed non-NULL pStmt as line 1799; sqlite3_column_int is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1855,FP,pStmt is guaranteed valid (prepare rc checked at line 1848) and sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1872,FP,same guaranteed non-NULL pStmt as line 1855; sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1873,FP,same guaranteed non-NULL pStmt as line 1855; sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1874,FP,same guaranteed non-NULL pStmt as line 1855; sqlite3_column_text is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1883,FP,same guaranteed non-NULL pStmt as line 1855; sqlite3_column_bytes is NULL-safe regardless,delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,1890,FP,"same guaranteed non-NULL pStmt as line 1855; sqlite3_column_blob is NULL-safe regardless, and the memcpy at this line is additionally gated by 'if(pSample->n)'",delta_exp34_task539,high
+EXP34-C,sqlite,src/analyze.c,867,FP,"statGet()'s header comment documents that its StatAccum parameter p 'will always be a pointer to a StatAccum object, never a NULL', an internal bytecode-construction invariant",delta_exp34_task539,high
+EXP34-C,sqlite,src/btree.c,2767,FP,pSib is checked '!=0' in the same '&&' expression ('(pSib=db->aDb[i].pBt)!=0 && pSib->sharable') before pSib->sharable is read,delta_exp34_task539,high
+EXP34-C,sqlite,src/build.c,3754,FP,pFKey is checked '==0' with an immediate return at line 3754 itself before any later pFKey->isDeferred write,delta_exp34_task539,high
+EXP34-C,sqlite,src/build.c,3756,FP,"pFKey is set from `if( (pFKey = pTab->u.tab.pFKey)==0 ) return;` two lines above the flagged deref, so it is guaranteed non-NULL at pFKey->isDeferred.",delta_exp34_task539,high
+EXP34-C,sqlite,src/callback.c,466,FP,pBest is assigned and NULL-checked in the same condition `(pBest = sqlite3DbMallocZero(...))!=0` guarding the block containing the deref.,delta_exp34_task539,high
+EXP34-C,sqlite,src/expr.c,5432,FP,"nFarg is computed as `pFarg ? pFarg->nExpr : 0`, so the `nFarg>=2` guard on this line entails pFarg is non-NULL.",delta_exp34_task539,high
+EXP34-C,sqlite,src/expr.c,5473,FP,pLeft=pExpr->pLeft is a parser-established invariant for TK_SELECT_COLUMN nodes (always populated at parse time); no OOM/allocation path sets it NULL here.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/insert.c,2399,FP,"aRegIdx is allocated by the caller with `if( aRegIdx==0 ){ goto insert_cleanup; }` before this function is ever invoked, so aRegIdx is guaranteed non-NULL here.",delta_exp34_task539,high
+EXP34-C,sqlite,src/insert.c,443,FP,Immediately preceding line `if( pParse->db->mallocFailed ) return 0;` is sqlite's standard mallocFailed-covers-allocation idiom guarding the just-allocated pInfo.,delta_exp34_task539,high
+EXP34-C,sqlite,src/loadext.c,694,FP,"sqlite3_mprintf's %s handler treats a NULL argument as empty string (`if( bufpt==0 ) bufpt = """";` in printf.c), so passing NULL zErrmsg is safe by design.",delta_exp34_task539,high
+EXP34-C,sqlite,src/malloc.c,660,FP,pBuf is assigned and NULL-checked in the same condition `(pBuf = db->lookaside.pSmallFree)!=0` guarding the block containing the deref.,delta_exp34_task539,high
+EXP34-C,sqlite,src/memdb.c,801,FP,"pStmt is only used in the else branch reached after `rc = sqlite3_step(pStmt)`, itself only reachable after `rc = sqlite3_prepare_v2(...)` succeeded (rc==0 checked via `if( rc ) return 0;`), guaranteeing pStmt is valid.",delta_exp34_task539,high
+EXP34-C,sqlite,src/memdb.c,807,FP,Same guarded pStmt as line 801; reached only after a successful sqlite3_prepare_v2/step sequence.,delta_exp34_task539,high
+EXP34-C,sqlite,src/memdb.c,816,FP,Same guarded pStmt as line 801/807; reached only inside the successful-prepare/step path.,delta_exp34_task539,high
+EXP34-C,sqlite,src/os_unix.c,4308,FP,pInode is assigned and NULL-checked in the same condition `(pInode = pFile->pInode)!=0` guarding the block containing the deref.,delta_exp34_task539,high
+EXP34-C,sqlite,src/os_win.c,2011,FP,"zTemp is only used inside `if( dwLen > 0 )`, which per the Windows FormatMessageA/FORMAT_MESSAGE_ALLOCATE_BUFFER contract only occurs when the API succeeded and set the buffer pointer.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/pager.c,2731,FP,pPager is a required non-NULL Pager* invariant for this static helper; the preceding assert already dereferences pPager->fd/pPager->tempFile without incident.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/pager.c,3040,FP,pPager = pPg->pPager is a structural invariant of PgHdr objects (always set when a page belongs to a pager) and is already dereferenced in the assert two lines above.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/pager.c,3536,FP,"fd = pPager->fd points into memory embedded in the same allocation as Pager and is never NULL; isOpen(fd) checks fd->pMethods, not fd itself, so this is a structural (not defensive) check that always succeeds safely.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/pager.c,6191,FP,"pPage is assigned and NULL-checked in the same condition `(pPage = sqlite3PagerLookup(pPager, pg))!=0` guarding this else-if block.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pager.c,6566,FP,Short-circuit `||`: `(!(pPg = sqlite3PcacheDirtyList(...)) || 0==pPg->pDirty)` means pPg->pDirty is only evaluated when pPg is non-NULL.,delta_exp34_task539,high
+EXP34-C,sqlite,src/pcache.c,206,FP,p = pPage->pCache is a structural invariant (every page managed by pcacheManageDirtyList belongs to a cache); not an allocation result that can be NULL.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/pragma.c,1102,FP,"returnSingleText() internally checks `if( zValue ){ ... }` before using its argument, so passing a NULL proxy_file_path is safe.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1400,FP,'i' is an `int i;` loop counter (not a pointer) passed as an integer argument to the variadic sqlite3VdbeMultiLoad; the tool mis-typed an int as a possibly-null pointer.,delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1426,FP,"'i' is an `int i;` loop counter, not a pointer; same tool int/pointer confusion as the other sqlite3VdbeMultiLoad findings in this file.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1443,FP,"'i' is an `int i;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1522,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1568,FP,The flagged line IS the guard clause itself: `if( pTab==0 || !IsOrdinaryTable(pTab) || pTab->u.tab.pFKey==0 ) continue;` short-circuits before dereferencing a NULL pTab.,delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1741,FP,"'i' is an `int i;` loop counter passed to sqlite3CodeVerifySchema's int parameter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1749,FP,"'i' is an `int i;` loop counter passed as an int argument to sqlite3SchemaMutexHeld, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1898,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1931,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1946,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1947,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1949,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,1971,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,2020,FP,"'j' is an `int j;` loop counter, not a pointer.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,2043,FP,"pCheck is used only inside `if( db->mallocFailed==0 ){ ... }`, sqlite's standard idiom guarding the sqlite3ExprListDup allocation result.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,2173,FP,"'i' is an `int i;` loop counter (outer per-database loop index), not a pointer, passed as an int argument to sqlite3VdbeAddOp3.",delta_exp34_task539,high
+EXP34-C,sqlite,src/pragma.c,573,FP,"The op array is pre-sized via `sqlite3VdbeVerifyNoMallocRequired(v, ArraySize(getCacheSize))` before the AddOpList call, guaranteeing growOpArray's malloc path (the only NULL-return path) is never taken; the following `ONLY_IF_REALLOC_STRESS` check exists only for stress-test builds.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/prepare.c,440,FP,"db is a required non-NULL sqlite3* handle per this internal function's contract; it is dereferenced (`sqlite3_mutex_held(db->mutex)`) unconditionally on the next line as an established precondition, not a nullable value.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/prepare.c,767,FP,zSql is a documented non-NULL precondition of the public sqlite3_prepare* API family (validated only under the non-default SQLITE_ENABLE_API_ARMOR build); internal callers always pass a valid string.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/printf.c,1040,FP,"The while-loop condition `while( pExpr && (...) )` checks pExpr for NULL before the loop body executes `pExpr = pExpr->pLeft;`, so the deref is guarded by short-circuit evaluation.",delta_exp34_task539,high
+EXP34-C,sqlite,src/printf.c,1105,FP,p is a required non-NULL sqlite3_str* parameter to this internal API and is already dereferenced unconditionally in the caller's typical usage pattern; not a nullable allocation result.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/printf.c,247,FP,"fmt is unconditionally dereferenced at loop entry (`for(; (c=(*fmt))!=0; ++fmt)`) before this line is ever reached, so if it were NULL the code would already have crashed earlier; fmt is a required non-NULL format string by contract.",delta_exp34_task539,high
+EXP34-C,sqlite,src/resolve.c,1408,FP,Guarded by `ALWAYS(pRight) &&` in the same condition on this line; pRight is checked before pRight->op is dereferenced.,delta_exp34_task539,high
+EXP34-C,sqlite,src/resolve.c,540,FP,"The flagged line is itself the short-circuit guard `zTab && sqlite3StrICmp(""old"",zTab)==0`; zTab is checked immediately before use in the same && chain.",delta_exp34_task539,high
+EXP34-C,sqlite,src/select.c,1240,FP,"pOp is obtained via sqlite3VdbeGetOp(), which by design never returns NULL (returns a static dummy VdbeOp on OOM instead), making writes through it always safe.",delta_exp34_task539,high
+EXP34-C,sqlite,src/select.c,2002,FP,"pNC is the enclosing function's own NameContext* parameter, always supplied non-NULL by internal callers (columnType()'s callers always pass a real NameContext); not an allocation result.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/select.c,2871,FP,`if( p->pPrior==0 ) break;` on the line immediately above guarantees p->pPrior is non-NULL before `p = p->pPrior;` executes.,delta_exp34_task539,high
+EXP34-C,sqlite,src/select.c,3499,FP,pOrderBy/nOrderBy are already established as non-NULL/consistent earlier in this function (multiSelectOrderBy is only invoked with a non-empty ORDER BY clause); not an unguarded allocation result.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/select.c,5750,FP,"Short-circuit `pCteUse==0 || sqlite3ParserAddCleanup(pParse,sqlite3DbFree,pCteUse)==0`: pCteUse is checked for NULL before being passed to sqlite3ParserAddCleanup.",delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbe.c,1373,FP,"pOut = out2Prerelease(p, pOp) always returns a valid register pointer by contract for OP_Integer's out2 operand class; not a nullable allocation.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/vdbe.c,4406,FP,"pDb = &db->aDb[iDb] takes the address of an array element (guarded by `assert( iDb>=0 && iDb<db->nDb )` above), which can never be NULL.",delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbe.c,5996,FP,Guarded by `ALWAYS(pTab!=0) &&` earlier in the same && chain on this line before pTab->zName is dereferenced.,delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbe.c,8320,FP,"pVCur is set by the virtual table module's xOpen() method, which by API contract must set *ppCursor whenever it returns SQLITE_OK (already checked via `if( rc ) goto abort_due_to_error;`); this is an external module contract, not an internal sqlite defect.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/vdbe.c,8465,FP,pModule = pVtab->pModule is a structural invariant set once at virtual table creation and never unset; not an allocation result that can go NULL here.,delta_exp34_task539,medium
+EXP34-C,sqlite,src/vdbe.c,9183,FP,"Under the VDBE_PROFILE build, pnCycle = &pOp->nCycle is set unconditionally at the top of every loop iteration (line ~940), so it is always non-NULL by the time this line executes; the NULL check on the SQLITE_ENABLE_STMT_SCANSTATUS branch is for a different, conditionally-set case.",delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbe.c,9202,FP,"pOrigOp = pOp is assigned from the for-loop's own iterator variable (`for(pOp=&aOp[p->pc]; 1; pOp++)`), which is always a valid array pointer, never NULL.",delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbeapi.c,1423,FP,columnMem() never returns NULL by design: it returns either a valid Mem* or a static columnNullValue() dummy on error/range-check failure.,delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbeapi.c,1864,FP,"pValue is a public sqlite3_bind_value() API parameter; a NULL pValue is caller misuse/precondition violation (sqlite3_value_type() on the prior line would already fault), not an internally reachable defect.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/vdbeapi.c,2093,FP,"pDb is a public sqlite3_next_stmt() API parameter, documented as required non-NULL; validated only under the non-default SQLITE_ENABLE_API_ARMOR build, matching sqlite's standard public-API precondition convention.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/vdbeblob.c,187,FP,"sqlite3DbFree(db,p) internally checks `if(p)` before freeing (see malloc.c), so passing a NULL zErr is safe by design (free(NULL)-safe idiom).",delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbeblob.c,201,FP,Same NULL-safe sqlite3DbFree as line 187.,delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbeblob.c,242,FP,Same NULL-safe sqlite3DbFree as line 187.,delta_exp34_task539,high
+EXP34-C,sqlite,src/vdbemem.c,1910,FP,Same NULL-safe sqlite3DbFree design as the vdbeblob.c cases; freeing a NULL zVal is safe.,delta_exp34_task539,high
+EXP34-C,sqlite,src/where.c,6894,FP,"Guarded immediately above by `if( db->mallocFailed ){ sqlite3DbFree(db,pWInfo); pWInfo=0; goto whereBeginError; }`, sqlite's standard mallocFailed-covers-allocation idiom for the just-allocated pWInfo.",delta_exp34_task539,high
+EXP34-C,sqlite,src/where.c,7553,FP,"pIdx = pLoop->u.btree.pIndex is guaranteed non-NULL by the WHERE_INDEXED wsFlags invariant checked earlier in the same && chain (`(pLoop->wsFlags & WHERE_INDEXED)!=0`), a tagged-union guarantee rather than an explicit NULL check.",delta_exp34_task539,medium
+EXP34-C,sqlite,src/where.c,7803,FP,"pOp is obtained via sqlite3VdbeGetOp(), which never returns NULL (returns a static dummy on OOM).",delta_exp34_task539,high
+EXP34-C,sqlite,src/wherecode.c,1636,FP,"pOp is obtained via sqlite3VdbeGetOp(), which never returns NULL.",delta_exp34_task539,high
+EXP34-C,sqlite,src/wherecode.c,1657,FP,"pCompare is used only inside `if( !db->mallocFailed ){ ... }`, sqlite's standard idiom guarding the sqlite3PExpr allocation result.",delta_exp34_task539,high
+EXP34-C,sqlite,src/wherecode.c,370,FP,"pOp is obtained via sqlite3VdbeGetOp(), which never returns NULL.",delta_exp34_task539,high
+EXP34-C,sqlite,src/whereexpr.c,1350,FP,"pLeft==pExpr->pLeft was already dereferenced without incident in the enclosing condition (`pExpr->pLeft->op==TK_COLUMN`) two lines above, so it is proven non-NULL by that point.",delta_exp34_task539,high

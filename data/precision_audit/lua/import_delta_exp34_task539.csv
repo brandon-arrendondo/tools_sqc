@@ -1,0 +1,4 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP34-C,lua,llex.c,571,FP,"ts = luaS_newlstr(...) is dereferenced without an explicit NULL check, but Lua's allocator convention means OOM triggers luaM_error's longjmp rather than returning NULL, so luaS_newlstr never returns NULL on the normal return path",delta_exp34_task539,high
+EXP34-C,lua,lstrlib.c,577,FP,"p is a pattern-string cursor bounded by ms->p_end (checked via if(p != ms->p_end) just before the dereference at *p), not a value that can become NULL from any call in this recursive matcher",delta_exp34_task539,medium
+EXP34-C,lua,lstrlib.c,635,FP,"ep = classend(ms, p) returns a bounded pointer into the pattern string (never NULL); it is dereferenced via *ep immediately without any allocation or lookup that could yield NULL",delta_exp34_task539,medium
