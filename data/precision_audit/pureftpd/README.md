@@ -160,3 +160,99 @@ finding on `log_mysql.c` (refuted — no practical filesystem/linker collision
 on any real target; the `log_pgsql.c` sibling finding at line 9 stayed TP on
 a literal reading, an acknowledged inconsistency left as-is rather than
 force-resolved).
+
+## False negatives (task 468, 2026-08-27)
+
+Task 301/467's adjudication only scored what sqc *did* flag (TP/FP verdicts
+on the 449 findings). This pass instead independently close-read
+`log_mysql.c`, `log_pgsql.c`, and their headers at the pinned commit
+`cc28bff5` (confirmed == the checkout's current `HEAD` for these files — no
+drift) hunting for constructs the currently-enabled ruleset (`rules-all.toml`,
+~312 rule blocks) *should* plausibly catch but didn't. This is not a CWE-89
+hunt (no such rule exists yet — separate task); it's about the existing
+ruleset's blind spots.
+
+**Upstream history cross-check**: the three known security-relevant fixes in
+this file's git log (`efcc820` "Use escaped strings in the pgsql connection
+string", `4019168`, `c3f0f3c` "PostgreSQL: don't escape the port number") are
+already incorporated in the pinned commit — nothing outstanding there. Two
+other historically-notable commits were checked for recurrence and found
+clean: `f4dd5ef` ("Don't << 16 or << 24 on an int or anything promoted to an
+int") — the decimal-IP-packing code at `log_mysql.c:357`/`log_pgsql.c:436`
+already casts each byte to `(unsigned long)` before shifting, so the fix
+holds; `0398dba`/`fe4413a` (canary buffer under-allocation) — the current
+canary-buffer sizing (`to_len + 4U` in `log_mysql.c`, `to_len + 2U` in
+`log_pgsql.c`) is one of the few things `INT32-C` and `ERR33-C`/`MEM02-C`/
+`MEM04-C`/`MEM06-C` *do* already flag on this repo (see the finding list at
+`log_mysql.c:59` / `log_pgsql.c:62`), so no gap there either.
+
+### Confirmed FN: unsigned-multiply size computation escapes overflow detection when split from its `malloc` call
+
+**One genuine, reproducible miss, found in 3 places** — all instances of the
+same shape:
+
+```c
+from_len = strlen(from);
+to_len = from_len * 2U + (size_t) 1U;      /* <-- zero findings on this line */
+if ((to = malloc(to_len + (size_t) 4U)) == NULL) {   /* <-- INT32-C fires here */
+```
+
+- `log_mysql.c:58` — `pw_mysql_escape_string()`, `from` is `account`
+  (attacker-controlled FTP username) or a `getnameinfo()`-derived host/port
+  buffer.
+- `log_pgsql.c:61` — `pw_pgsql_escape_string()`, same shape, same taint
+  source.
+- `log_pgsql.c:252` — `pw_pgsql_escape_conninfo()`, `from` is a config value
+  (`server`/`db`/`user`/`pw`), lower attacker-relevance but the same
+  analyzer gap.
+- Also `log_pgsql.c:289-291` — `pw_pgsql_connect()`'s `sizeof_conninfo`
+  computation (`sizeof PGSQL_CONNECT_FMTSTRING + strlen(...)*4 + 5U`) feeding
+  `malloc(sizeof_conninfo)` two lines later at `log_pgsql.c:292`: zero
+  findings on the multi-term addition itself, same class of gap.
+
+**Why it's a genuine miss, not a documented idiom**: `INT32-C` demonstrably
+*does* catch overflow-prone arithmetic when it appears directly inside a
+`malloc()` call's argument expression — e.g. `log_mysql.c:59`'s
+`malloc(to_len + (size_t) 4U)` is flagged (`to_len` treated as an opaque
+tainted operand). But the rule does not walk back one more hop to the
+assignment that actually *computed* `to_len` (`from_len * 2U + 1U`, an
+unsigned multiplication of an attacker-influenced length with no upper bound
+check before it), even though that assignment sits two lines above and feeds
+directly into the flagged `malloc` call. On the sizeof_conninfo case the gap
+is starker: the multi-term addition that IS the size computation gets zero
+findings at all, only in a different function than the one that eventually
+mallocs with it — no rule appears to track that dataflow. This is an
+architectural blind spot (single-hop-back taint from a `malloc` call site,
+not full backward slicing to the defining assignment), not a CERT scoping
+question — `INT30-C`/`INT32-C`'s own descriptions cover exactly this
+"unsigned wraparound feeding an allocation size" pattern.
+
+**Practical severity note**: in this specific codebase, `from_len` is
+bounded in practice by the FTP command-line buffer the caller reads into
+(pure-ftpd's line-length cap), so this is not believed to be a *reachable*
+overflow here — but that's an operational mitigation sqc's static analysis
+has no visibility into, and the rule is meant to catch the pattern
+regardless of an out-of-file bound. Recorded as a real analyzer miss, not
+labeled a TP in `ground_truth` (no finding exists at these lines to label).
+
+**Everything else checked came back clean** (documented as an explicit
+negative result per the FN-hunt convention, not just omitted): resource-leak
+paths in `pw_mysql_connect`/`pw_pgsql_connect`/`pw_mysql_check`/
+`pw_pgsql_check` (every `mysql_init`/`PQconnectdb`/`malloc` handle is freed
+on every exit path, including the "init succeeded, connect failed" case,
+which is correctly propagated back through the `MYSQL**`/`PGconn**` output
+parameter and closed by the caller's `bye:` label); the `strncpy`+explicit-
+NUL-terminate pattern in both `*_getquery()` functions (correctly sized,
+no overflow); the deliberate infinite `for(;;) *to++ = 0;` self-wipe loops
+on canary corruption (intentional defensive design, not a missed-detection
+target); and `log_pgsql.c`'s unused `scrambled_password` local (dead but
+harmless — `free(NULL)` — not a rule-relevant defect).
+
+**Follow-up recommendation** (not filed as a task here — flagging for the
+coordinator to decide): if `INT30-C`/`INT32-C`'s malloc-argument check were
+extended to walk back through one level of straight-line variable
+definition (not full SSA/backward-slicing, just "the immediately-preceding
+assignment to this identifier, if it's arithmetic on a taint-carrying
+operand"), it would close all 4 instances above without materially changing
+the rule's precision profile on this corpus (the existing MSC-class
+FP drivers here are unrelated to `INT30-C`/`INT32-C`).
