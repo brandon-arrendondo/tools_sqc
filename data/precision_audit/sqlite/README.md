@@ -13,7 +13,7 @@ not the surrounding repository. In-scope vs out-of-scope of the 39,747 findings:
 | Scope | Findings | Trees |
 |-------|----------|-------|
 | **In-scope** | 24,965 (63%) | `src/` core engine, `ext/` shipped extensions (fts3/4/5, rtree, session, …) |
-| Out-of-scope | 14,782 (37%) | `autosetup/jimsh0.c` (vendored Jim Tcl), `tool/` (lemon parser-gen, build tools), `test/` + `src/test*.c` (Tcl test glue), `ext/jni` + `ext/wasm` (language bindings) |
+| Out-of-scope | 14,782 (37%) | `autosetup/jimsh0.c` (vendored Jim Tcl), `tool/` (lemon parser-gen, build tools), `test/` + `src/test*.c` + `ext/*/test_*.c` (Tcl test glue, e.g. `ext/recover/test_recover.c`), `ext/jni` + `ext/wasm` (language bindings) |
 
 Out-of-scope code is not labelled; precision is measured over the in-scope
 labelled subset. (In a real engagement you audit what you ship and run in
