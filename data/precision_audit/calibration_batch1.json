@@ -1,0 +1,452 @@
+[
+  {
+    "external_id": "62086",
+    "title": "Pointer parameter 'elems' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/events.c",
+    "start_line": 4135,
+    "code": "\tif (!bss)\n\t\treturn;\n\n\tieprb = wpa_bss_ie_ptr(bss);\n\tiebcn = ieprb + bss->ie_len;\n\n\tif (!wpas_fst_update_mbie(wpa_s, ieprb, bss->ie_len))\n\t\twpa_printf(MSG_DEBUG, \"FST: MB IEs updated from bss IE\");\n\telse if (!wpas_fst_update_mbie(wpa_s, iebcn, bss->beacon_ie_len))\n\t\twpa_printf(MSG_DEBUG, \"FST: MB IEs updated from bss beacon IE\");\n#endif /* CONFIG_FST */\n}\n\n\nstatic unsigned int wpas_ml_parse_assoc(struct wpa_supplicant *wpa_s,\n\t\t\t\t\tstruct ieee802_11_elems *elems,\n\t\t\t\t\tstruct ml_sta_link_info *ml_info)\n{\n\tstruct wpabuf *mlbuf;\n\tstruct ieee80211_eht_ml *ml;\n\tsize_t ml_len;\n\tstruct eht_ml_basic_common_info *common_info;\n\tconst u8 *pos;\n\tu16 eml_capa = 0, mld_capa = 0;\n\tconst u16 control = MULTI_LINK_CONTROL_TYPE_BASIC |\n\t\tBASIC_MULTI_LINK_CTRL_PRES_LINK_ID |"
+  },
+  {
+    "external_id": "55998",
+    "title": "Function 'crypto_bignum_cmp' does not validate pointer parameter 'a' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/crypto/crypto_openssl.c",
+    "start_line": 2259,
+    "code": "\tres = BN_mod_sqr((BIGNUM *) c, (const BIGNUM *) a, (const BIGNUM *) b,\n\t\t\t bnctx);\n\tBN_CTX_free(bnctx);\n\n\treturn res ? 0 : -1;\n}\n\n\nint crypto_bignum_rshift(const struct crypto_bignum *a, int n,\n\t\t\t struct crypto_bignum *r)\n{\n\treturn BN_rshift((BIGNUM *) r, (const BIGNUM *) a, n) == 1 ? 0 : -1;\n}\n\n\nint crypto_bignum_cmp(const struct crypto_bignum *a,\n\t\t      const struct crypto_bignum *b)\n{\n\treturn BN_cmp((const BIGNUM *) a, (const BIGNUM *) b);\n}\n\n\nint crypto_bignum_is_zero(const struct crypto_bignum *a)\n{\n\treturn BN_is_zero((const BIGNUM *) a);\n}"
+  },
+  {
+    "external_id": "65441",
+    "title": "Function 'ap_ctrl_iface_chanswitch' does not validate pointer parameter 'wpa_s' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/ap.c",
+    "start_line": 1843,
+    "code": "\t\tiface = wpa_s->ifmsh;\n\n\tif (!iface || !iface->bss[0])\n\t\treturn -1;\n\n\thostapd_chan_switch_config(iface->bss[0], &settings->freq_params);\n\n\treturn hostapd_switch_channel(iface->bss[0], settings);\n#else /* NEED_AP_MLME */\n\treturn -1;\n#endif /* NEED_AP_MLME */\n}\n\n\n#ifdef CONFIG_CTRL_IFACE\nint ap_ctrl_iface_chanswitch(struct wpa_supplicant *wpa_s, const char *pos)\n{\n\tstruct csa_settings settings;\n\tstruct hostapd_iface *iface = NULL;\n\tint ret;\n\n#ifdef CONFIG_AP\n\tif (wpa_s->ap_iface)\n\t\tiface = wpa_s->ap_iface;\n#endif /* CONFIG_AP */\n#ifdef CONFIG_MESH"
+  },
+  {
+    "external_id": "11991",
+    "title": "Use-after-free: accessing freed pointer 'p->pOut'",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/ext/qrf/qrf.c",
+    "start_line": 2887,
+    "code": "      qrfWrite(p);\n      break;\n    }\n    case QRF_STYLE_Eqp: {\n      qrfEqpRender(p, 0);\n      qrfWrite(p);\n      break;\n    }\n  }\n  qrfStrErr(p, p->pOut);\n  if( p->spec.pzOutput ){\n    if( p->spec.pzOutput[0] ){\n      sqlite3_int64 n, sz;\n      char *zCombined;\n      sz = strlen(p->spec.pzOutput[0]);\n      n = sqlite3_str_length(p->pOut);\n      zCombined = sqlite3_realloc(p->spec.pzOutput[0], sz+n+1);\n      if( zCombined==0 ){\n        sqlite3_free(p->spec.pzOutput[0]);\n        p->spec.pzOutput[0] = 0;\n        qrfOom(p);\n      }else{\n        p->spec.pzOutput[0] = zCombined;\n        memcpy(zCombined+sz, sqlite3_str_value(p->pOut), n+1);\n      }\n      sqlite3_free(sqlite3_str_finish(p->pOut));"
+  },
+  {
+    "external_id": "57065",
+    "title": "Pointer parameter 'config' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/config.c",
+    "start_line": 3193,
+    "code": "\n\tos_free(config);\n}\n\n\n/**\n * wpa_config_foreach_network - Iterate over each configured network\n * @config: Configuration data from wpa_config_read()\n * @func: Callback function to process each network\n * @arg: Opaque argument to pass to callback function\n *\n * Iterate over the set of configured networks calling the specified\n * function for each item. We guard against callbacks removing the\n * supplied network.\n */\nvoid wpa_config_foreach_network(struct wpa_config *config,\n\t\t\t\tvoid (*func)(void *, struct wpa_ssid *),\n\t\t\t\tvoid *arg)\n{\n\tstruct wpa_ssid *ssid, *next;\n\n\tssid = config->ssid;\n\twhile (ssid) {\n\t\tnext = ssid->next;\n\t\tfunc(arg, ssid);\n\t\tssid = next;"
+  },
+  {
+    "external_id": "81459",
+    "title": "Pointer parameter 'l2' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/src/l2_packet/l2_packet_none.c",
+    "start_line": 15,
+    "code": "#include \"l2_packet.h\"\n\n\nstruct l2_packet_data {\n\tchar ifname[17];\n\tu8 own_addr[ETH_ALEN];\n\tvoid (*rx_callback)(void *ctx, const u8 *src_addr,\n\t\t\t    const u8 *buf, size_t len);\n\tvoid *rx_callback_ctx;\n\tint l2_hdr; /* whether to include layer 2 (Ethernet) header data\n\t\t     * buffers */\n\tint fd;\n};\n\n\nint l2_packet_get_own_addr(struct l2_packet_data *l2, u8 *addr)\n{\n\tos_memcpy(addr, l2->own_addr, ETH_ALEN);\n\treturn 0;\n}\n\n\nint l2_packet_send(struct l2_packet_data *l2, const u8 *dst_addr, u16 proto,\n\t\t   const u8 *buf, size_t len)\n{\n\tif (l2 == NULL)"
+  },
+  {
+    "external_id": "77888",
+    "title": "Pointer parameter 'error' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+    "start_line": 764,
+    "code": "\treturn TRUE;\n}\n\n\n/**\n * wpas_dbus_setter_wps_device_device_type - Set current device type\n * @iter: Pointer to incoming dbus message iter\n * @error: Location to store error on failure\n * @user_data: Function specific data\n * Returns: TRUE on success, FALSE on failure\n *\n * Setter for \"DeviceType\" property.\n */\ndbus_bool_t wpas_dbus_setter_wps_device_device_type(\n\tconst struct wpa_dbus_property_desc *property_desc,\n\tDBusMessageIter *iter, DBusError *error, void *user_data)\n{\n\tstruct wpa_supplicant *wpa_s = user_data;\n\tu8 *dev_type;\n\tint dev_len;\n\tDBusMessageIter variant, array_iter;\n\n\tif (dbus_message_iter_get_arg_type(iter) != DBUS_TYPE_VARIANT)\n\t\treturn FALSE;\n\n\tdbus_message_iter_recurse(iter, &variant);"
+  },
+  {
+    "external_id": "22052",
+    "title": "Signed integer multiplication '(p->nException+nEntry)*sizeof(int)' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts3/fts3_unicode.c",
+    "start_line": 143,
+    "code": "\n  while( z<zTerm ){\n    READ_UTF8(z, zTerm, iCode);\n    assert( (sqlite3FtsUnicodeIsalnum((int)iCode) & 0xFFFFFFFE)==0 );\n    if( sqlite3FtsUnicodeIsalnum((int)iCode)!=bAlnum \n     && sqlite3FtsUnicodeIsdiacritic((int)iCode)==0 \n    ){\n      nEntry++;\n    }\n  }\n\n  if( nEntry ){\n    int *aNew;                    /* New aiException[] array */\n    int nNew;                     /* Number of valid entries in array aNew[] */\n\n    aNew = sqlite3_realloc64(p->aiException,(p->nException+nEntry)*sizeof(int));\n    if( aNew==0 ) return SQLITE_NOMEM;\n    nNew = p->nException;\n\n    z = (const unsigned char *)zIn;\n    while( z<zTerm ){\n      READ_UTF8(z, zTerm, iCode);\n      if( sqlite3FtsUnicodeIsalnum((int)iCode)!=bAlnum \n       && sqlite3FtsUnicodeIsdiacritic((int)iCode)==0\n      ){\n        int i, j;"
+  },
+  {
+    "external_id": "18565",
+    "title": "Use-after-free: accessing freed pointer 'pMem->zMalloc'",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/vdbemem.c",
+    "start_line": 254,
+    "code": "\n  /* If the bPreserve flag is set to true, then the memory cell must already\n  ** contain a valid string or blob value.  */\n  assert( bPreserve==0 || pMem->flags&(MEM_Blob|MEM_Str) );\n  testcase( bPreserve && pMem->z==0 );\n\n  assert( pMem->szMalloc==0\n       || (pMem->flags==MEM_Undefined \n           && pMem->szMalloc<=sqlite3DbMallocSize(pMem->db,pMem->zMalloc))\n       || pMem->szMalloc==sqlite3DbMallocSize(pMem->db,pMem->zMalloc));\n  if( pMem->szMalloc>0 && bPreserve && pMem->z==pMem->zMalloc ){\n    if( pMem->db ){\n      pMem->z = pMem->zMalloc = sqlite3DbReallocOrFree(pMem->db, pMem->z, n);\n    }else{\n      pMem->zMalloc = sqlite3Realloc(pMem->z, n);\n      if( pMem->zMalloc==0 ) sqlite3_free(pMem->z);\n      pMem->z = pMem->zMalloc;\n    }\n    bPreserve = 0;\n  }else{\n    if( pMem->szMalloc>0 ) sqlite3DbFreeNN(pMem->db, pMem->zMalloc);\n    pMem->zMalloc = sqlite3DbMallocRaw(pMem->db, n);\n  }\n  if( pMem->zMalloc==0 ){\n    sqlite3VdbeMemSetNull(pMem);\n    pMem->z = 0;"
+  },
+  {
+    "external_id": "19755",
+    "title": "Double-free: 'pFile->aJrnl' freed multiple times",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/os_kv.c",
+    "start_line": 497,
+    "code": "  i = 0;\n  mult = 1;\n  while( (c = zTxt[i++])>='a' && c<='z' ){\n    n += (zTxt[i] - 'a')*mult;\n    mult *= 26;\n  }\n  sqlite3_free(pFile->aJrnl);\n  pFile->aJrnl = sqlite3_malloc64( n );\n  if( pFile->aJrnl==0 ){\n    pFile->nJrnl = 0;\n    return;\n  }\n  pFile->nJrnl = n;\n  n = kvvfsDecode(zTxt+i, pFile->aJrnl, pFile->nJrnl);\n  if( n<pFile->nJrnl ){\n    sqlite3_free(pFile->aJrnl);\n    pFile->aJrnl = 0;\n    pFile->nJrnl = 0;\n  }\n}\n\n/*\n** Read or write the \"sz\" element, containing the database file size.\n*/\nstatic sqlite3_int64 kvvfsReadFileSize(KVVfsFile *pFile){\n  char zData[50];"
+  },
+  {
+    "external_id": "79494",
+    "title": "Function 'p2p_buf_add_oob_go_neg_channel' does not validate pointer parameter 'country' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/p2p/p2p_build.c",
+    "start_line": 374,
+    "code": "\t/* P2P Interface */\n\twpabuf_put_u8(buf, P2P_ATTR_INTERFACE);\n\twpabuf_put_le16(buf, ETH_ALEN + 1 + ETH_ALEN);\n\t/* P2P Device address */\n\twpabuf_put_data(buf, p2p->cfg->dev_addr, ETH_ALEN);\n\t/*\n\t * FIX: Fetch interface address list from driver. Do not include\n\t * the P2P Device address if it is never used as interface address.\n\t */\n\t/* P2P Interface Address Count */\n\twpabuf_put_u8(buf, 1);\n\twpabuf_put_data(buf, p2p->cfg->dev_addr, ETH_ALEN);\n}\n\n\nvoid p2p_buf_add_oob_go_neg_channel(struct wpabuf *buf, const char *country,\n\t\t\t\t    u8 oper_class, u8 channel,\n\t\t\t\t    enum p2p_role_indication role)\n{\n\t/* OOB Group Owner Negotiation Channel */\n\twpabuf_put_u8(buf, P2P_ATTR_OOB_GO_NEG_CHANNEL);\n\twpabuf_put_le16(buf, 6);\n\twpabuf_put_data(buf, country, 3);\n\twpabuf_put_u8(buf, oper_class); /* Operating Class */\n\twpabuf_put_u8(buf, channel); /* Channel Number */\n\twpabuf_put_u8(buf, (u8) role); /* Role indication */"
+  },
+  {
+    "external_id": "12729",
+    "title": "Signed integer addition ''0' + (s/10)%10' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/src/date.c",
+    "start_line": 1216,
+    "code": "    zBuf[9] = '0' + (x.D/10)%10;\n    zBuf[10] = '0' + (x.D)%10;\n    zBuf[11] = ' ';\n    zBuf[12] = '0' + (x.h/10)%10;\n    zBuf[13] = '0' + (x.h)%10;\n    zBuf[14] = ':';\n    zBuf[15] = '0' + (x.m/10)%10;\n    zBuf[16] = '0' + (x.m)%10;\n    zBuf[17] = ':';\n    if( x.useSubsec ){\n      s = (int)(1000.0*x.s + 0.5);\n      zBuf[18] = '0' + (s/10000)%10;\n      zBuf[19] = '0' + (s/1000)%10;\n      zBuf[20] = '.';\n      zBuf[21] = '0' + (s/100)%10;\n      zBuf[22] = '0' + (s/10)%10;\n      zBuf[23] = '0' + (s)%10;\n      zBuf[24] = 0;\n      n = 24;\n    }else{\n      s = (int)x.s;\n      zBuf[18] = '0' + (s/10)%10;\n      zBuf[19] = '0' + (s)%10;\n      zBuf[20] = 0;\n      n = 20;\n    }"
+  },
+  {
+    "external_id": "77129",
+    "title": "Pointer parameter 'eapol' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/src/eapol_auth/eapol_auth_sm.c",
+    "start_line": 34,
+    "code": "/* procedures */\n#define txCannedFail() eapol_auth_tx_canned_eap(sm, 0)\n#define txCannedSuccess() eapol_auth_tx_canned_eap(sm, 1)\n#define txReq() eapol_auth_tx_req(sm)\n#define abortAuth() sm->eapol->cb.abort_auth(sm->eapol->conf.ctx, sm->sta)\n#define txKey() sm->eapol->cb.tx_key(sm->eapol->conf.ctx, sm->sta)\n#define processKey() do { } while (0)\n\n\nstatic void eapol_sm_step_run(struct eapol_state_machine *sm);\nstatic void eapol_sm_step_cb(void *eloop_ctx, void *timeout_ctx);\nstatic void eapol_auth_initialize(struct eapol_state_machine *sm);\nstatic void eapol_auth_conf_free(struct eapol_auth_config *conf);\n\n\nstatic void eapol_auth_logger(struct eapol_authenticator *eapol,\n\t\t\t      const u8 *addr, eapol_logger_level level,\n\t\t\t      const char *txt)\n{\n\tif (eapol->cb.logger == NULL)\n\t\treturn;\n\teapol->cb.logger(eapol->conf.ctx, addr, level, txt);\n}\n\n\nPRINTF_FORMAT(4, 5)"
+  },
+  {
+    "external_id": "1464",
+    "title": "Use-after-free: passing freed pointer 'pCArray' to function",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/btree.c",
+    "start_line": 7940,
+    "code": "  assert( nNew < 10922 );\n  pPg->nCell = (u16)nNew;\n  pPg->nOverflow = 0;\n\n  put2byte(&aData[hdr+3], pPg->nCell);\n  put2byte(&aData[hdr+5], pData - aData);\n\n#ifdef SQLITE_DEBUG\n  for(i=0; i<nNew && !CORRUPT_DB; i++){\n    u8 *pCell = pCArray->apCell[i+iNew];\n    int iOff = get2byteAligned(&pPg->aCellIdx[i*2]);\n    if( SQLITE_WITHIN(pCell, aData, &aData[pPg->pBt->usableSize]) ){\n      pCell = &pTmp[pCell - aData];\n    }\n    assert( 0==memcmp(pCell, &aData[iOff],\n            pCArray->pRef->xCellSize(pCArray->pRef, pCArray->apCell[i+iNew])) );\n  }\n#endif\n\n  return SQLITE_OK;\n editpage_fail:\n  /* Unable to edit this page. Rebuild it from scratch instead. */\n  if( nNew<1 ) return SQLITE_CORRUPT_BKPT;\n  populateCellCache(pCArray, iNew, nNew);\n  return rebuildPage(pCArray, iNew, nNew, pPg);\n}"
+  },
+  {
+    "external_id": "7003",
+    "title": "Signed integer subtraction 'pConfig->nCol + i - 1' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts5/fts5_storage.c",
+    "start_line": 984,
+    "code": "    sqlite3_bind_value(pInsert, 1, apVal[1]);\n\n    /* Loop through values for user-defined columns. i=2 is the leftmost\n    ** user-defined column. As is column 1 of pSavedRow.  */\n    for(i=2; rc==SQLITE_OK && i<=pConfig->nCol+1; i++){\n      int bUnindexed = pConfig->abUnindexed[i-2];\n      if( pConfig->eContent==FTS5_CONTENT_NORMAL || bUnindexed ){\n        sqlite3_value *pVal = apVal[i];\n\n        if( sqlite3_value_nochange(pVal) && p->pSavedRow ){\n          /* This is an UPDATE statement, and user-defined column (i-2) was not\n          ** modified.  Retrieve the value from Fts5Storage.pSavedRow.  */\n          pVal = sqlite3_column_value(p->pSavedRow, i-1);\n          if( pConfig->bLocale && bUnindexed==0 ){\n            sqlite3_bind_value(pInsert, pConfig->nCol + i,\n                sqlite3_column_value(p->pSavedRow, pConfig->nCol + i - 1)\n            );\n          }\n        }else if( sqlite3Fts5IsLocaleValue(pConfig, pVal) ){\n          const char *pText = 0;\n          const char *pLoc = 0;\n          int nText = 0;\n          int nLoc = 0;\n          assert( pConfig->bLocale );\n\n          rc = sqlite3Fts5DecodeLocaleValue(pVal, &pText, &nText, &pLoc, &nLoc);"
+  },
+  {
+    "external_id": "79984",
+    "title": "Pointer parameter 'oid' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/src/tls/tlsv1_cred.c",
+    "start_line": 320,
+    "code": "\tend = search_tag(pem_key_enc_end, pos, key + len - pos);\n\tif (!end)\n\t\treturn NULL;\n\n\tder = base64_decode((const char *) pos, end - pos, &der_len);\n\tif (!der)\n\t\treturn NULL;\n\tpkey = crypto_private_key_import(der, der_len, passwd);\n\tos_free(der);\n\treturn pkey;\n}\n\n\n#ifdef PKCS12_FUNCS\n\nstatic int oid_is_rsadsi(struct asn1_oid *oid)\n{\n\treturn oid->len >= 4 &&\n\t\toid->oid[0] == 1 /* iso */ &&\n\t\toid->oid[1] == 2 /* member-body */ &&\n\t\toid->oid[2] == 840 /* us */ &&\n\t\toid->oid[3] == 113549 /* rsadsi */;\n}\n\n\nstatic int pkcs12_is_bagtype_oid(struct asn1_oid *oid, unsigned long type)"
+  },
+  {
+    "external_id": "12636",
+    "title": "Signed integer addition 'sLocal.tm_sec + (p->iJD%1000)*0.001' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/src/date.c",
+    "start_line": 633,
+    "code": "    computeJD(&x);\n    t = (time_t)(x.iJD/1000 -  21086676*(i64)10000);\n  }else{\n    iYearDiff = 0;\n    t = (time_t)(p->iJD/1000 -  21086676*(i64)10000);\n  }\n  if( osLocaltime(&t, &sLocal) ){\n    sqlite3_result_error(pCtx, \"local time unavailable\", -1);\n    return SQLITE_ERROR;\n  }\n  p->Y = sLocal.tm_year + 1900 - iYearDiff;\n  p->M = sLocal.tm_mon + 1;\n  p->D = sLocal.tm_mday;\n  p->h = sLocal.tm_hour;\n  p->m = sLocal.tm_min;\n  p->s = sLocal.tm_sec + (p->iJD%1000)*0.001;\n  p->validYMD = 1;\n  p->validHMS = 1;\n  p->validJD = 0;\n  p->rawS = 0;\n  p->tz = 0;\n  p->isError = 0;\n  return SQLITE_OK;\n}\n#endif /* SQLITE_OMIT_LOCALTIME */\n"
+  },
+  {
+    "external_id": "71148",
+    "title": "Function 'httpread_hdr_get' does not validate pointer parameter 'h' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/wps/httpread.c",
+    "start_line": 799,
+    "code": "\n/* httpread_data_get -- When file is ready, returns file content\n * with null byte appened.\n * Might return NULL in some error condition.\n */\nvoid * httpread_data_get(struct httpread *h)\n{\n\treturn h->body ? h->body : \"\";\n}\n\n\n/* httpread_hdr_get -- When file is ready, returns header content\n * with null byte appended.\n * Might return NULL in some error condition.\n */\nchar * httpread_hdr_get(struct httpread *h)\n{\n\treturn h->hdr;\n}\n\n\n/* httpread_hdr_line_get -- When file is ready, returns pointer\n * to line within header content matching the given tag\n * (after the tag itself and any spaces/tabs).\n *\n * The tag should end with a colon for reliable matching."
+  },
+  {
+    "external_id": "2519",
+    "title": "Use-after-free: accessing freed pointer 'pOp->p3'",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/vdbe.c",
+    "start_line": 6508,
+    "code": "  goto next_tail;\n\ncase OP_Next:          /* jump, ncycle */\n  assert( pOp->p1>=0 && pOp->p1<p->nCursor );\n  assert( pOp->p5==0\n       || pOp->p5==SQLITE_STMTSTATUS_FULLSCAN_STEP\n       || pOp->p5==SQLITE_STMTSTATUS_AUTOINDEX);\n  pC = p->apCsr[pOp->p1];\n  assert( pC!=0 );\n  assert( pC->deferredMoveto==0 );\n  assert( pC->eCurType==CURTYPE_BTREE );\n  assert( pC->seekOp==OP_SeekGT || pC->seekOp==OP_SeekGE\n       || pC->seekOp==OP_Rewind || pC->seekOp==OP_Found\n       || pC->seekOp==OP_NullRow|| pC->seekOp==OP_SeekRowid\n       || pC->seekOp==OP_IfNoHope);\n  rc = sqlite3BtreeNext(pC->uc.pCursor, pOp->p3);\n\nnext_tail:\n  pC->cacheStatus = CACHE_STALE;\n  VdbeBranchTaken(rc==SQLITE_OK,2);\n  if( rc==SQLITE_OK ){\n    pC->nullRow = 0;\n    p->aCounter[pOp->p5]++;\n#ifdef SQLITE_TEST\n    sqlite3_search_count++;\n#endif"
+  },
+  {
+    "external_id": "3358",
+    "title": "Signed integer compound addition 'iOff += sqlite3Fts5PutVarint(&aPg[iOff], nSuffix)' may overflow without checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts5/fts5_index.c",
+    "start_line": 5410,
+    "code": "\n      if( iKey!=1 ){\n        iKeyOff += fts5GetVarint(&aPg[iKeyOff], &nPrefix);\n      }\n      iKeyOff += fts5GetVarint(&aPg[iKeyOff], &nSuffix);\n\n      nPrefix = MIN(nPrefix, nPrefix2);\n      nSuffix = (nPrefix2 + nSuffix2) - nPrefix;\n\n      if( (iKeyOff+nSuffix)>(u64)iPgIdx || (iNextOff+nSuffix2)>(u64)iPgIdx ){\n        FTS5_CORRUPT_IDX(p);\n      }else{\n        if( iKey!=1 ){\n          iOff += sqlite3Fts5PutVarint(&aPg[iOff], nPrefix);\n        }\n        iOff += sqlite3Fts5PutVarint(&aPg[iOff], nSuffix);\n        if( nPrefix2>(u64)pSeg->term.n ){\n          FTS5_CORRUPT_IDX(p);\n        }else if( nPrefix2>nPrefix ){\n          memcpy(&aPg[iOff], &pSeg->term.p[nPrefix], nPrefix2-nPrefix);\n          iOff += (nPrefix2-nPrefix);\n        }\n        memmove(&aPg[iOff], &aPg[iNextOff], nSuffix2);\n        iOff += nSuffix2;\n        iNextOff += nSuffix2;\n      }"
+  },
+  {
+    "external_id": "15002",
+    "title": "Double-free: 'zBuf' freed multiple times",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/os_win.c",
+    "start_line": 5157,
+    "code": "      sqlite3_free(zBuf);\n      OSTRACE((\"TEMP-FILENAME rc=SQLITE_IOERR_NOMEM\\n\"));\n      return SQLITE_IOERR_NOMEM_BKPT;\n    }\n  }\n#ifdef SQLITE_WIN32_HAS_ANSI\n  else{\n    char *zUtf8;\n    char *zMbcsPath = sqlite3MallocZero( nMax );\n    if( !zMbcsPath ){\n      sqlite3_free(zBuf);\n      OSTRACE((\"TEMP-FILENAME rc=SQLITE_IOERR_NOMEM\\n\"));\n      return SQLITE_IOERR_NOMEM_BKPT;\n    }\n    if( osGetTempPathA(nMax, zMbcsPath)==0 ){\n      sqlite3_free(zBuf);\n      OSTRACE((\"TEMP-FILENAME rc=SQLITE_IOERR_GETTEMPPATH\\n\"));\n      return winLogError(SQLITE_IOERR_GETTEMPPATH, osGetLastError(),\n                         \"winGetTempname3\", 0);\n    }\n    zUtf8 = winMbcsToUtf8(zMbcsPath, osAreFileApisANSI());\n    if( zUtf8 ){\n      sqlite3_snprintf(nMax, zBuf, \"%s\", zUtf8);\n      sqlite3_free(zUtf8);\n    }else{\n      sqlite3_free(zBuf);"
+  },
+  {
+    "external_id": "70704",
+    "title": "Function 'hostapd_drv_set_qos_map' does not validate pointer parameter 'qos_map_set' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/ap/ap_drv_ops.c",
+    "start_line": 1116,
+    "code": "#endif /* CONFIG_IEEE80211BE */\n\n\tres = hapd->driver->start_dfs_cac(hapd->drv_priv, &data);\n\tif (!res) {\n\t\tif (radar_background)\n\t\t\tiface->radar_background.cac_started = 1;\n\t\telse\n\t\t\tiface->cac_started = 1;\n\t\tos_get_reltime(&iface->dfs_cac_start);\n\t}\n\n\treturn res;\n}\n\n\nint hostapd_drv_set_qos_map(struct hostapd_data *hapd,\n\t\t\t    const u8 *qos_map_set, u8 qos_map_set_len)\n{\n\tif (!hapd->driver || !hapd->driver->set_qos_map || !hapd->drv_priv ||\n\t    !(hapd->iface->drv_flags & WPA_DRIVER_FLAGS_QOS_MAPPING))\n\t\treturn 0;\n\treturn hapd->driver->set_qos_map(hapd->drv_priv, qos_map_set,\n\t\t\t\t\t qos_map_set_len);\n}\n\n"
+  },
+  {
+    "external_id": "3278",
+    "title": "Signed integer subtraction 'p->pConfig->pgsz - pPage->buf.n - pPage->pgidx.n' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts5/fts5_index.c",
+    "start_line": 4571,
+    "code": "\nstatic void fts5WriteAppendPoslistData(\n  Fts5Index *p, \n  Fts5SegWriter *pWriter, \n  const u8 *aData, \n  int nData\n){\n  Fts5PageWriter *pPage = &pWriter->writer;\n  const u8 *a = aData;\n  int n = nData;\n  \n  assert( p->pConfig->pgsz>0 || p->rc!=SQLITE_OK );\n  while( p->rc==SQLITE_OK \n     && (pPage->buf.n + pPage->pgidx.n + n)>=p->pConfig->pgsz \n  ){\n    int nReq = p->pConfig->pgsz - pPage->buf.n - pPage->pgidx.n;\n    int nCopy = 0;\n    while( nCopy<nReq ){\n      i64 dummy;\n      nCopy += fts5GetVarint(&a[nCopy], (u64*)&dummy);\n    }\n    fts5BufferAppendBlob(&p->rc, &pPage->buf, nCopy, a);\n    a += nCopy;\n    n -= nCopy;\n    fts5WriteFlushLeaf(p, pWriter);\n  }"
+  },
+  {
+    "external_id": "11102",
+    "title": "Use-after-free: accessing freed pointer 'p->zStateDb'",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/ext/rbu/sqlite3rbu.c",
+    "start_line": 2424,
+    "code": "        }else\n\n        if( pIter->eType==RBU_PK_EXTERNAL || pIter->eType==RBU_PK_NONE ){\n          zSql = sqlite3_mprintf(\n              \"SELECT %s, rbu_control FROM %s.'rbu_tmp_%q' %s ORDER BY %s%s\",\n              zCollist, p->zStateDb, pIter->zDataTbl,\n              zPart, zCollist, zLimit\n          );\n        }else{\n          zSql = sqlite3_mprintf(\n              \"SELECT %s, rbu_control FROM %s.'rbu_tmp_%q' %s \"\n              \"UNION ALL \"\n              \"SELECT %s, rbu_control FROM '%q' \"\n              \"%s %s typeof(rbu_control)='integer' AND rbu_control!=1 \"\n              \"ORDER BY %s%s\",\n              zCollist, p->zStateDb, pIter->zDataTbl, zPart,\n              zCollist, pIter->zDataTbl, \n              zPart,\n              (zPart ? \"AND\" : \"WHERE\"),\n              zCollist, zLimit\n          );\n        }\n        if( p->rc==SQLITE_OK ){\n          p->rc = prepareFreeAndCollectError(p->dbRbu,&pIter->pSelect,pz,zSql);\n        }else{\n          sqlite3_free(zSql);"
+  },
+  {
+    "external_id": "19637",
+    "title": "Pointer parameter 'pS' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "sqlite/src/whereexpr.c",
+    "start_line": 983,
+    "code": "  }\n  pColl = sqlite3ExprCompareCollSeq(pParse, pExpr);\n  if( !sqlite3IsBinary(pColl)\n   && !sqlite3ExprCollSeqMatch(pParse, pExpr->pLeft, pExpr->pRight)\n  ){\n    return 0;                                                          /* (6) */\n  }\n  return 1;\n}\n\n/*\n** Recursively walk the expressions of a SELECT statement and generate\n** a bitmask indicating which tables are used in that expression\n** tree.\n*/\nstatic Bitmask exprSelectUsage(WhereMaskSet *pMaskSet, Select *pS){\n  Bitmask mask = 0;\n  while( pS ){\n    SrcList *pSrc = pS->pSrc;\n    mask |= sqlite3WhereExprListUsage(pMaskSet, pS->pEList);\n    mask |= sqlite3WhereExprListUsage(pMaskSet, pS->pGroupBy);\n    mask |= sqlite3WhereExprListUsage(pMaskSet, pS->pOrderBy);\n    mask |= sqlite3WhereExprUsage(pMaskSet, pS->pWhere);\n    mask |= sqlite3WhereExprUsage(pMaskSet, pS->pHaving);\n    if( ALWAYS(pSrc!=0) ){\n      int i;"
+  },
+  {
+    "external_id": "16716",
+    "title": "Double-free: 'pIter' freed multiple times",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/wal.c",
+    "start_line": 2358,
+    "code": "          ** checkpointed and behave accordingly. This seems unsafe though,\n          ** as it would leave the system in a state where the contents of\n          ** the wal-index header do not match the contents of the\n          ** file-system. To avoid this, update the wal-index header to\n          ** indicate that the log file contains zero valid frames.  */\n          walRestartHdr(pWal, salt1);\n          rc = sqlite3OsTruncate(pWal->pWalFd, 0);\n        }\n        walUnlockExclusive(pWal, WAL_READ_LOCK(1), WAL_NREADER-1);\n      }\n    }\n  }\n\n walcheckpoint_out:\n  SEH_FREE_ON_ERROR(pIter, 0);\n  walIteratorFree(pIter);\n  return rc;\n}\n\n/*\n** If the WAL file is currently larger than nMax bytes in size, truncate\n** it to exactly nMax bytes. If an error occurs while doing so, ignore it.\n*/\nstatic void walLimitSize(Wal *pWal, i64 nMax){\n  i64 sz;\n  int rx;"
+  },
+  {
+    "external_id": "55574",
+    "title": "Pointer parameter 'user_data' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/dbus/dbus_new_handlers.c",
+    "start_line": 4462,
+    "code": "\treturn success;\n}\n\n\n/**\n * wpas_dbus_getter_pkcs11_engine_path - Get PKCS #11 engine path\n * @iter: Pointer to incoming dbus message iter\n * @error: Location to store error on failure\n * @user_data: Function specific data\n * Returns: A dbus message containing the PKCS #11 engine path\n *\n * Getter for \"PKCS11EnginePath\" property.\n */\ndbus_bool_t wpas_dbus_getter_pkcs11_engine_path(\n\tconst struct wpa_dbus_property_desc *property_desc,\n\tDBusMessageIter *iter, DBusError *error, void *user_data)\n{\n\n#ifndef CONFIG_PKCS11_ENGINE_PATH\n\tstruct wpa_supplicant *wpa_s = user_data;\n\n\treturn wpas_dbus_string_property_getter(iter,\n\t\t\t\t\t\twpa_s->conf->pkcs11_engine_path,\n\t\t\t\t\t\terror);\n#else /* CONFIG_PKCS11_ENGINE_PATH */\n\treturn wpas_dbus_string_property_getter(iter,"
+  },
+  {
+    "external_id": "17495",
+    "title": "Signed integer multiplication '2 * (sqlite3_int64)pSorter->nMemory' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/src/vdbesort.c",
+    "start_line": 1852,
+    "code": "      pSorter->iMemory = 0;\n      assert( rc!=SQLITE_OK || pSorter->list.pList==0 );\n    }\n  }\n\n  pSorter->list.szPMA += nPMA;\n  if( nPMA>pSorter->mxKeysize ){\n    pSorter->mxKeysize = nPMA;\n  }\n\n  if( pSorter->list.aMemory ){\n    int nMin = pSorter->iMemory + nReq;\n\n    if( nMin>pSorter->nMemory ){\n      u8 *aNew;\n      sqlite3_int64 nNew = 2 * (sqlite3_int64)pSorter->nMemory;\n      int iListOff = -1;\n      if( pSorter->list.pList ){\n        iListOff = (u8*)pSorter->list.pList - pSorter->list.aMemory;\n      }\n      while( nNew < nMin ) nNew = nNew*2;\n      if( nNew > pSorter->mxPmaSize ) nNew = pSorter->mxPmaSize;\n      if( nNew < nMin ) nNew = nMin;\n      aNew = sqlite3Realloc(pSorter->list.aMemory, nNew);\n      if( !aNew ) return SQLITE_NOMEM_BKPT;\n      if( iListOff>=0 ){"
+  },
+  {
+    "external_id": "6202",
+    "title": "Signed integer multiplication '(nTerm+1)*2' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts3/fts3_write.c",
+    "start_line": 1351,
+    "code": "\n    if( fts3SegReaderIsPending(pReader) ){\n      Fts3HashElem *pElem = *(pReader->ppNextElem);\n      sqlite3_free(pReader->aNode);\n      pReader->aNode = 0;\n      if( pElem ){\n        char *aCopy;\n        PendingList *pList = (PendingList *)fts3HashData(pElem);\n        int nCopy = pList->nData+1;\n\n        int nTerm = fts3HashKeysize(pElem);\n        if( (nTerm+1)>pReader->nTermAlloc ){\n          sqlite3_free(pReader->zTerm);\n          pReader->zTerm = (char*)sqlite3_malloc64(((i64)nTerm+1)*2);\n          if( !pReader->zTerm ) return SQLITE_NOMEM;\n          pReader->nTermAlloc = (nTerm+1)*2;\n        }\n        memcpy(pReader->zTerm, fts3HashKey(pElem), nTerm);\n        pReader->zTerm[nTerm] = '\\0';\n        pReader->nTerm = nTerm;\n\n        aCopy = (char*)sqlite3_malloc64(nCopy);\n        if( !aCopy ) return SQLITE_NOMEM;\n        memcpy(aCopy, pList->aData, nCopy);\n        pReader->nNode = pReader->nDoclist = nCopy;\n        pReader->aNode = pReader->aDoclist = aCopy;"
+  },
+  {
+    "external_id": "22075",
+    "title": "Signed integer addition 'pCsr->nAlloc+64' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts3/fts3_unicode.c",
+    "start_line": 333,
+    "code": "  ** Return SQLITE_DONE early if this takes us all the way to the end of \n  ** the input.  */\n  while( z<zTerm ){\n    READ_UTF8(z, zTerm, iCode);\n    if( unicodeIsAlnum(p, (int)iCode) ) break;\n    zStart = z;\n  }\n  if( zStart>=zTerm ) return SQLITE_DONE;\n\n  zOut = pCsr->zToken;\n  do {\n    int iOut;\n\n    /* Grow the output buffer if required. */\n    if( (zOut-pCsr->zToken)>=(pCsr->nAlloc-4) ){\n      char *zNew = sqlite3_realloc64(pCsr->zToken, pCsr->nAlloc+64);\n      if( !zNew ) return SQLITE_NOMEM;\n      zOut = &zNew[zOut - pCsr->zToken];\n      pCsr->zToken = zNew;\n      pCsr->nAlloc += 64;\n    }\n\n    /* Write the folded case of the last character read to the output */\n    zEnd = z;\n    iOut = sqlite3FtsUnicodeFold((int)iCode, p->eRemoveDiacritic);\n    if( iOut ){"
+  },
+  {
+    "external_id": "969",
+    "title": "Signed integer addition 'hdr+5' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/src/btree.c",
+    "start_line": 1884,
+    "code": "    assert( pPage->nFree>=0 );\n    rc = defragmentPage(pPage, MIN(4, pPage->nFree - (2+nByte)));\n    if( rc ) return rc;\n    top = get2byteNotZero(&data[hdr+5]);\n    assert( gap+2+nByte<=top );\n  }\n\n\n  /* Allocate memory from the gap in between the cell pointer array\n  ** and the cell content area.  The btreeComputeFreeSpace() call has already\n  ** validated the freelist.  Given that the freelist is valid, there\n  ** is no way that the allocation can extend off the end of the page.\n  ** The assert() below verifies the previous sentence.\n  */\n  top -= nByte;\n  put2byte(&data[hdr+5], top);\n  assert( top+nByte <= (int)pPage->pBt->usableSize );\n  *pIdx = top;\n  return SQLITE_OK;\n}\n\n/*\n** Return a section of the pPage->aData to the freelist.\n** The first byte of the new free block is pPage->aData[iStart]\n** and the size of the block is iSize bytes.\n**"
+  },
+  {
+    "external_id": "80262",
+    "title": "Pointer parameter 'hapd' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/src/ap/wps_hostapd.h",
+    "start_line": 49,
+    "code": "static inline int hostapd_init_wps(struct hostapd_data *hapd,\n\t\t\t\t   struct hostapd_bss_config *conf)\n{\n\treturn 0;\n}\n\nstatic inline void hostapd_deinit_wps(struct hostapd_data *hapd)\n{\n}\n\nstatic inline int hostapd_init_wps_complete(struct hostapd_data *hapd)\n{\n    return 0;\n}\n\nstatic inline void hostapd_update_wps(struct hostapd_data *hapd)\n{\n}\n\nstatic inline void hostapd_wps_eap_completed(struct hostapd_data *hapd)\n{\n}\n\nstatic inline int hostapd_wps_get_mib_sta(struct hostapd_data *hapd,\n\t\t\t\t\t  const u8 *addr,\n\t\t\t\t\t  char *buf, size_t buflen)"
+  },
+  {
+    "external_id": "78217",
+    "title": "Pointer parameter 'end' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/mesh.c",
+    "start_line": 724,
+    "code": "\n\t/* Need to send peering close messages first */\n\tif (need_deinit)\n\t\twpa_supplicant_mesh_deinit(wpa_s, true);\n\n\tret = wpa_drv_leave_mesh(wpa_s);\n\tif (ret)\n\t\twpa_msg(wpa_s, MSG_ERROR, \"mesh leave error=%d\", ret);\n\n\twpa_drv_set_operstate(wpa_s, 1);\n\n\treturn ret;\n}\n\n\nstatic int mesh_attr_text(const u8 *ies, size_t ies_len, char *buf, char *end)\n{\n\tstruct ieee802_11_elems elems;\n\tchar *mesh_id, *pos = buf;\n\tu8 *bss_basic_rate_set;\n\tint bss_basic_rate_set_len, ret, i;\n\n\tif (ieee802_11_parse_elems(ies, ies_len, &elems, 0) == ParseFailed)\n\t\treturn -1;\n\n\tif (elems.mesh_id_len < 1)"
+  },
+  {
+    "external_id": "80918",
+    "title": "Pointer parameter 'wps' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/src/wps/wps_attr_build.c",
+    "start_line": 291,
+    "code": "\twpabuf_put_data(msg, wps->nonce_e, WPS_NONCE_LEN);\n\treturn 0;\n}\n\n\nint wps_build_registrar_nonce(struct wps_data *wps, struct wpabuf *msg)\n{\n\twpa_printf(MSG_DEBUG, \"WPS:  * Registrar Nonce\");\n\twpabuf_put_be16(msg, ATTR_REGISTRAR_NONCE);\n\twpabuf_put_be16(msg, WPS_NONCE_LEN);\n\twpabuf_put_data(msg, wps->nonce_r, WPS_NONCE_LEN);\n\treturn 0;\n}\n\n\nint wps_build_auth_type_flags(struct wps_data *wps, struct wpabuf *msg)\n{\n\tu16 auth_types = WPS_AUTH_TYPES;\n\t/* WPA/WPA2-Enterprise enrollment not supported through WPS */\n\tauth_types &= ~WPS_AUTH_WPA;\n\tauth_types &= ~WPS_AUTH_WPA2;\n\tauth_types &= ~WPS_AUTH_SHARED;\n#ifdef CONFIG_NO_TKIP\n\tauth_types &= ~WPS_AUTH_WPAPSK;\n#endif /* CONFIG_NO_TKIP */\n#ifdef CONFIG_WPS_TESTING"
+  },
+  {
+    "external_id": "586",
+    "title": "Signed integer addition 'iOut*2+1' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts5/fts5_index.c",
+    "start_line": 3052,
+    "code": "  int i1;                         /* Index of left-hand Fts5SegIter */\n  int i2;                         /* Index of right-hand Fts5SegIter */\n  int iRes;\n  Fts5SegIter *p1;                /* Left-hand Fts5SegIter */\n  Fts5SegIter *p2;                /* Right-hand Fts5SegIter */\n  Fts5CResult *pRes = &pIter->aFirst[iOut];\n\n  assert( iOut<pIter->nSeg && iOut>0 );\n  assert( pIter->bRev==0 || pIter->bRev==1 );\n\n  if( iOut>=(pIter->nSeg/2) ){\n    i1 = (iOut - pIter->nSeg/2) * 2;\n    i2 = i1 + 1;\n  }else{\n    i1 = pIter->aFirst[iOut*2].iFirst;\n    i2 = pIter->aFirst[iOut*2+1].iFirst;\n  }\n  p1 = &pIter->aSeg[i1];\n  p2 = &pIter->aSeg[i2];\n\n  pRes->bTermEq = 0;\n  if( p1->pLeaf==0 ){           /* If p1 is at EOF */\n    iRes = i2;\n  }else if( p2->pLeaf==0 ){     /* If p2 is at EOF */\n    iRes = i1;\n  }else{"
+  },
+  {
+    "external_id": "68453",
+    "title": "Pointer parameter 'completion_cb' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/src/utils/edit.c",
+    "start_line": 1100,
+    "code": "\t\tclear_left();\n\t\tbreak;\n\tcase EDIT_KEY_CTRL_W:\n\t\tdelete_word();\n\t\tbreak;\n\tdefault:\n\t\tif (c >= 32 && c <= 255)\n\t\t\tinsert_char(c);\n\t\tbreak;\n\t}\n}\n\n\nint edit_init(void (*cmd_cb)(void *ctx, char *cmd),\n\t      void (*eof_cb)(void *ctx),\n\t      char ** (*completion_cb)(void *ctx, const char *cmd, int pos),\n\t      void *ctx, const char *history_file, const char *ps)\n{\n\tcurrbuf[0] = '\\0';\n\tdl_list_init(&history_list);\n\thistory_curr = NULL;\n\tif (history_file)\n\t\thistory_read(history_file);\n\n\tedit_cb_ctx = ctx;\n\tedit_cmd_cb = cmd_cb;"
+  },
+  {
+    "external_id": "15075",
+    "title": "Double-free: 'zConverted' freed multiple times",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/os_win.c",
+    "start_line": 6051,
+    "code": "      return winLogError(SQLITE_CANTOPEN_FULLPATH, osGetLastError(),\n                         \"winFullPathname3\", zRelative);\n    }\n    zTemp = sqlite3MallocZero( nByte*sizeof(zTemp[0]) + 3*sizeof(zTemp[0]) );\n    if( zTemp==0 ){\n      sqlite3_free(zConverted);\n      return SQLITE_IOERR_NOMEM_BKPT;\n    }\n    nByte = osGetFullPathNameA((char*)zConverted, nByte+3, zTemp, 0);\n    if( nByte==0 ){\n      sqlite3_free(zConverted);\n      sqlite3_free(zTemp);\n      return winLogError(SQLITE_CANTOPEN_FULLPATH, osGetLastError(),\n                         \"winFullPathname4\", zRelative);\n    }\n    sqlite3_free(zConverted);\n    zOut = winMbcsToUtf8(zTemp, osAreFileApisANSI());\n    sqlite3_free(zTemp);\n  }\n#endif\n  if( zOut ){\n#ifdef __CYGWIN__\n    if( memcmp(zOut, \"\\\\\\\\?\\\\\", 4) ){\n      sqlite3_snprintf(MIN(nFull, pVfs->mxPathname), zFull, \"%s\", zOut);\n    }else if( memcmp(zOut+4, \"UNC\\\\\", 4) ){\n      sqlite3_snprintf(MIN(nFull, pVfs->mxPathname), zFull, \"%s\", zOut+4);"
+  },
+  {
+    "external_id": "2267",
+    "title": "Use-after-free: accessing freed pointer 'pOp->p1'",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/vdbe.c",
+    "start_line": 4426,
+    "code": "      ** before reaching this instruction. */\n      assert( p2>=2 );\n    }\n  }else{\n    wrFlag = 0;\n    assert( (pOp->p5 & OPFLAG_P2ISREG)==0 );\n  }\n  if( pOp->p4type==P4_KEYINFO ){\n    pKeyInfo = pOp->p4.pKeyInfo;\n    assert( pKeyInfo->enc==ENC(db) );\n    assert( pKeyInfo->db==db );\n    nField = pKeyInfo->nAllField;\n  }else if( pOp->p4type==P4_INT32 ){\n    nField = pOp->p4.i;\n  }\n  assert( pOp->p1>=0 );\n  assert( nField>=0 );\n  testcase( nField==0 );  /* Table with INTEGER PRIMARY KEY and nothing else */\n  pCur = allocateCursor(p, pOp->p1, nField, CURTYPE_BTREE);\n  if( pCur==0 ) goto no_mem;\n  pCur->iDb = iDb;\n  pCur->nullRow = 1;\n  pCur->isOrdered = 1;\n  pCur->pgnoRoot = p2;\n#ifdef SQLITE_DEBUG\n  pCur->wrFlag = wrFlag;"
+  },
+  {
+    "external_id": "71769",
+    "title": "Function 'wpa_bss_get_rsne' does not validate pointer parameter 'wpa_s' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/bss.c",
+    "start_line": 2371,
+    "code": "\tif (ssid) {\n\t\t/* Check that there is a supported AKM and pairwise cipher\n\t\t * based on the specific network profile. */\n\t\tif ((ssid->pairwise_cipher & data.pairwise_cipher) == 0)\n\t\t\treturn false;\n\t\tif ((ssid->key_mgmt & data.key_mgmt) == 0)\n\t\t\treturn false;\n\t}\n\n\treturn true;\n}\n\n#endif /* CONFIG_NO_WPA */\n\n\nconst u8 * wpa_bss_get_rsne(struct wpa_supplicant *wpa_s,\n\t\t\t    const struct wpa_bss *bss, struct wpa_ssid *ssid,\n\t\t\t    bool mlo)\n{\n#ifndef CONFIG_NO_WPA\n\tconst u8 *ie;\n\n\tif (wpas_rsn_overriding(wpa_s, ssid)) {\n\t\tif (!ssid)\n\t\t\tssid = wpa_s->current_ssid;\n"
+  },
+  {
+    "external_id": "11122",
+    "title": "Use-after-free: returning freed pointer 'p'",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/ext/rbu/sqlite3rbu.c",
+    "start_line": 2582,
+    "code": "          );\n        }\n        sqlite3_free(zStart);\n        sqlite3_free(zOrder);\n      }\n\n      sqlite3_free(zWhere);\n      sqlite3_free(zOldlist);\n      sqlite3_free(zNewlist);\n      sqlite3_free(zBindings);\n    }\n    sqlite3_free(zCollist);\n    sqlite3_free(zLimit);\n  }\n  \n  return p->rc;\n}\n\n/*\n** Set output variable *ppStmt to point to an UPDATE statement that may\n** be used to update the imposter table for the main table b-tree of the\n** table object that pIter currently points to, assuming that the \n** rbu_control column of the data_xyz table contains zMask.\n** \n** If the zMask string does not specify any columns to update, then this\n** is not an error. Output variable *ppStmt is set to NULL in this case."
+  },
+  {
+    "external_id": "62822",
+    "title": "Function 'wpa_write_ciphers' does not validate pointer parameter 'start' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/common/wpa_common.c",
+    "start_line": 3409,
+    "code": "\t\telse {\n\t\t\tos_free(buf);\n\t\t\treturn -1;\n\t\t}\n\n\t\tif (last)\n\t\t\tbreak;\n\t\tstart = end + 1;\n\t}\n\tos_free(buf);\n\n\treturn val;\n}\n\n\nint wpa_write_ciphers(char *start, char *end, int ciphers, const char *delim)\n{\n\tchar *pos = start;\n\tint ret;\n\n\tif (ciphers & WPA_CIPHER_CCMP_256) {\n\t\tret = os_snprintf(pos, end - pos, \"%sCCMP-256\",\n\t\t\t\t  pos == start ? \"\" : delim);\n\t\tif (os_snprintf_error(end - pos, ret))\n\t\t\treturn -1;\n\t\tpos += ret;"
+  },
+  {
+    "external_id": "3039",
+    "title": "Signed integer compound addition 'pIter->iPgidxOff += fts5GetVarint32(&a[pIter->iPgidxOff], nExtra)' may overflow without checking",
+    "rule_id": "INT32-C",
+    "language": "c",
+    "file_path": "sqlite/ext/fts5/fts5_index.c",
+    "start_line": 1947,
+    "code": "    FTS5_CORRUPT_ITER(p, pIter);\n    return;\n  }\n  pIter->term.n = nKeep;\n  fts5BufferAppendBlob(&p->rc, &pIter->term, nNew, &a[iOff]);\n  assert( pIter->term.n<=pIter->term.nSpace );\n  iOff += nNew;\n  pIter->iTermLeafOffset = iOff;\n  pIter->iTermLeafPgno = pIter->iLeafPgno;\n  pIter->iLeafOffset = iOff;\n\n  if( pIter->iPgidxOff>=pIter->pLeaf->nn ){\n    pIter->iEndofDoclist = pIter->pLeaf->nn+1;\n  }else{\n    int nExtra;\n    pIter->iPgidxOff += fts5GetVarint32(&a[pIter->iPgidxOff], nExtra);\n    pIter->iEndofDoclist += nExtra;\n  }\n\n  fts5SegIterLoadRowid(p, pIter);\n}\n\nstatic void fts5SegIterNext(Fts5Index*, Fts5SegIter*, int*);\nstatic void fts5SegIterNext_Reverse(Fts5Index*, Fts5SegIter*, int*);\nstatic void fts5SegIterNext_None(Fts5Index*, Fts5SegIter*, int*);\n"
+  },
+  {
+    "external_id": "55534",
+    "title": "Function 'wpas_dbus_getter_current_bss' does not validate pointer parameter 'iter' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/dbus/dbus_new_handlers.c",
+    "start_line": 4167,
+    "code": "\n\treturn wpas_dbus_string_property_getter(iter, wpa_s->driver->name,\n\t\t\t\t\t\terror);\n}\n\n\n/**\n * wpas_dbus_getter_current_bss - Get current bss object path\n * @iter: Pointer to incoming dbus message iter\n * @error: Location to store error on failure\n * @user_data: Function specific data\n * Returns: TRUE on success, FALSE on failure\n *\n * Getter for \"CurrentBSS\" property.\n */\ndbus_bool_t wpas_dbus_getter_current_bss(\n\tconst struct wpa_dbus_property_desc *property_desc,\n\tDBusMessageIter *iter, DBusError *error, void *user_data)\n{\n\tstruct wpa_supplicant *wpa_s = user_data;\n\tchar path_buf[WPAS_DBUS_OBJECT_PATH_MAX], *bss_obj_path = path_buf;\n\n\tif (wpa_s->current_bss && wpa_s->dbus_new_path)\n\t\tos_snprintf(bss_obj_path, WPAS_DBUS_OBJECT_PATH_MAX,\n\t\t\t    \"%s/\" WPAS_DBUS_NEW_BSSIDS_PART \"/%u\",\n\t\t\t    wpa_s->dbus_new_path, wpa_s->current_bss->id);"
+  },
+  {
+    "external_id": "69746",
+    "title": "Function 'os_strlcpy' does not validate pointer parameter 'src' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/utils/os_internal.c",
+    "start_line": 424,
+    "code": "\n\twhile (*s1 == *s2) {\n\t\tif (*s1 == '\\0')\n\t\t\tbreak;\n\t\ts1++;\n\t\ts2++;\n\t\tn--;\n\t\tif (n == 0)\n\t\t\treturn 0;\n\t}\n\n\treturn *s1 - *s2;\n}\n\n\nsize_t os_strlcpy(char *dest, const char *src, size_t siz)\n{\n\tconst char *s = src;\n\tsize_t left = siz;\n\n\tif (left) {\n\t\t/* Copy string up to the maximum size of the dest buffer */\n\t\twhile (--left != 0) {\n\t\t\tif ((*dest++ = *s++) == '\\0')\n\t\t\t\tbreak;\n\t\t}"
+  },
+  {
+    "external_id": "18763",
+    "title": "Pointer parameter 'pRow' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "sqlite/src/insert.c",
+    "start_line": 588,
+    "code": "void sqlite3MultiValuesEnd(Parse *pParse, Select *pVal){\n  if( ALWAYS(pVal) && pVal->pSrc->nSrc>0 ){\n    SrcItem *pItem = &pVal->pSrc->a[0];\n    assert( (pItem->fg.isSubquery && pItem->u4.pSubq!=0) || pParse->nErr );\n    if( pItem->fg.isSubquery ){\n      sqlite3VdbeEndCoroutine(pParse->pVdbe, pItem->u4.pSubq->regReturn);\n      sqlite3VdbeJumpHere(pParse->pVdbe, pItem->u4.pSubq->addrFillSub - 1);\n    }\n  }\n}\n\n/*\n** Return true if all expressions in the expression-list passed as the\n** only argument are constant.\n*/\nstatic int exprListIsConstant(Parse *pParse, ExprList *pRow){\n  int ii;\n  for(ii=0; ii<pRow->nExpr; ii++){\n    if( 0==sqlite3ExprIsConstant(pParse, pRow->a[ii].pExpr) ) return 0;\n  }\n  return 1;\n}\n\n/*\n** Return true if all expressions in the expression-list passed as the\n** only argument are both constant and have no affinity."
+  },
+  {
+    "external_id": "19546",
+    "title": "Use-after-free: passing freed pointer 'zSql' to function",
+    "rule_id": "MEM30-C",
+    "language": "c",
+    "file_path": "sqlite/src/prepare.c",
+    "start_line": 956,
+    "code": "  sqlite3 *db,              /* Database handle. */\n  const char *zSql,         /* UTF-8 encoded SQL statement. */\n  int nBytes,               /* Length of zSql in bytes. */\n  unsigned int prepFlags,   /* Zero or more SQLITE_PREPARE_* flags */\n  sqlite3_stmt **ppStmt,    /* OUT: A pointer to the prepared statement */\n  const char **pzTail       /* OUT: End of parsed string */\n){\n  int rc;\n  /* EVIDENCE-OF: R-56861-42673 sqlite3_prepare_v3() differs from\n  ** sqlite3_prepare_v2() only in having the extra prepFlags parameter,\n  ** which is a bit array consisting of zero or more of the\n  ** SQLITE_PREPARE_* flags.\n  **\n  ** Proof by comparison to the implementation of sqlite3_prepare_v2()\n  ** directly above. */\n  rc = sqlite3LockAndPrepare(db,zSql,nBytes,\n                 SQLITE_PREPARE_SAVESQL|(prepFlags&SQLITE_PREPARE_MASK),\n                 0,ppStmt,pzTail);\n  assert( rc==SQLITE_OK || ppStmt==0 || *ppStmt==0 );\n  return rc;\n}\n\n\n#ifndef SQLITE_OMIT_UTF16\n/*\n** Compile the UTF-16 encoded SQL statement zSql into a statement handle."
+  },
+  {
+    "external_id": "80874",
+    "title": "Function 'p2p_dfs_channel_filter' does not validate pointer parameter 'p2p' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/p2p/p2p_utils.c",
+    "start_line": 636,
+    "code": "\t\t\t\t\t  p2p->sta_connected_chan_width,\n\t\t\t\t\t  0, &dfs_op_class, &dfs_op_chan) < 0) {\n\t\tp2p_info(p2p,\n\t\t\t \"P2P: Frequency to channel conversion failed (%d MHz)\",\n\t\t\t p2p->sta_connected_freq);\n\t\treturn -1;\n\t}\n\n\tif (op_class == dfs_op_class && channel == dfs_op_chan)\n\t\treturn 0;\n\n\treturn -1;\n}\n\n\nvoid p2p_dfs_channel_filter(struct p2p_data *p2p,\n\t\t\t    const struct p2p_channels *p2p_chan,\n\t\t\t    struct p2p_channels *res, bool go)\n{\n\tsize_t i, j;\n\tbool is_dfs;\n\n\tos_memset(res, 0, sizeof(*res));\n\n\tfor (i = 0; i < p2p_chan->reg_classes; i++) {\n\t\tconst struct p2p_reg_class *reg = &p2p_chan->reg_class[i];"
+  },
+  {
+    "external_id": "74276",
+    "title": "Function 'p2p_group_notif_noa' does not validate pointer parameter 'group' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/src/p2p/p2p_group.c",
+    "start_line": 846,
+    "code": "\t/* No match with Device ID */\n\treturn 0;\n}\n\n\nvoid p2p_group_notif_formation_done(struct p2p_group *group)\n{\n\tif (group == NULL)\n\t\treturn;\n\tgroup->group_formation = 0;\n\tgroup->beacon_update = 1;\n\tp2p_group_update_ies(group);\n}\n\n\nint p2p_group_notif_noa(struct p2p_group *group, const u8 *noa,\n\t\t\tsize_t noa_len)\n{\n\tif (noa == NULL) {\n\t\twpabuf_free(group->noa);\n\t\tgroup->noa = NULL;\n\t} else {\n\t\tif (group->noa) {\n\t\t\tif (wpabuf_size(group->noa) >= noa_len) {\n\t\t\t\tgroup->noa->used = 0;\n\t\t\t\twpabuf_put_data(group->noa, noa, noa_len);"
+  },
+  {
+    "external_id": "73831",
+    "title": "Pointer parameter 'sm' is not modified and should be declared const",
+    "rule_id": "DCL13-C",
+    "language": "c",
+    "file_path": "hostap/src/eap_server/eap_server_aka.c",
+    "start_line": 1372,
+    "code": "\tdefault:\n\t\twpa_printf(MSG_DEBUG, \"EAP-AKA: Unknown state %d in \"\n\t\t\t   \"process\", data->state);\n\t\tbreak;\n\t}\n}\n\n\nstatic bool eap_aka_isDone(struct eap_sm *sm, void *priv)\n{\n\tstruct eap_aka_data *data = priv;\n\treturn data->state == SUCCESS || data->state == FAILURE;\n}\n\n\nstatic u8 * eap_aka_getKey(struct eap_sm *sm, void *priv, size_t *len)\n{\n\tstruct eap_aka_data *data = priv;\n\tu8 *key;\n\n\tif (data->state != SUCCESS)\n\t\treturn NULL;\n\n\tkey = os_memdup(data->msk, EAP_SIM_KEYING_DATA_LEN);\n\tif (key == NULL)\n\t\treturn NULL;"
+  },
+  {
+    "external_id": "73281",
+    "title": "Function 'wpas_notify_blob_added' does not validate pointer parameter 'name' before use",
+    "rule_id": "API00-C",
+    "language": "c",
+    "file_path": "hostap/wpa_supplicant/notify.c",
+    "start_line": 575,
+    "code": "\t\treturn;\n\n\twpas_dbus_bss_signal_prop_changed(wpa_s, WPAS_DBUS_BSS_PROP_AGE, id);\n}\n\n\nvoid wpas_notify_bss_anqp_changed(struct wpa_supplicant *wpa_s, unsigned int id)\n{\n\tif (wpa_s->p2p_mgmt)\n\t\treturn;\n\n\twpas_dbus_bss_signal_prop_changed(wpa_s, WPAS_DBUS_BSS_PROP_ANQP, id);\n}\n\n\nvoid wpas_notify_blob_added(struct wpa_supplicant *wpa_s, const char *name)\n{\n\tif (wpa_s->p2p_mgmt)\n\t\treturn;\n\n\twpas_dbus_signal_blob_added(wpa_s, name);\n}\n\n\nvoid wpas_notify_blob_removed(struct wpa_supplicant *wpa_s, const char *name)\n{"
+  }
+]
