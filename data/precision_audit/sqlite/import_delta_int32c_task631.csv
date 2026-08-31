@@ -1,0 +1,2 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+INT32-C,sqlite,src/mem2.c,255,FP,"nReserve is int (ROUND8(nByte)) added to sizeof()-typed operands in totalSize's computation; mem2.c is the SQLITE_MEMDEBUG debug-only allocator, not a path handling untrusted external input directly -- doesn't meet this oracle's established 'untrusted/unbounded input source' TP bar (cf. fts5_index.c/sqlite3session.c precedents)",task-631-delta,med

@@ -1,0 +1,10 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+INT10-C,hostap,src/common/nan_de.c,1832,FP,"os_strlen(srf_mac_list) returns size_t; modulo operand genuinely unsigned",task-631-delta,high
+INT32-C,hostap,src/pae/ieee802_1x_key.c,64,TP,"buf_len is int (lab_len+ctx_len+4), genuinely signed and unguarded before buf[buf_len-2]; low real-world impact (crypto label/context lengths are small in practice) but matches the established 'genuine but low-impact, type-signed, unguarded' TP convention for this oracle",task-631-delta,med
+INT32-C,hostap,src/drivers/driver_nl80211.c,5390,FP,"ret is send_and_recv_cmd()'s return value -- established hostap INT32-C FP class: small netlink/errno-range value, never realistically INT_MIN, so '-ret' cannot overflow in practice",task-631-delta,high
+INT32-C,hostap,src/pae/ieee802_1x_kay.c,2201,TP,"ctx_offset is int, compound-added unguarded (key_len/sizeof(mi) accumulation); matches established 'genuine but low-impact, type-signed' TP convention",task-631-delta,med
+INT32-C,hostap,src/pae/ieee802_1x_kay.c,2193,TP,"Same ctx_offset += key_len shape as :2201",task-631-delta,med
+INT32-C,hostap,src/pae/ieee802_1x_kay.c,2197,TP,"Same ctx_offset += sizeof(peer->mi) shape as :2201",task-631-delta,med
+INT32-C,hostap,wpa_supplicant/win_if_list.c,84,FP,"blen is size_t, not int -- sizeof(*b)+1024 is genuinely unsigned arithmetic, rule misclassified the operand type",task-631-delta,high
+INT32-C,hostap,src/radius/radius_server.c,1941,FP,"mask += (128-32) is guarded by the immediately preceding 'if (mask <= 32)', bounding the result to <=128 -- provably no overflow, rule doesn't see the adjacent guard",task-631-delta,high
+INT32-C,hostap,hostapd/hostapd_cli.c,129,TP,"flen is int; strlen(ctrl_iface_dir)+strlen(ifname)+2 unguarded before malloc(flen) -- genuine but low-impact (real filesystem paths), matches established TP convention",task-631-delta,med

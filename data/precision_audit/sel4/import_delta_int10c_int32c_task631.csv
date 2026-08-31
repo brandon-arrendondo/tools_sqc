@@ -1,0 +1,19 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+INT10-C,sel4,src/arch/riscv/kernel/vspace.c,90,FP,"paddr is paddr_t (typedef word_t = unsigned long); modulo operand is genuinely unsigned, typedef chain not resolved",task-631-delta,high
+INT10-C,sel4,src/arch/riscv/kernel/vspace.c,96,FP,"Same paddr_t/word_t typedef-chain gap as :90",task-631-delta,high
+INT10-C,sel4,src/arch/riscv/kernel/vspace.c,100,FP,"Same paddr_t/word_t typedef-chain gap as :90",task-631-delta,high
+INT10-C,sel4,src/arch/x86/64/kernel/vspace.c,286,FP,"Same paddr_t/word_t typedef-chain gap",task-631-delta,high
+INT10-C,sel4,src/arch/x86/kernel/x2apic.c,49,FP,"int_irq_min is word_t (unsigned long); typedef chain not resolved",task-631-delta,high
+INT10-C,sel4,src/arch/x86/kernel/xapic.c,55,FP,"Same word_t typedef-chain gap as x2apic.c:49",task-631-delta,high
+INT10-C,sel4,src/arch/x86/object/vcpu.c,1176,FP,"word_t operand, typedef chain not resolved",task-631-delta,high
+INT10-C,sel4,src/kernel/boot.c,160,FP,"allocated is pptr_t (typedef word_t = unsigned long); typedef chain not resolved",task-631-delta,high
+INT10-C,sel4,src/machine/profiler.c,140,FP,"hash is declared word_t directly; typedef chain not resolved",task-631-delta,high
+INT10-C,sel4,src/machine/profiler.c,141,FP,"hash2 computation on word_t operands; typedef chain not resolved",task-631-delta,high
+INT10-C,sel4,src/plat/bcm2837/machine/intc.c,127,FP,"word_t/typedef-family operand, typedef chain not resolved",task-631-delta,high
+INT10-C,sel4,src/smp/lock.c,12,FP,"sizeof(big_kernel_lock) % EXCL_RES_GRANULE_SIZE -- sizeof is size_t, genuinely unsigned",task-631-delta,high
+INT10-C,sel4,src/smp/lock.c,19,FP,"(seL4_Word)&big_kernel_lock % ... -- explicit cast to seL4_Word (word_t), genuinely unsigned",task-631-delta,high
+INT32-C,sel4,src/arch/x86/32/kernel/elf.c,66,FP,"phdr[i].p_memsz is uint32_t; memset size arg is genuinely unsigned arithmetic",task-631-delta,high
+INT32-C,sel4,src/arch/arm/64/model/statedata.c,93,FP,"BIT(PT_INDEX_BITS) expands to UL_CONST(1) << n, an unsigned long constant; both -1 and -2 subtractions are unsigned",task-631-delta,high
+INT32-C,sel4,src/arch/x86/kernel/boot_sys.c,472,FP,"p_region_t.start/end are paddr_t (word_t = unsigned long); memcpy size arg is genuinely unsigned arithmetic",task-631-delta,high
+INT32-C,sel4,src/arch/x86/kernel/boot_sys.c,633,FP,"tag->size is uint32_t (multiboot2 tag struct); memcpy size arg is genuinely unsigned arithmetic",task-631-delta,high
+INT32-C,sel4,src/arch/x86/64/kernel/elf.c,63,FP,"phdr[i].p_memsz is uint64_t; memset size arg is genuinely unsigned arithmetic",task-631-delta,high
