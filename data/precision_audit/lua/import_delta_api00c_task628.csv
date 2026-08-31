@@ -1,0 +1,6 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+API00-C,lua,lmem.c,176,TP,"luaM_realloc_: L dereferenced via G(L) with no check; block checked only via lua_assert (compiles out under NDEBUG, does not count per task 644); internal VM function, L-always-valid is a caller-contract argument task 644 established does not exempt an unguarded deref",task-628-delta,high
+API00-C,lua,lmem.c,150,TP,"luaM_free_: L dereferenced via G(L) with no check; block checked only via lua_assert (compiles out under NDEBUG)",task-628-delta,high
+API00-C,lua,lfunc.c,87,TP,"luaF_findupval: L dereferenced with no check; internal VM function, same L-always-valid convention already TP elsewhere in this oracle",task-628-delta,high
+API00-C,lua,lstate.c,305,TP,"luaE_freethread: both L and L1 dereferenced with no check (internal VM function)",task-628-delta,high
+API00-C,lua,lgc.c,1529,TP,"luaC_freeallobjects: L dereferenced with no check; internal VM function, same L-always-valid convention already TP elsewhere in this oracle",task-628-delta,high

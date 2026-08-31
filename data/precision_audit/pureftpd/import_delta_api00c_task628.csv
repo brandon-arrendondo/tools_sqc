@@ -1,0 +1,3 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+API00-C,pureftpd,src/log_mysql.c,305,TP,"pw_mysql_check: result (result->auth_ok=0), sa/peer (getnameinfo/STORAGE_FAMILY macros), and password (strlen) all dereferenced with zero NULL check in the function body; registered in pure-ftpd's backend dispatch table (task 594's own original example), but per task 644's standard a dispatch-table caller-contract does not exempt an actually-unguarded deref",task-628-delta,high
+API00-C,pureftpd,src/log_pgsql.c,384,TP,"pw_pgsql_check: same shape as pw_mysql_check (sibling backend) -- result/sa/peer/password all dereferenced unguarded in the body",task-628-delta,high
