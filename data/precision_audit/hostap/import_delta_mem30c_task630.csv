@@ -1,0 +1,4 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM30-C,hostap,wpa_supplicant/eapol_test.c,616,FP,"os_free(ctx) inside its own if(...){ ...; return -1; } with no else, one of three independent early-exit error checks in eapol_sm_init/wpa_sm_init setup; each is reached only if a distinct earlier allocation failed, mutually exclusive with the other two -- not a real double-free",task-630-delta,med
+MEM30-C,hostap,wpa_supplicant/eapol_test.c,624,FP,"Same shape as :616 -- independent if(...){ os_free(ctx); return -1; } early-exit branch, mutually exclusive with the sibling checks",task-630-delta,med
+MEM30-C,hostap,wpa_supplicant/eapol_test.c,632,FP,"Same shape as :616/:624 -- independent if(...){ os_free(ctx); os_free(wctx); return -1; } early-exit branch, mutually exclusive with the sibling checks",task-630-delta,med
