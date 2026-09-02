@@ -101,3 +101,31 @@ looks clean.
 2026-07-28. Given the batch count (337, vs. curl's 89), this needs deliberate
 multi-session pacing — see task 159 for the live batch-count checkpoint.
 </content>
+
+## Re-adjudication: DCL13-C on function-pointer parameters (2026-09-02, task 642 follow-up)
+
+`reaudit_dcl13_fptr_task642.csv` — 2 labels flipped **TP → FP** (gt 77708, 81296),
+imported to the shared oracle as source
+`reaudit_dcl13_function_pointer_params_task642`.
+
+Task 642 taught DCL13-C to skip function-pointer-typed parameters. Run 224 → 226
+showed that removed 3 findings, and 2 of them were oracle **TP**s — so the fix
+looked like it traded true positives for one false positive. Reading the code
+showed the labels were the error, not the rule:
+
+- All three `edit_init` backends (`edit.c`, `edit_readline.c`, `edit_simple.c`)
+  declare the *identical* parameter
+  `char ** (*completion_cb)(void *ctx, const char *cmd, int pos)`.
+- `edit.c:1115` was labeled **FP** because the parameter is *"stored into a
+  non-const global of the same type"* — and `edit_readline.c:120` performs that
+  exact store into the same `static char **(*edit_completion_cb)(...)`. Same
+  pattern, opposite verdicts.
+- Across the whole oracle, DCL13-C labels sitting on a function-pointer
+  declarator line ran **10 FP to 2 TP**; these were the 2.
+- On the merits, DCL13-C recommends const on an unmodified *pointee*. A
+  function-pointer parameter admits only top-level const, which does not change
+  the caller-visible interface, so the recommendation is not applicable.
+
+With the labels corrected, v0.4.325 (tasks 642 + 691) is **−32 false positives
+and zero true positives lost**: precision 24.311% → 24.325%, recall unchanged
+at 93.7% (13,294 detected of 14,184 known TPs, both runs).
