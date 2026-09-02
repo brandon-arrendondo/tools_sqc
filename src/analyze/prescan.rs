@@ -23,6 +23,10 @@ struct FilePrescanResult {
     function_summaries: HashMap<String, FunctionSummary>,
     call_graph: HashMap<String, HashSet<String>>,
     ambiguous_call_targets: HashSet<String>,
+    /// Names of `static`-qualified function *definitions* in this file
+    /// (task 299): used at merge time to detect the same bare name defined
+    /// as two unrelated internal-linkage functions in different files.
+    local_static_functions: HashSet<String>,
     macro_constants: HashMap<String, i64>,
     macro_aliases: HashMap<String, String>,
     function_macros: HashMap<String, crate::analyze::macro_expand::FunctionMacro>,
@@ -63,6 +67,7 @@ impl FilePrescanResult {
             function_summaries: HashMap::new(),
             call_graph: HashMap::new(),
             ambiguous_call_targets: HashSet::new(),
+            local_static_functions: HashSet::new(),
             macro_constants: HashMap::new(),
             macro_aliases: HashMap::new(),
             function_macros: HashMap::new(),
@@ -146,6 +151,7 @@ fn process_file(file_path: &Path, is_header: bool, needs_vra: bool) -> FilePresc
 
         collect_call_graph(&root, &source, &mut result.call_graph);
         collect_ambiguous_call_targets(&root, &source, &mut result.ambiguous_call_targets);
+        collect_static_function_names(&root, &source, &mut result.local_static_functions);
 
         result.macro_aliases.extend(file_aliases);
 
@@ -259,6 +265,7 @@ pub fn prescan_directories(
     let mut function_summaries: HashMap<String, FunctionSummary> = HashMap::new();
     let mut call_graph: HashMap<String, HashSet<String>> = HashMap::new();
     let mut ambiguous_call_targets: HashSet<String> = HashSet::new();
+    let mut static_defining_files: HashMap<String, HashSet<PathBuf>> = HashMap::new();
     let mut macro_constants: HashMap<String, i64> = HashMap::new();
     let mut macro_aliases: HashMap<String, String> = HashMap::new();
     let mut function_macros: HashMap<String, crate::analyze::macro_expand::FunctionMacro> =
@@ -357,6 +364,14 @@ pub fn prescan_directories(
             call_graph.entry(caller).or_default().extend(callees);
         }
         ambiguous_call_targets.extend(r.ambiguous_call_targets);
+        if let Some(path) = &r.source_path {
+            for name in &r.local_static_functions {
+                static_defining_files
+                    .entry(name.clone())
+                    .or_default()
+                    .insert(path.clone());
+            }
+        }
 
         macro_constants.extend(r.macro_constants);
         macro_aliases.extend(r.macro_aliases);
@@ -410,6 +425,25 @@ pub fn prescan_directories(
 
         value_only_global_candidates.extend(r.value_only_global_candidates);
         pointer_named_globals.extend(r.pointer_named_globals);
+    }
+
+    // A `static` function has internal linkage: it cannot be called from a
+    // different translation unit, so two files defining a same-named static
+    // are two unrelated functions, not the same node. Unioning their callee
+    // sets under one bare-name key (the loop above) fabricates cross-file
+    // call edges that don't exist -- e.g. curl's docs/examples/ each define
+    // their own `static void timer_cb(...)` (task 299, surfaced by task
+    // 297's call-graph migration finding more of these collisions than the
+    // old hand-rolled walk did). Drop the merged entry for any name defined
+    // `static` in more than one file and mark it ambiguous, so existing
+    // consumers (MSC04-C's cycle DFS, concurrency reachability) stop
+    // trusting edges into it -- the same treatment task 562 already gives
+    // callback/field-dispatch ambiguity.
+    for (name, files) in &static_defining_files {
+        if files.len() > 1 {
+            call_graph.remove(name);
+            ambiguous_call_targets.insert(name.clone());
+        }
     }
 
     // A name only qualifies project-wide if it was never seen with a
@@ -811,6 +845,26 @@ fn has_static_specifier(node: &Node, source: &str) -> bool {
         }
     }
     false
+}
+
+/// Collect the names of every `static`-qualified function *definition* in
+/// this file (not prototypes) -- used at cross-file merge time to detect the
+/// same bare name defined as two unrelated internal-linkage functions in
+/// different files (task 299).
+fn collect_static_function_names(node: &Node, source: &str, names: &mut HashSet<String>) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "function_definition" {
+                if has_static_specifier(&child, source) {
+                    if let Some(name) = extract_function_name_from_declarator(&child, source) {
+                        names.insert(name);
+                    }
+                }
+            } else {
+                collect_static_function_names(&child, source, names);
+            }
+        }
+    }
 }
 
 /// Extract function names from `function_definition` and `declaration` nodes.
@@ -4698,6 +4752,7 @@ fn extract_field_id_from_declarator(node: &Node, source: &str) -> Option<String>
 pub fn resolve_includes(
     source_files: &[String],
     include_paths: &[String],
+    project_roots: &[String],
     context: &mut super::context::ProjectContext,
     progress: Option<&dyn ProgressReporter>,
     needs_vra: bool,
@@ -4705,6 +4760,11 @@ pub fn resolve_includes(
     if let Some(reporter) = progress {
         reporter.report_include_resolve_start(include_paths.len());
     }
+
+    // Only search roots inside the project can make an unresolvable include a
+    // *project* header (task 690). Computed once: the check is filesystem-
+    // touching and the answer is the same for every include.
+    let project_search_paths = project_local_search_paths(include_paths, project_roots);
 
     let mut parser = CParser::new()?;
     let mut resolved_set: HashSet<PathBuf> = HashSet::new();
@@ -4811,7 +4871,11 @@ pub fn resolve_includes(
                 }
             }
         } else if unresolved_seen.insert((include_path.clone(), source_dir.clone()))
-            && is_missing_project_header(&include_path, source_dir.as_deref(), include_paths)
+            && is_missing_project_header(
+                &include_path,
+                source_dir.as_deref(),
+                &project_search_paths,
+            )
         {
             context.unresolved_project_headers.insert(include_path);
         }
@@ -4915,10 +4979,50 @@ fn resolve_header(
     None
 }
 
+/// The subset of `include_paths` that lie inside the project being scanned.
+///
+/// This is the guard that keeps [`is_missing_project_header`] honest. That
+/// check asks whether an unresolvable include's *parent directory* exists
+/// under some search root — which only says anything about the project if the
+/// root itself belongs to the project. Hand `/usr/include` to it and `sys/`,
+/// `bits/`, `gnu/` and `linux/` all suddenly exist as parents, so any
+/// unresolvable system include starts looking like a missing project header.
+///
+/// That was not hypothetical: on Debian, `<sys/_types.h>` is referenced
+/// conditionally in the glibc graph reachable from `<stdio.h>` and does not
+/// exist, and its parent `sys/` does. One such miss set
+/// `unresolved_project_headers`, which switched DCL31-C's undeclared-call
+/// check off for the *entire* project (see its `set_project_context`) —
+/// silently, and in every benchmark project that passed `-I /usr/include`
+/// (task 690).
+///
+/// A root with no project root to sit under cannot be judged, so when
+/// `project_roots` is empty every path is kept: that preserves the
+/// pre-existing behavior for a caller that has nothing to say about its own
+/// layout, rather than quietly disabling the seL4 case below.
+fn project_local_search_paths(include_paths: &[String], project_roots: &[String]) -> Vec<String> {
+    if project_roots.is_empty() {
+        return include_paths.to_vec();
+    }
+    // Best-effort canonicalization: a compile database can name directories
+    // that do not exist here, and a path that cannot be canonicalized is
+    // compared as written rather than dropped.
+    let canon = |p: &str| std::fs::canonicalize(p).unwrap_or_else(|_| PathBuf::from(p));
+    let roots: Vec<PathBuf> = project_roots.iter().map(|r| canon(r)).collect();
+    include_paths
+        .iter()
+        .filter(|p| {
+            let path = canon(p);
+            roots.iter().any(|root| path.starts_with(root))
+        })
+        .cloned()
+        .collect()
+}
+
 /// True if an include that `resolve_header` failed to find is a *project*
 /// header rather than a system one: its directory prefix exists under the
-/// source file's directory or one of the `-I` search paths, but the file
-/// itself does not.
+/// source file's directory or one of the **project-local** search paths, but
+/// the file itself does not.
 ///
 /// `<object/structures_gen.h>` in a tree that has `include/object/` is a
 /// header the project is expected to have and doesn't — it is generated by a
@@ -4927,6 +5031,9 @@ fn resolve_header(
 /// nothing named `sys/` exists under the project, so it's just a system
 /// header off the search path, which says nothing about the project's own
 /// declarations.
+///
+/// Pass only project-local roots — see [`project_local_search_paths`] for what
+/// happens when a system directory is allowed to answer this question.
 ///
 /// Requiring a directory component is what keeps this conservative: a bare
 /// `#include <stdio.h>` or `#include "config.h"` would otherwise match every
@@ -6016,6 +6123,34 @@ no_mem:
     }
 
     #[test]
+    fn test_prescan_directories_drops_colliding_static_call_graph_node() {
+        // Two files each define their own unrelated `static timer_cb` (task
+        // 299's curl docs/examples pattern) -- a `static` function has
+        // internal linkage, so these must never be merged into one node.
+        let dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(
+            dir.path().join("a.c"),
+            "static void timer_cb(void) { helper_a(); } void run_a(void) { timer_cb(); }",
+        )
+        .unwrap();
+        std::fs::write(
+            dir.path().join("b.c"),
+            "static void timer_cb(void) { helper_b(); }",
+        )
+        .unwrap();
+        let dirs = vec![dir.path().to_string_lossy().to_string()];
+        let ctx = prescan_directories(&dirs, None, false).unwrap();
+        assert!(
+            !ctx.call_graph.contains_key("timer_cb"),
+            "colliding same-named static's call-graph node should be dropped, not unioned"
+        );
+        assert!(ctx.ambiguous_call_targets.contains("timer_cb"));
+        // The edge recording that run_a calls (some) timer_cb is untouched --
+        // only the merged callee-set node for the colliding name is dropped.
+        assert!(ctx.call_graph.get("run_a").unwrap().contains("timer_cb"));
+    }
+
+    #[test]
     fn test_prescan_directories_with_header() {
         let dir = tempfile::TempDir::new().unwrap();
         std::fs::write(dir.path().join("api.h"), "int public_api(int x);").unwrap();
@@ -6105,5 +6240,67 @@ no_mem:
         // and is no longer reported as missing.
         std::fs::write(include.join("object").join("structures_gen.h"), "\n").unwrap();
         assert!(resolve_header("object/structures_gen.h", None, &search).is_some());
+    }
+
+    #[test]
+    fn a_system_search_root_cannot_make_an_include_a_missing_project_header() {
+        // Task 690. The real failure: once /usr/include is a search root,
+        // `sys/` exists as a parent directory, so <sys/_types.h> -- absent on
+        // Debian but referenced conditionally in the glibc graph reachable
+        // from <stdio.h> -- was classified as a missing PROJECT header. That
+        // set unresolved_project_headers, which switched DCL31-C's
+        // undeclared-call check off for the entire project. Measured effect:
+        // the check was silently dead in every benchmark project that passed
+        // -I /usr/include (sqlite, mosquitto, curl, hostap).
+        let tmp = tempfile::tempdir().unwrap();
+        let project = tmp.path().join("project");
+        let system = tmp.path().join("usr").join("include");
+        std::fs::create_dir_all(project.join("include")).unwrap();
+        std::fs::create_dir_all(system.join("sys")).unwrap();
+
+        let project_root = project.to_string_lossy().to_string();
+        let all_paths = vec![
+            project.join("include").to_string_lossy().to_string(),
+            system.to_string_lossy().to_string(),
+        ];
+
+        // With both roots in play, the system root is filtered out...
+        let local = project_local_search_paths(&all_paths, std::slice::from_ref(&project_root));
+        assert_eq!(local.len(), 1, "only the in-project root should survive");
+        assert!(local[0].contains("project"));
+
+        // ...so the unresolvable system header is no longer "the project's".
+        assert!(
+            !is_missing_project_header("sys/_types.h", None, &local),
+            "an unresolvable header under a SYSTEM root must not look project-local"
+        );
+        // Left unfiltered, it does -- which is exactly the bug.
+        assert!(
+            is_missing_project_header("sys/_types.h", None, &all_paths),
+            "guard removed: the system root answers, reproducing the bug"
+        );
+    }
+
+    #[test]
+    fn empty_project_roots_keeps_every_search_path() {
+        // A caller with nothing to say about its own layout must not silently
+        // lose the seL4 generated-header detection; it keeps the prior
+        // behavior instead.
+        let paths = vec!["/usr/include".to_string(), "/opt/sdk".to_string()];
+        assert_eq!(project_local_search_paths(&paths, &[]), paths);
+    }
+
+    #[test]
+    fn a_project_root_keeps_its_own_subdirectories() {
+        let tmp = tempfile::tempdir().unwrap();
+        let inc = tmp.path().join("include");
+        std::fs::create_dir_all(&inc).unwrap();
+        let paths = vec![inc.to_string_lossy().to_string()];
+        let roots = vec![tmp.path().to_string_lossy().to_string()];
+        assert_eq!(
+            project_local_search_paths(&paths, &roots),
+            paths,
+            "a search root inside the project tree is project-local"
+        );
     }
 }
