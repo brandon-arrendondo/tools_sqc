@@ -20,7 +20,29 @@ which also requires the checkout directory's basename to equal the project
 name. Every other registry key so far happened to avoid this; `pureftpd` is
 the first one that would have tripped it.
 
-## Scope: SQL-client files only (not the whole daemon)
+## Scope: the whole daemon (`src/**` + `puredb/**`)
+
+**This section was widened by task 551 (2026-08-25); the original onboarding
+scope is preserved below it.** The machine-readable mirror in
+`data/benchmark_repos.json` is `"scope_include": ["src/**", "puredb/**"]`.
+Those are the only two directories in the pinned tree holding `*.c`/`*.h`
+(123 + 8 = 131 files); `gui/`, `pam/`, `man/` and `m4/` contain none, so no
+exclude list is needed.
+
+`ground_truth` currently holds 991 labels for `pureftpd@cc28bff5` across 72
+distinct files, and every one of them falls inside that predicate. Only 6 of
+those 72 files are the SQL-client files the original audit covered — the
+other 66 came from task 551's whole-daemon 10% random sample (573 labels,
+seed 20260825, source `precision_audit_task551_10pct_sample`) and from the
+per-rule delta passes that followed. Task 578 tracks the remaining ~5,021
+unlabeled findings.
+
+The declaration was stale rather than the oracle wrong: it encoded the
+original six-file onboarding scope below and was never updated when 551
+widened it. Fixed under task 717 — see that task for the measured
+92%-out-of-scope signal that surfaced it.
+
+### Original onboarding scope (task 301): SQL-client files only
 
 Unlike libcrc/raylib/lua (whole-project exhaustive labeling), this audit is
 scoped to exactly the two files that motivated onboarding this codebase:
