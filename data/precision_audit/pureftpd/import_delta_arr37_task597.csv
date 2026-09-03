@@ -1,0 +1,21 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+ARR37-C,pureftpd,src/log_mysql.c,68,FP,"to = malloc(to_len + 4) at line 59; to[to_len] is within the malloc'd allocation's bounds. Checker misclassifies the heap buffer as a non-array pointer.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,69,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+1] is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,70,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+2] is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,71,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+3] is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,83,FP,"Same malloc'd 'to' buffer as line 68; to[to_len] read-back is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,84,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+1] read-back is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,85,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+2] read-back is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,86,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+3] read-back is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,88,FP,"'to' is the same malloc'd heap buffer; *to++ = 0 in the tamper-detected poison-wipe loop is pointer increment within a real allocation, not on an isolated non-array pointer.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,91,FP,"Same malloc'd 'to' buffer as line 68; to[escaped_len] null-terminator write is in bounds (escaped_len < to_len is checked at line 82).",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_mysql.c,290,FP,"answer = malloc(length) at line 286; answer[length-1] null-terminator write is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,68,FP,"to = malloc(to_len + 2) at line 62; to[to_len] is within the malloc'd allocation's bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,69,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+1] is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,81,FP,"Same malloc'd 'to' buffer as line 68; to[to_len] read-back is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,82,FP,"Same malloc'd 'to' buffer as line 68; to[to_len+1] read-back is in bounds.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,84,FP,"'to' is the same malloc'd heap buffer; *to++ = 0 in the tamper-detected poison-wipe loop is pointer increment within a real allocation.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,87,FP,"Same malloc'd 'to' buffer as line 62; to[tolen] null-terminator write is in bounds (tolen < to_len is checked at line 80).",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,259,FP,"to = malloc(to_len) at line 253 (pw_pgsql_escape_conninfo); *to++ = 0 poison-wipe loop is pointer increment within a real allocation.",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,262,FP,"Same malloc'd 'to' buffer as line 259; to[tolen] null-terminator write is in bounds (tolen < to_len is checked at line 257).",delta_arr37_task597,high
+ARR37-C,pureftpd,src/log_pgsql.c,374,FP,"answer = malloc(length) at line 370; answer[length-1] null-terminator write is in bounds.",delta_arr37_task597,high
