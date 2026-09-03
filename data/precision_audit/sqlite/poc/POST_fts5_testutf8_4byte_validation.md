@@ -6,6 +6,8 @@ Target: SQLite User Forum (sqlite.org/forum)
 Status at drafting: LIVE at trunk HEAD (e6082d077e7e96c91fa366219ae07a1c5ab0ce70,
 2026-09-02); confirmed by direct inspection of trunk and of our pinned
 2026-02-24 snapshot, byte-identical in both
+Status: SUBMITTED to sqlite.org/forum 2026-09-03 (forum thread ID/link TBD --
+add here once known)
 Prior-art check: searched sqlite.org/forum directly for `fts5TestUtf8`
 (2026-09-03) — no hits, so apparently unreported
 Artifacts: none (defect is visible directly in ext/fts5/fts5_index.c; no
