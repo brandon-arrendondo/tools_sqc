@@ -13,11 +13,58 @@ not the surrounding repository. In-scope vs out-of-scope of the 39,747 findings:
 | Scope | Findings | Trees |
 |-------|----------|-------|
 | **In-scope** | 24,965 (63%) | `src/` core engine, `ext/` shipped extensions (fts3/4/5, rtree, session, …) |
-| Out-of-scope | 14,782 (37%) | `autosetup/jimsh0.c` (vendored Jim Tcl), `tool/` (lemon parser-gen, build tools), `test/` + `src/test*.c` + `ext/*/test_*.c` (Tcl test glue, e.g. `ext/recover/test_recover.c`), `ext/jni` + `ext/wasm` (language bindings) |
+| Out-of-scope | 14,782 (37%) | `autosetup/jimsh0.c` (vendored Jim Tcl), `tool/` (lemon parser-gen, build tools), `test/` (Tcl test glue), plus the test-only and language-binding files inside `src/`/`ext/` — see [Non-engine files](#non-engine-files-language-bindings-and-test-only-code) below |
 
 Out-of-scope code is not labelled; precision is measured over the in-scope
 labelled subset. (In a real engagement you audit what you ship and run in
 production, not the vendored interpreter or the build tooling.)
+
+### Non-engine files: language bindings and test-only code
+
+Two categories inside `src/`/`ext/` are excluded even though they sit in the
+included trees. Both are enumerated by exact path in
+`data/benchmark_repos.json`'s `scope_exclude` — the machine-readable mirror of
+this section.
+
+**Language bindings** — `src/tclsqlite.c`/`.h` (Tcl), plus the `ext/jni` and
+`ext/wasm` trees. Not the shipped C engine.
+
+**Test-only code.** The `src/test*.c` and `ext/*/test_*.c` globs catch most of
+it, but they are keyed on a `test_` *prefix* and upstream does not use one
+consistently. Files found and excluded individually because the glob missed
+them: `ext/fts5/fts5_test_tok.c`, `ext/fts5/fts5_test_mi.c` (embedded
+`_test_`), `ext/fts3/fts3_test.c`, `ext/session/session_speed_test.c`
+(`_test` suffix), `ext/fts3/fts3_term.c`, `ext/fts5/fts5_tcl.c`,
+`ext/misc/noop.c`, `ext/misc/qpvtab.c`, `ext/misc/randomjson.c`,
+`ext/misc/urifuncs.c`, `ext/session/changesetfuzz.c` (task 656's one-time
+sweep of the whole `src/`+`ext/` tree, replacing the previous find-one-at-a-
+time-during-adjudication pattern).
+
+**The criterion is each file's own stated purpose, never its name.** A file is
+excluded only if its own header comment says it is test-only ("only used for
+testing", "intended for testing and debugging only", "for testing and
+demonstration purposes only", "do not have any practical real-world use"), or
+its entire body sits under `#ifdef SQLITE_TEST`, or it is a standalone
+`main()` test/fuzz utility rather than library code.
+
+Name patterns are unreliable in *both* directions, which is why the sweep read
+headers rather than extending the globs:
+
+- `ext/misc/fuzzer.c` and `ext/misc/amatch.c` read as test tooling and are
+  **shipped extensions** (edit-distance virtual tables). In scope.
+- `ext/fts5/fts5_tcl.c` has no `test` in its name at all and is **entirely**
+  wrapped in `#ifdef SQLITE_TEST`. Out of scope.
+- `ext/misc/stmtrand.c`, `explain.c`, `memstat.c`, `csv.c`, `series.c`,
+  `stmt.c`, `remember.c` all mention testing or "demonstrates" in their
+  headers but describe a real shipped extension. In scope.
+- `main.mk`'s `TESTSRC` list is likewise not a criterion: its second block is
+  commented "Statically linked extensions" and holds real extensions the test
+  shell links, and its first block carries `ext/recover/sqlite3recover.c`,
+  `ext/recover/dbdata.c` and `ext/intck/sqlite3intck.c` — shipped extensions
+  listed only because their `test_*.c` Tcl wrappers need them. All in scope.
+
+So the exclusion list is enumerated, not pattern-derived. A future sweep should
+re-read headers rather than trust either the filename or `TESTSRC`.
 
 ## In-scope rule volume (top, run 34)
 
@@ -92,11 +139,12 @@ free→use matcher defects worth fixing:
 MEM30-C stays **enabled**: it is a genuine memory-safety rule, so these misfires
 are recorded as oracle labels (not suppressed) to drive the matcher fixes above.
 
-**Scope note:** `src/tclsqlite.c` (the Tcl language binding, not the shipped
-engine — same rationale as the `ext/jni`/`ext/wasm` exclusion) and
-`ext/fts5/fts5_test_tok.c` (a test tokenizer, matching the `*test*` test-glue
-exclusion) are treated as out-of-scope; their 3 sampled MEM30-C findings (all
-also FP) are not labelled.
+**Scope note:** `src/tclsqlite.c` and `ext/fts5/fts5_test_tok.c` are
+out-of-scope, so their 3 sampled MEM30-C findings (all also FP) are not
+labelled. Both are instances of the two general exclusions now documented
+under [Non-engine files](#non-engine-files-language-bindings-and-test-only-code)
+— language binding and test-only code respectively; that section, not this
+note, is the authority.
 
 MEM30-C oracle now has 99 sqlite labels (54 prior + 45). Overall measured
 sqlite-inclusive precision: 7.5% (TP 33 / 438 labeled).
