@@ -16,11 +16,20 @@ picohttpparser), `test/`, `client/`, `apps/`, `plugins/` (example plugins),
 `common/`/`libcommon/` (small shared helpers, pulled in only as cross-file
 context).
 
+Widened per the benchmarking_db 737 audit: `make install` also installs the
+public API headers under `include/`, and both `lib/` and `src/` `#include`
+them, so they belong in scope too. `config.h` (generated build config,
+`#include`d throughout) is in scope for the same reason. The C++ wrapper
+headers (`include/mosquitto/libmosquittopp.h`, `include/mosquittopp.h`) are
+excluded by name — a language-scope call (sqc is CERT-C only), not an
+oversight.
+
 | Scope | Files |
 |-------|-------|
 | `lib/` | 59 |
 | `src/` | 83 |
-| **Total in-scope** | **142** |
+| `include/` + `config.h` | 37 |
+| **Total in-scope** | **179** |
 
 This is a stricter scope than the v0.4.22 sample (which drew from the whole
 repo incl. `plugins/` and `test/`); the 15 existing v0.4.22 mosquitto labels in
